@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Dosis Anak</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,600;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f0ede6;--surface:#faf9f6;--surface2:#ebe8df;--border:#d4cfc3;
+  --accent:#2d6a4f;--accent2:#52b788;--accent3:#e76f51;
+  --text:#1a1a18;--text2:#5a5750;--text3:#8a857c;
+  --warning:#e9c46a;--danger:#e76f51;--info:#457b9d;
+  --mono:'DM Mono',monospace;--serif:'Fraunces',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh;padding:14px 13px 80px;}
+header{text-align:center;margin-bottom:18px;padding:26px 18px 18px;background:var(--accent);border-radius:16px;color:#fff;position:relative;overflow:hidden;}
+header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 30%,rgba(82,183,136,.3) 0%,transparent 60%);}
+header h1{font-family:var(--serif);font-size:1.75rem;font-weight:700;position:relative;}
+header p{font-size:.68rem;opacity:.75;margin-top:4px;position:relative;}
+.tabs{display:flex;gap:5px;margin-bottom:14px;background:var(--surface2);padding:4px;border-radius:12px;}
+.tab-btn{flex:1;padding:8px 4px;border:none;border-radius:9px;font-family:var(--mono);font-size:.7rem;cursor:pointer;background:transparent;color:var(--text2);transition:all .18s;font-weight:500;}
+.tab-btn.active{background:var(--accent);color:#fff;}
+.tab-panel{display:none;}.tab-panel.active{display:block;}
+.disclaimer{background:#fff8e1;border:1.5px solid var(--warning);border-radius:10px;padding:9px 13px;font-size:.66rem;color:#7a6a00;margin-bottom:14px;line-height:1.6;}
+.disclaimer strong{display:block;margin-bottom:3px;}
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;}
+.card-title{font-family:var(--serif);font-size:.95rem;font-weight:600;color:var(--accent);margin-bottom:11px;display:flex;align-items:center;gap:6px;}
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:11px;}
+.input-group label{display:block;font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);margin-bottom:4px;}
+.input-group input,.input-group select{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;padding:9px 10px;font-family:var(--mono);font-size:.83rem;color:var(--text);outline:none;transition:border-color .2s;-webkit-appearance:none;appearance:none;}
+.input-group input:focus,.input-group select:focus{border-color:var(--accent2);background:#fff;}
+.calc-btn{width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:12px;font-family:var(--mono);font-size:.85rem;font-weight:500;cursor:pointer;letter-spacing:.04em;transition:background .2s,transform .1s;margin-top:3px;}
+.calc-btn:active{transform:scale(.98);}.calc-btn:hover{background:#1e4d38;}
+/* Category chips */
+.cat-filter{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:9px;}
+.cat-chip{padding:4px 9px;border-radius:20px;font-size:.62rem;border:1.5px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.cat-chip.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+/* Drug list */
+.drug-list{display:flex;flex-direction:column;gap:5px;}
+.drug-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;padding:8px 11px;display:flex;align-items:center;gap:7px;cursor:pointer;transition:all .18s;}
+.drug-item:hover{border-color:var(--accent2);background:#eef8f2;}
+.drug-item.active{border-color:var(--accent);background:#e8f5ee;}
+.drug-check{width:16px;height:16px;border:2px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .18s;}
+.drug-item.active .drug-check{background:var(--accent);border-color:var(--accent);}
+.drug-item.active .drug-check::after{content:'✓';color:#fff;font-size:10px;}
+.drug-name{font-size:.78rem;font-weight:500;}
+.drug-meta{font-size:.61rem;color:var(--text3);}
+.drug-actions{display:flex;gap:3px;flex-shrink:0;}
+.action-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:.75rem;padding:3px 4px;border-radius:4px;transition:color .15s;}
+.action-btn:hover{color:var(--accent);}.action-btn.del:hover{color:var(--danger);}
+.tag{display:inline-block;font-size:.54rem;padding:1px 5px;border-radius:4px;margin-left:4px;vertical-align:middle;}
+.tag-custom{background:#e8f5ee;color:var(--accent);border:1px solid var(--accent2);}
+.tag-iv{background:#e8f0f8;color:var(--info);border:1px solid #a8c4d8;}
+/* Results */
+.results-section{margin-top:14px;}
+.result-card{background:var(--surface);border:2px solid var(--accent2);border-radius:13px;margin-bottom:9px;overflow:hidden;animation:slideIn .22s ease;}
+@keyframes slideIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.result-header{background:var(--accent);color:#fff;padding:8px 13px;display:flex;justify-content:space-between;align-items:center;}
+.result-header .drug-title{font-family:var(--serif);font-size:.9rem;font-weight:600;}
+.result-header .drug-category{font-size:.58rem;opacity:.8;background:rgba(255,255,255,.2);padding:2px 7px;border-radius:20px;}
+.result-body{padding:11px 13px;}
+.dose-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:7px;}
+.dose-box{background:var(--surface2);border-radius:7px;padding:8px 9px;text-align:center;}
+.dose-box .label{font-size:.56rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:2px;}
+.dose-box .value{font-size:1rem;font-weight:500;color:var(--accent);}
+.dose-box .value.max{color:var(--accent3);}
+.dose-box .unit{font-size:.6rem;color:var(--text2);}
+.syrup-section{background:#fffbf0;border:1px solid var(--warning);border-radius:7px;padding:8px 10px;margin-top:6px;}
+.syrup-title{font-size:.6rem;text-transform:uppercase;letter-spacing:.07em;color:#7a6a00;margin-bottom:5px;font-weight:500;}
+.syrup-row{display:flex;justify-content:space-between;align-items:center;font-size:.72rem;margin-bottom:3px;}
+.syrup-row .sediaan{color:var(--text2);}.syrup-row .takaran{font-weight:500;color:#6b5200;}
+.note{font-size:.63rem;color:var(--text3);margin-top:6px;line-height:1.5;}
+.note.warning{color:#c45c00;}.note.danger{color:#a33;}.note.info{color:var(--info);}
+/* Add form */
+.add-drug-form{display:none;flex-direction:column;gap:8px;margin-top:11px;background:var(--surface2);border-radius:10px;padding:12px;border:1.5px dashed var(--border);}
+.add-drug-form.open{display:flex;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.form-row.triple{grid-template-columns:1fr 1fr 1fr;}
+.add-drug-form input,.add-drug-form select{background:#fff;border:1.5px solid var(--border);border-radius:7px;padding:7px 9px;font-family:var(--mono);font-size:.76rem;color:var(--text);outline:none;width:100%;-webkit-appearance:none;appearance:none;}
+.add-drug-form input:focus,.add-drug-form select:focus{border-color:var(--accent2);}
+.add-drug-form label{font-size:.58rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text2);margin-bottom:2px;display:block;}
+.btn-row{display:flex;gap:6px;}
+.btn-sm{flex:1;padding:8px;border-radius:7px;font-family:var(--mono);font-size:.73rem;cursor:pointer;border:none;transition:all .15s;}
+.btn-primary{background:var(--accent);color:#fff;}.btn-primary:hover{background:#1e4d38;}
+.btn-secondary{background:var(--surface2);color:var(--text2);border:1.5px solid var(--border);}
+.toggle-add{width:100%;background:var(--surface2);border:1.5px dashed var(--accent2);color:var(--accent);border-radius:9px;padding:8px;font-family:var(--mono);font-size:.75rem;cursor:pointer;margin-top:7px;transition:all .18s;}
+.toggle-add:hover{background:#eef8f2;}
+.select-all-btn{width:100%;background:var(--surface2);border:1.5px solid var(--border);color:var(--text2);border-radius:7px;padding:7px;font-family:var(--mono);font-size:.68rem;cursor:pointer;margin-bottom:8px;transition:all .15s;}
+.search-input{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;padding:8px 10px;font-family:var(--mono);font-size:.78rem;color:var(--text);outline:none;margin-bottom:8px;}
+.search-input:focus{border-color:var(--accent2);background:#fff;}
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:flex-end;justify-content:center;padding:0;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border-radius:16px 16px 0 0;padding:18px 16px 32px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;}
+.modal-title{font-family:var(--serif);font-size:.95rem;font-weight:600;color:var(--accent);margin-bottom:12px;}
+.modal input,.modal select{background:var(--surface2);border:1.5px solid var(--border);border-radius:7px;padding:8px 9px;font-family:var(--mono);font-size:.76rem;color:var(--text);outline:none;width:100%;-webkit-appearance:none;appearance:none;margin-top:3px;}
+.modal input:focus,.modal select:focus{border-color:var(--accent2);background:#fff;}
+.modal label{font-size:.58rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text2);display:block;margin-top:9px;}
+.modal-btns{display:flex;gap:7px;margin-top:14px;}
+.modal-btns button{flex:1;padding:9px;border-radius:7px;font-family:var(--mono);font-size:.76rem;cursor:pointer;border:none;}
+.modal-save{background:var(--accent);color:#fff;}.modal-cancel{background:var(--surface2);color:var(--text2);border:1.5px solid var(--border);}
+/* Fluid */
+.fluid-result{background:var(--surface);border:2px solid var(--info);border-radius:13px;overflow:hidden;margin-top:12px;animation:slideIn .22s ease;}
+.fluid-header{background:var(--info);color:#fff;padding:9px 13px;}
+.fluid-header h3{font-family:var(--serif);font-size:.92rem;}
+.fluid-body{padding:12px 13px;}
+.fluid-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:7px;}
+.fluid-box{background:var(--surface2);border-radius:7px;padding:8px 9px;text-align:center;}
+.fluid-box .label{font-size:.56rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:2px;}
+.fluid-box .value{font-size:1rem;font-weight:500;color:var(--info);}
+.fluid-box .unit{font-size:.6rem;color:var(--text2);}
+.fluid-table{width:100%;border-collapse:collapse;font-size:.7rem;margin-top:7px;}
+.fluid-table th{background:var(--surface2);padding:5px 7px;text-align:left;font-size:.58rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);}
+.fluid-table td{padding:5px 7px;border-bottom:1px solid var(--border);}
+.fluid-table tr:last-child td{border-bottom:none;}
+.fluid-note{font-size:.62rem;color:var(--text3);margin-top:8px;line-height:1.55;}
+footer{text-align:center;font-size:.58rem;color:var(--text3);margin-top:18px;line-height:1.7;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🩺 Dosis Anak</h1>
+  <p>Kalkulator Dosis Pediatri · Decision Support Tool · v2.0</p>
+</header>
+
+<div class="disclaimer">
+  <strong>⚠️ PERINGATAN KLINIS</strong>
+  Alat bantu keputusan — bukan pengganti penilaian klinis. Dosis berdasarkan Formularium Nasional RI, BNFC 2023–2024, dan Medscape Pediatric. Verifikasi selalu dengan apoteker/dokter. Tenaga medis bertanggung jawab penuh atas keputusan terapi.
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('dosis')">💊 Dosis Obat</button>
+  <button class="tab-btn" onclick="switchTab('cairan')">💧 Cairan Maintenance</button>
+</div>
+
+<!-- ===== TAB DOSIS ===== -->
+
+<div class="tab-panel active" id="tab-dosis">
+  <div class="card">
+    <div class="card-title"><span>👶</span> Data Pasien</div>
+    <div class="input-row">
+      <div class="input-group"><label>Berat Badan (kg)</label><input type="number" id="weight" placeholder="cth: 12.5" min="0.5" max="100" step="0.1"></div>
+      <div class="input-group"><label>Usia</label><input type="number" id="age" placeholder="cth: 3" min="0" max="18" step="0.1"></div>
+      <div class="input-group"><label>Satuan Usia</label>
+        <select id="ageUnit"><option value="tahun">Tahun</option><option value="bulan">Bulan</option></select>
+      </div>
+      <div class="input-group"><label>Frekuensi Minum</label>
+        <select id="freq">
+          <option value="1">1x sehari</option><option value="2">2x sehari</option>
+          <option value="3" selected>3x sehari</option><option value="4">4x sehari</option>
+          <option value="6">Tiap 4 jam</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>💊</span> Pilih Obat</div>
+    <input type="text" class="search-input" id="searchDrug" placeholder="🔍 Cari nama obat atau kategori...">
+    <div class="cat-filter" id="catFilter"></div>
+    <button class="select-all-btn" onclick="toggleSelectAll()">☑ Pilih / Hapus Semua</button>
+    <div class="drug-list" id="drugList"></div>
+    <button class="toggle-add" onclick="toggleAddForm()">+ Tambah Obat Baru</button>
+    <div class="add-drug-form" id="addDrugForm">
+      <div style="font-size:.78rem;font-weight:500;color:var(--accent)">📝 Tambah Obat Baru</div>
+      <div class="form-row">
+        <div><label>Nama Obat *</label><input type="text" id="nName" placeholder="cth: Ceftriaxone"></div>
+        <div><label>Kategori *</label>
+          <select id="nCat">
+            <option>Analgetik / Antipiretik</option><option>Antiemetik</option><option>Antibiotik</option>
+            <option>Antiviral</option><option>Antihistamin</option><option>Kortikosteroid</option>
+            <option>Bronkodilator</option><option>Gastrointestinal</option><option>Sedasi / Antikonvulsan</option>
+            <option>Kardiovaskular</option><option>Suplemen / Vitamin</option><option>Probiotik</option>
+            <option>Antijamur</option><option>Lainnya</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row triple">
+        <div><label>Dosis Min (mg/kg)</label><input type="number" id="nDoseMin" placeholder="cth: 20" step="0.01"></div>
+        <div><label>Dosis Max (mg/kg)</label><input type="number" id="nDoseMax" placeholder="cth: 40" step="0.01"></div>
+        <div><label>Maks/dosis (mg)</label><input type="number" id="nMaxSingle" placeholder="opsional" step="0.1"></div>
+      </div>
+      <div class="form-row">
+        <div><label>Maks/hari (mg/kg)</label><input type="number" id="nMaxDaily" placeholder="opsional" step="0.1"></div>
+        <div><label>Rute</label>
+          <select id="nRoute"><option value="PO">PO (oral)</option><option value="IV">IV</option><option value="IM">IM</option><option value="INH">Inhalasi</option><option value="PR">PR (rektal)</option></select>
+        </div>
+      </div>
+      <div><label>Sirup: mg per 5ml (pisah koma, cth: 125,250)</label><input type="text" id="nSyrups" placeholder="kosongkan jika tidak ada sirup"></div>
+      <div><label>Catatan Klinis</label><input type="text" id="nNote" placeholder="cth: Berikan setelah makan"></div>
+      <div class="btn-row">
+        <button class="btn-sm btn-primary" onclick="saveDrug()">💾 Simpan</button>
+        <button class="btn-sm btn-secondary" onclick="toggleAddForm()">Batal</button>
+      </div>
+    </div>
+  </div>
+
+<button class="calc-btn" onclick="calculate()">⚗️ HITUNG DOSIS</button>
+
+  <div class="results-section" id="results"></div>
+</div>
+
+<!-- ===== TAB CAIRAN ===== -->
+
+<div class="tab-panel" id="tab-cairan">
+  <div class="card">
+    <div class="card-title"><span>💧</span> Cairan Maintenance — Holiday-Segar</div>
+    <div class="input-row">
+      <div class="input-group"><label>Berat Badan (kg)</label><input type="number" id="fw" placeholder="cth: 15" min="1" max="100" step="0.1"></div>
+      <div class="input-group"><label>Pilih Cairan</label>
+        <select id="fluidType">
+          <option value="all">Tampilkan semua pilihan</option>
+          <option value="D5NaCl">D5 ¼ NaCl</option>
+          <option value="D5half">D5 ½ NaCl</option>
+          <option value="RL">Ringer Laktat (RL)</option>
+          <option value="NaCl">NaCl 0.9%</option>
+        </select>
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calcFluid()">💧 HITUNG CAIRAN</button>
+    <div id="fluidResult"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>📖</span> Rumus Holiday-Segar</div>
+    <div style="font-size:.72rem;line-height:2;color:var(--text2)">
+      <b style="color:var(--accent)">Kebutuhan per hari:</b><br>
+      &bull; 0–10 kg → <b>100 ml/kg/hari</b><br>
+      &bull; 10–20 kg → 1000 ml + <b>50 ml/kg</b> tiap kg di atas 10<br>
+      &bull; &gt;20 kg → 1500 ml + <b>20 ml/kg</b> tiap kg di atas 20<br><br>
+      <b style="color:var(--accent)">Rumus 4-2-1 (ml/jam):</b><br>
+      &bull; 0–10 kg → <b>4 ml/kg/jam</b><br>
+      &bull; 10–20 kg → 40 ml/jam + <b>2 ml/kg/jam</b> di atas 10<br>
+      &bull; &gt;20 kg → 60 ml/jam + <b>1 ml/kg/jam</b> di atas 20<br><br>
+      <span style="color:var(--text3);font-size:.62rem">📚 Holiday MA, Segar WE. Pediatrics 1957 · Formularium Nasional RI</span>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-title">✏️ Edit Data Obat</div>
+    <input type="hidden" id="editId">
+    <label>Nama Obat</label><input type="text" id="editName">
+    <label>Kategori</label>
+    <select id="editCat">
+      <option>Analgetik / Antipiretik</option><option>Antiemetik</option><option>Antibiotik</option>
+      <option>Antiviral</option><option>Antihistamin</option><option>Kortikosteroid</option>
+      <option>Bronkodilator</option><option>Gastrointestinal</option><option>Sedasi / Antikonvulsan</option>
+      <option>Kardiovaskular</option><option>Suplemen / Vitamin</option><option>Probiotik</option>
+      <option>Antijamur</option><option>Lainnya</option>
+    </select>
+    <label>Dosis Min (mg/kg)</label><input type="number" id="editDoseMin" step="0.001">
+    <label>Dosis Max (mg/kg)</label><input type="number" id="editDoseMax" step="0.001">
+    <label>Maks/dosis (mg) — opsional</label><input type="number" id="editMaxSingle" step="0.1">
+    <label>Maks/hari (mg/kg) — opsional</label><input type="number" id="editMaxDaily" step="0.1">
+    <label>Rute</label>
+    <select id="editRoute"><option value="PO">PO (oral)</option><option value="IV">IV</option><option value="IM">IM</option><option value="INH">Inhalasi</option><option value="PR">PR (rektal)</option></select>
+    <label>Sediaan Sirup mg/5ml (pisah koma, cth: 125,250)</label><input type="text" id="editSyrups">
+    <label>Catatan Klinis</label><input type="text" id="editNote">
+    <div class="modal-btns">
+      <button class="modal-save" onclick="saveEdit()">💾 Simpan Perubahan</button>
+      <button class="modal-cancel" onclick="closeModal()">Batal</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Referensi: Formularium Nasional RI · BNFC 2023–2024 · Medscape Pediatric Drug Reference · Holiday-Segar (Pediatrics 1957)<br>
+  v2.0 · Untuk penggunaan profesional kesehatan terlatih · Bukan pengganti keputusan klinis
+</footer>
+
+<script>
+// =====================================================
+// MASTER DRUG DATABASE
+// =====================================================
+let builtinDrugs = [
+  // ANALGETIK / ANTIPIRETIK
+  {id:'paracetamol',name:'Parasetamol',category:'Analgetik / Antipiretik',route:'PO',
+   doseMin:10,doseMax:15,maxSingleDose:500,maxDailyDose:60,
+   syrups:[{conc:120,per:5},{conc:250,per:5}],
+   note:'Interval min 4–6 jam. Maks 60mg/kg/hari atau 4g/hari.',ref:'Formularium Nasional, BNFC 2023'},
+  {id:'ibuprofen',name:'Ibuprofen',category:'Analgetik / Antipiretik',route:'PO',
+   doseMin:5,doseMax:10,maxSingleDose:400,maxDailyDose:30,
+   syrups:[{conc:100,per:5},{conc:200,per:5}],
+   note:'Berikan bersama makanan. Hindari pada dehidrasi, gangguan ginjal, usia <6 bulan.',ref:'Formularium Nasional, BNFC 2023'},
+
+  // ANTIEMETIK
+  {id:'ondansetron',name:'Ondansetron',category:'Antiemetik',route:'PO',
+   doseMin:0.1,doseMax:0.15,maxSingleDose:4,maxDailyDose:null,
+   syrups:[{conc:4,per:5}],
+   note:'Maks 4mg/dosis, 3x/hari. IV: 0.1–0.15mg/kg maks 4mg/dosis.',ref:'BNFC 2023, Medscape'},
+  {id:'domperidone',name:'Domperidon',category:'Antiemetik',route:'PO',
+   doseMin:0.2,doseMax:0.4,maxSingleDose:10,maxDailyDose:null,
+   syrups:[{conc:5,per:5}],
+   note:'Maks 10mg/dosis. Berikan 15–30 mnt sebelum makan. Hindari <1 tahun.',ref:'BNFC 2023'},
+
+  // GASTROINTESTINAL
+  {id:'omeprazole',name:'Omeprazole (PO)',category:'Gastrointestinal',route:'PO',
+   doseMin:0.7,doseMax:1.0,maxSingleDose:20,maxDailyDose:null,syrups:[],
+   note:'Berikan 30 mnt sebelum makan. Kapsul 10mg, 20mg.',ref:'BNFC 2023, Medscape'},
+  {id:'omeprazole_iv',name:'Omeprazole (IV)',category:'Gastrointestinal',route:'IV',
+   doseMin:0.5,doseMax:1.0,maxSingleDose:40,maxDailyDose:null,syrups:[],
+   note:'Infus lambat 20–30 mnt. Maks 40mg/dosis.',ref:'BNFC 2023, Medscape'},
+  {id:'ranitidine',name:'Ranitidin',category:'Gastrointestinal',route:'PO',
+   doseMin:2,doseMax:4,maxSingleDose:150,maxDailyDose:null,
+   syrups:[{conc:75,per:5}],
+   note:'Diberikan 2x sehari. Maks 150mg/dosis.',ref:'BNFC 2023'},
+  {id:'sucralfate',name:'Sukralfat',category:'Gastrointestinal',route:'PO',
+   doseMin:40,doseMax:80,maxSingleDose:1000,maxDailyDose:null,syrups:[],
+   note:'Berikan 1 jam sebelum makan dan sebelum tidur. Suspensi 500mg/5ml atau tablet 1g.',ref:'Medscape, BNFC 2023'},
+  {id:'antasida',name:'Antasida (Al-Mg Hidroksida)',category:'Gastrointestinal',route:'PO',
+   doseMin:null,doseMax:null,maxSingleDose:null,maxDailyDose:null,fixedDose:true,
+   fixedDoseTable:[
+     {min:0,max:6,label:'<6 tahun',dose:'Tidak direkomendasikan rutin'},
+     {min:6,max:12,label:'6–12 tahun',dose:'5–10 ml (1–2 sdt) 3–4x/hari, setelah makan'},
+     {min:12,max:99,label:'>12 tahun',dose:'10–20 ml atau 1–2 tablet, 3–4x/hari'},
+   ],syrups:[],
+   note:'Berikan 1–2 jam setelah makan dan sebelum tidur.',ref:'MIMS Indonesia, BNFC 2023'},
+  {id:'attapulgite',name:'Attapulgite',category:'Gastrointestinal',route:'PO',
+   doseMin:null,doseMax:null,maxSingleDose:null,maxDailyDose:null,fixedDose:true,
+   fixedDoseTable:[
+     {min:0,max:3,label:'<3 tahun',dose:'Tidak direkomendasikan'},
+     {min:3,max:6,label:'3–6 tahun',dose:'300mg tiap BAB, maks 7x/hari'},
+     {min:6,max:12,label:'6–12 tahun',dose:'600mg tiap BAB, maks 7x/hari'},
+     {min:12,max:99,label:'>12 tahun',dose:'1200–1500mg tiap BAB, maks 7x/hari'},
+   ],syrups:[],
+   note:'Berikan setelah setiap BAB. Minum banyak cairan untuk cegah konstipasi.',ref:'MIMS Indonesia'},
+  {id:'zinc',name:'Zinc (Diare Akut)',category:'Gastrointestinal',route:'PO',
+   doseMin:null,doseMax:null,maxSingleDose:null,maxDailyDose:null,fixedDose:true,
+   fixedDoseTable:[
+     {min:0,max:0.5,label:'<6 bulan',dose:'10 mg 1x sehari selama 10 hari'},
+     {min:0.5,max:99,label:'≥6 bulan',dose:'20 mg 1x sehari selama 10 hari'},
+   ],syrups:[],
+   note:'WHO/UNICEF: mulai segera saat diare, lanjutkan 10 hari penuh.',ref:'WHO 2006, Formularium Nasional'},
+
+  // ANTIBIOTIK
+  {id:'amoxicillin',name:'Amoksisilin',category:'Antibiotik',route:'PO',
+   doseMin:20,doseMax:40,maxSingleDose:500,maxDailyDose:90,
+   syrups:[{conc:125,per:5},{conc:250,per:5}],
+   note:'OMA/pneumonia dosis tinggi 80–90mg/kg/hari. Habiskan antibiotik.',ref:'Formularium Nasional, BNFC 2023'},
+  {id:'cefixime',name:'Cefixime',category:'Antibiotik',route:'PO',
+   doseMin:8,doseMax:12,maxSingleDose:400,maxDailyDose:null,
+   syrups:[{conc:100,per:5}],
+   note:'Diberikan 1–2x sehari. Habiskan sesuai durasi terapi.',ref:'BNFC 2023, Medscape'},
+
+  // ANTIVIRAL
+  {id:'acyclovir',name:'Acyclovir (Cacar Air/Varisela)',category:'Antiviral',route:'PO',
+   doseMin:20,doseMax:20,maxSingleDose:800,maxDailyDose:null,syrups:[],
+   note:'5x sehari selama 7 hari. Mulai dalam 24 jam ruam. Tablet 200mg, 400mg, 800mg. Minum banyak air.',ref:'BNFC 2023, Medscape'},
+
+  // ANTIHISTAMIN
+  {id:'cetirizine',name:'Cetirizin',category:'Antihistamin',route:'PO',
+   doseMin:0.25,doseMax:0.25,maxSingleDose:10,maxDailyDose:null,
+   syrups:[{conc:5,per:5}],
+   note:'1x sehari. Maks 10mg/hari.',ref:'BNFC 2023'},
+  {id:'ctm',name:'CTM (Klorfeniramin)',category:'Antihistamin',route:'PO',
+   doseMin:0.1,doseMax:0.1,maxSingleDose:4,maxDailyDose:null,
+   syrups:[{conc:2,per:5}],
+   note:'Maks 4mg/dosis. Efek sedasi signifikan.',ref:'Medscape, BNFC 2023'},
+  {id:'diphenhydramine',name:'Difenhidramin',category:'Antihistamin',route:'PO',
+   doseMin:1,doseMax:1.5,maxSingleDose:25,maxDailyDose:5,syrups:[],
+   note:'Tiap 4–6 jam. Maks 25mg/dosis. Sedasi kuat. Hindari <2 tahun.',ref:'Medscape, BNFC 2023'},
+  {id:'tremenza',name:'Tremenza',category:'Antihistamin',route:'PO',
+   doseMin:null,doseMax:null,maxSingleDose:null,maxDailyDose:null,fixedDose:true,
+   fixedDoseTable:[
+     {min:0,max:2,label:'<2 tahun',dose:'Tidak direkomendasikan'},
+     {min:2,max:6,label:'2–6 tahun',dose:'½ tablet atau 2.5 ml sirup, 3x/hari'},
+     {min:6,max:12,label:'6–12 tahun',dose:'1 tablet atau 5 ml sirup, 3x/hari'},
+     {min:12,max:99,label:'>12 tahun',dose:'2 tablet atau 10 ml sirup, 3x/hari'},
+   ],syrups:[],
+   note:'Pseudoefedrin 15mg + Triprolidin 1.25mg per 5ml. Dosis berdasarkan usia.',ref:'MIMS Indonesia'},
+
+  // KORTIKOSTEROID
+  {id:'dex_po',name:'Deksametason (PO)',category:'Kortikosteroid',route:'PO',
+   doseMin:0.08,doseMax:0.3,maxSingleDose:8,maxDailyDose:null,syrups:[],
+   note:'Anti-inflamasi 0.08–0.3mg/kg/hari dibagi 6–12 jam. Tablet 0.5mg, 0.75mg.',ref:'BNFC 2023, Medscape'},
+  {id:'dex_iv',name:'Deksametason (IV/IM)',category:'Kortikosteroid',route:'IV',
+   doseMin:0.15,doseMax:0.6,maxSingleDose:10,maxDailyDose:null,syrups:[],
+   note:'Croup: 0.15–0.6mg/kg dosis tunggal. Anti-inflamasi: 0.08–0.3mg/kg/hari. Pemberian oleh tenaga medis.',ref:'BNFC 2023, Medscape'},
+  {id:'mp_po',name:'Metilprednisolon (PO)',category:'Kortikosteroid',route:'PO',
+   doseMin:0.5,doseMax:1.7,maxSingleDose:60,maxDailyDose:null,syrups:[],
+   note:'Asma: 1–2mg/kg/hari dibagi 2x selama 3–5 hari. Maks 60mg/hari. Setelah makan.',ref:'BNFC 2023, Medscape'},
+  {id:'mp_iv',name:'Metilprednisolon (IV)',category:'Kortikosteroid',route:'IV',
+   doseMin:1,doseMax:2,maxSingleDose:125,maxDailyDose:null,syrups:[],
+   note:'Status asmatikus: 1–2mg/kg tiap 6 jam. Maks 125mg/dosis. Infus >15–30 mnt.',ref:'BNFC 2023, Medscape'},
+
+  // BRONKODILATOR
+  {id:'salbutamol_po',name:'Salbutamol (PO)',category:'Bronkodilator',route:'PO',
+   doseMin:0.1,doseMax:0.15,maxSingleDose:4,maxDailyDose:null,
+   syrups:[{conc:2,per:5}],
+   note:'3–4x sehari. Sirup 2mg/5ml. Maks 4mg/dosis.',ref:'BNFC 2023, Medscape'},
+  {id:'salbutamol_inh',name:'Salbutamol (Nebulisasi)',category:'Bronkodilator',route:'INH',
+   doseMin:0.15,doseMax:0.15,maxSingleDose:5,maxDailyDose:null,syrups:[],
+   note:'0.15mg/kg (min 2.5mg) dalam NaCl 0.9% hingga 3–4ml. Maks 5mg. Dapat diulang tiap 20 mnt (3x) pada serangan akut. Solusi 2.5mg/2.5ml atau 5mg/ml.',ref:'BNFC 2023, GINA 2023'},
+
+  // SEDASI / ANTIKONVULSAN
+  {id:'diazepam',name:'Diazepam (Rektal/IV)',category:'Sedasi / Antikonvulsan',route:'PR',
+   doseMin:0.2,doseMax:0.5,maxSingleDose:10,maxDailyDose:null,syrups:[],
+   note:'Kejang rektal: 0.5mg/kg. IV: 0.2–0.3mg/kg pelan (1mg/menit). Maks 10mg. Siapkan resusitasi.',ref:'BNFC 2023, Medscape'},
+  {id:'midazolam',name:'Midazolam (IV/Nasal/Bukal)',category:'Sedasi / Antikonvulsan',route:'IV',
+   doseMin:0.05,doseMax:0.3,maxSingleDose:10,maxDailyDose:null,syrups:[],
+   note:'Sedasi prosedural IV: 0.05–0.1mg/kg. Antikonvulsan nasal/bukal: 0.2–0.3mg/kg. Pantau airway dan SpO2.',ref:'BNFC 2023, Medscape'},
+  {id:'phenytoin',name:'Fenitoin (IV) — Loading',category:'Sedasi / Antikonvulsan',route:'IV',
+   doseMin:15,doseMax:20,maxSingleDose:1000,maxDailyDose:null,syrups:[],
+   note:'Loading: 15–20mg/kg IV, maks 1mg/kg/mnt. Monitor EKG dan TD. Hanya tenaga medis berpengalaman.',ref:'BNFC 2023, Medscape'},
+
+  // KARDIOVASKULAR
+  {id:'atropine',name:'Atropin (IV/IM)',category:'Kardiovaskular',route:'IV',
+   doseMin:0.02,doseMax:0.02,maxSingleDose:0.5,maxDailyDose:null,syrups:[],
+   note:'Dosis tunggal. Maks 0.5mg, min 0.1mg (hindari bradikardi paradoksal). Hanya tenaga medis.',ref:'Medscape, BNFC 2023'},
+  {id:'epinephrine',name:'Epinefrin/Adrenalin (IM)',category:'Kardiovaskular',route:'IV',
+   doseMin:0.01,doseMax:0.01,maxSingleDose:0.5,maxDailyDose:null,syrups:[],
+   note:'ANAFILAKSIS: 0.01mg/kg (0.01ml/kg 1:1000) IM paha anterolateral. Maks 0.5mg. Ulang tiap 5–10 mnt. DARURAT.',ref:'BNFC 2023, WAO 2020'},
+
+  // LAINNYA
+  {id:'ambroxol',name:'Ambroxol',category:'Lainnya',route:'PO',
+   doseMin:1.2,doseMax:1.6,maxSingleDose:30,maxDailyDose:null,
+   syrups:[{conc:15,per:5},{conc:30,per:5}],
+   note:'2–3x sehari bersama makanan.',ref:'Medscape, MIMS'},
+  {id:'lactob',name:'Lacto-B (Probiotik)',category:'Probiotik',route:'PO',
+   doseMin:null,doseMax:null,maxSingleDose:null,maxDailyDose:null,fixedDose:true,
+   fixedDoseTable:[{min:0,max:99,label:'Semua usia',dose:'1–2 sachet, 3x sehari bersama/setelah makan'}],
+   syrups:[],
+   note:'Larutkan dalam air/susu tidak panas. Mengandung L. acidophilus, Bifidobacterium, S. thermophilus.',ref:'MIMS Indonesia'},
+  {id:'ketoconazole',name:'Ketokonazol',category:'Antijamur',route:'PO',
+   doseMin:3.3,doseMax:6.6,maxSingleDose:200,maxDailyDose:null,syrups:[],
+   note:'1x sehari bersama makanan. Maks 200mg/hari. Pantau fungsi hati. Banyak interaksi obat.',ref:'BNFC 2023, Medscape'},
+];
+
+// ─── CUSTOM DRUGS ─────────────────────────────────────────────────
+let customDrugs = [];
+try { const s=localStorage.getItem('pdcv2'); if(s) customDrugs=JSON.parse(s); } catch(e){}
+
+// edits to builtins stored separately
+let builtinEdits = {};
+try { const s=localStorage.getItem('pdcv2_edits'); if(s) builtinEdits=JSON.parse(s); } catch(e){}
+// apply edits to builtins
+builtinDrugs = builtinDrugs.map(d => builtinEdits[d.id] ? {...d,...builtinEdits[d.id]} : d);
+
+function allDrugs() { return [...builtinDrugs, ...customDrugs]; }
+function findDrug(id) { return allDrugs().find(d=>d.id===id); }
+
+// ─── CATEGORY FILTER ──────────────────────────────────────────────
+function getCategories() {
+  return ['Semua',...[...new Set(allDrugs().map(d=>d.category))].sort()];
+}
+let activeCat='Semua', selectedDrugs=new Set(), allSelected=false;
+
+function renderCatFilter() {
+  document.getElementById('catFilter').innerHTML = getCategories().map(c=>
+    `<div class="cat-chip ${activeCat===c?'active':''}" onclick="setCat('${c}')">${c}</div>`
+  ).join('');
+}
+function setCat(c){ activeCat=c; renderCatFilter(); renderDrugList(); }
+
+// ─── DRUG LIST ────────────────────────────────────────────────────
+function renderDrugList(filter='') {
+  const list=document.getElementById('drugList');
+  const q=filter.toLowerCase();
+  const filtered=allDrugs().filter(d=>{
+    const matchCat=activeCat==='Semua'||d.category===activeCat;
+    const matchQ=!q||d.name.toLowerCase().includes(q)||(d.category||'').toLowerCase().includes(q);
+    return matchCat&&matchQ;
+  });
+  if(!filtered.length){list.innerHTML='<div style="text-align:center;color:var(--text3);font-size:.76rem;padding:18px">Tidak ada obat ditemukan</div>';return;}
+  list.innerHTML=filtered.map(d=>{
+    const isCustom=!!customDrugs.find(c=>c.id===d.id);
+    const isEdited=!!builtinEdits[d.id];
+    const doseLabel=d.fixedDose?'Per usia':d.doseMin===d.doseMax?`${d.doseMin}mg/kg`:`${d.doseMin||'?'}–${d.doseMax||'?'}mg/kg`;
+    const routeTag=(d.route&&d.route!=='PO')?`<span class="tag tag-iv">${d.route}</span>`:'';
+    return `<div class="drug-item ${selectedDrugs.has(d.id)?'active':''}" onclick="toggleDrug('${d.id}')">
+      <div class="drug-check"></div>
+      <div style="flex:1;min-width:0">
+        <div class="drug-name">${d.name}${routeTag}${isCustom?'<span class="tag tag-custom">custom</span>':''}${isEdited&&!isCustom?'<span class="tag tag-custom">edited</span>':''}</div>
+        <div class="drug-meta">${doseLabel} · ${d.category}</div>
+      </div>
+      <div class="drug-actions">
+        <button class="action-btn" title="Edit" onclick="event.stopPropagation();openEdit('${d.id}')">✏️</button>
+        ${isCustom?`<button class="action-btn del" title="Hapus" onclick="event.stopPropagation();deleteDrug('${d.id}')">✕</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+document.getElementById('searchDrug').addEventListener('input',e=>renderDrugList(e.target.value));
+function toggleDrug(id){selectedDrugs.has(id)?selectedDrugs.delete(id):selectedDrugs.add(id);renderDrugList(document.getElementById('searchDrug').value);}
+function toggleSelectAll(){allSelected=!allSelected;if(allSelected)allDrugs().forEach(d=>selectedDrugs.add(d.id));else selectedDrugs.clear();renderDrugList(document.getElementById('searchDrug').value);}
+function deleteDrug(id){if(!confirm('Hapus obat ini?'))return;customDrugs=customDrugs.filter(d=>d.id!==id);selectedDrugs.delete(id);localStorage.setItem('pdcv2',JSON.stringify(customDrugs));renderCatFilter();renderDrugList();}
+
+// ─── ADD DRUG ─────────────────────────────────────────────────────
+function toggleAddForm(){document.getElementById('addDrugForm').classList.toggle('open');}
+function saveDrug(){
+  const name=document.getElementById('nName').value.trim();
+  const cat=document.getElementById('nCat').value;
+  const doseMin=parseFloat(document.getElementById('nDoseMin').value);
+  const doseMax=parseFloat(document.getElementById('nDoseMax').value);
+  const maxSingle=parseFloat(document.getElementById('nMaxSingle').value)||null;
+  const maxDaily=parseFloat(document.getElementById('nMaxDaily').value)||null;
+  const route=document.getElementById('nRoute').value;
+  const note=document.getElementById('nNote').value.trim();
+  const sr=document.getElementById('nSyrups').value.trim();
+  if(!name){alert('Nama obat wajib diisi.');return;}
+  if(isNaN(doseMin)||isNaN(doseMax)){alert('Isi dosis min dan max.');return;}
+  const syrups=sr?sr.split(',').map(s=>({conc:parseFloat(s.trim()),per:5})).filter(s=>!isNaN(s.conc)):[];
+  const drug={id:'c_'+Date.now(),name,category:cat,route,doseMin,doseMax,maxSingleDose:maxSingle,maxDailyDose:maxDaily,syrups,note,ref:'Ditambahkan manual'};
+  customDrugs.push(drug);
+  localStorage.setItem('pdcv2',JSON.stringify(customDrugs));
+  ['nName','nDoseMin','nDoseMax','nMaxSingle','nMaxDaily','nNote','nSyrups'].forEach(i=>document.getElementById(i).value='');
+  toggleAddForm();renderCatFilter();renderDrugList();
+  alert(`✓ ${name} berhasil ditambahkan.`);
+}
+
+// ─── EDIT MODAL ───────────────────────────────────────────────────
+function openEdit(id){
+  const d=findDrug(id);if(!d)return;
+  document.getElementById('editId').value=id;
+  document.getElementById('editName').value=d.name;
+  document.getElementById('editCat').value=d.category;
+  document.getElementById('editDoseMin').value=d.doseMin||'';
+  document.getElementById('editDoseMax').value=d.doseMax||'';
+  document.getElementById('editMaxSingle').value=d.maxSingleDose||'';
+  document.getElementById('editMaxDaily').value=d.maxDailyDose||'';
+  document.getElementById('editRoute').value=d.route||'PO';
+  document.getElementById('editSyrups').value=d.syrups?d.syrups.map(s=>s.conc).join(', '):'';
+  document.getElementById('editNote').value=d.note||'';
+  document.getElementById('editModal').classList.add('open');
+}
+function closeModal(){document.getElementById('editModal').classList.remove('open');}
+document.getElementById('editModal').addEventListener('click',e=>{if(e.target===document.getElementById('editModal'))closeModal();});
+function saveEdit(){
+  const id=document.getElementById('editId').value;
+  const sr=document.getElementById('editSyrups').value.trim();
+  const updates={
+    name:document.getElementById('editName').value.trim(),
+    category:document.getElementById('editCat').value,
+    doseMin:parseFloat(document.getElementById('editDoseMin').value)||null,
+    doseMax:parseFloat(document.getElementById('editDoseMax').value)||null,
+    maxSingleDose:parseFloat(document.getElementById('editMaxSingle').value)||null,
+    maxDailyDose:parseFloat(document.getElementById('editMaxDaily').value)||null,
+    route:document.getElementById('editRoute').value,
+    note:document.getElementById('editNote').value.trim(),
+    syrups:sr?sr.split(',').map(s=>({conc:parseFloat(s.trim()),per:5})).filter(s=>!isNaN(s.conc)):[],
+  };
+  const builtinIdx=builtinDrugs.findIndex(d=>d.id===id);
+  if(builtinIdx>=0){
+    builtinDrugs[builtinIdx]={...builtinDrugs[builtinIdx],...updates};
+    builtinEdits[id]=updates;
+    localStorage.setItem('pdcv2_edits',JSON.stringify(builtinEdits));
+  } else {
+    const idx=customDrugs.findIndex(d=>d.id===id);
+    if(idx>=0){customDrugs[idx]={...customDrugs[idx],...updates};localStorage.setItem('pdcv2',JSON.stringify(customDrugs));}
+  }
+  closeModal();renderCatFilter();renderDrugList();
+}
+
+// ─── CALCULATE ────────────────────────────────────────────────────
+function calculate(){
+  const weight=parseFloat(document.getElementById('weight').value);
+  const age=parseFloat(document.getElementById('age').value);
+  const ageUnit=document.getElementById('ageUnit').value;
+  const freq=parseInt(document.getElementById('freq').value);
+  if(isNaN(weight)||weight<=0){alert('Masukkan berat badan yang valid.');return;}
+  if(selectedDrugs.size===0){alert('Pilih minimal satu obat.');return;}
+  const ageYears=ageUnit==='bulan'?age/12:age;
+  const res=document.getElementById('results');
+  res.innerHTML=`<div class="card-title" style="margin-bottom:9px"><span>📋</span> Hasil — BB: ${weight}kg${!isNaN(age)?` · Usia: ${age} ${ageUnit}`:''} · ${freq}x/hari</div>`;
+  allDrugs().filter(d=>selectedDrugs.has(d.id)).forEach(drug=>{res.innerHTML+=renderResult(drug,weight,ageYears,freq);});
+  res.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function renderResult(drug,weight,ageYears,freq){
+  const routeTag=(drug.route&&drug.route!=='PO')?` <span style="font-size:.6rem;background:rgba(255,255,255,.25);padding:1px 6px;border-radius:10px">${drug.route}</span>`:'';
+  if(drug.fixedDose){
+    const row=(drug.fixedDoseTable&&drug.fixedDoseTable.find(r=>ageYears>=r.min&&ageYears<r.max))||{dose:'Konsultasikan dengan dokter'};
+    return `<div class="result-card">
+      <div class="result-header"><div class="drug-title">${drug.name}${routeTag}</div><div class="drug-category">${drug.category}</div></div>
+      <div class="result-body">
+        <div class="dose-box" style="margin-bottom:7px"><div class="label">Dosis sesuai usia</div><div class="value" style="font-size:.88rem">${row.dose}</div></div>
+        <div class="note warning">⚠️ ${drug.note||''}</div>
+        <div class="note">📚 ${drug.ref||''}</div>
+      </div></div>`;
+  }
+  if(!drug.doseMin||!drug.doseMax)return '';
+  const rawMin=drug.doseMin*weight,rawMax=drug.doseMax*weight;
+  const cMin=r1(drug.maxSingleDose?Math.min(rawMin,drug.maxSingleDose):rawMin);
+  const cMax=r1(drug.maxSingleDose?Math.min(rawMax,drug.maxSingleDose):rawMax);
+  const dailyMin=r1(cMin*freq);
+  const dailyMaxRaw=r1(cMax*freq);
+  const dailyMax=drug.maxDailyDose?r1(Math.min(dailyMaxRaw,drug.maxDailyDose*weight)):dailyMaxRaw;
+  const isCapped=drug.maxSingleDose&&rawMax>drug.maxSingleDose;
+  let syrupHtml='';
+  if(drug.syrups&&drug.syrups.length>0){
+    const rows=drug.syrups.map(s=>{
+      const mlMin=r1((cMin/s.conc)*s.per),mlMax=r1((cMax/s.conc)*s.per);
+      return `<div class="syrup-row"><span class="sediaan">${s.conc}mg/${s.per}ml</span><span class="takaran">${mlMin}–${mlMax} ml ≈ ${rH(mlMin/5)}–${rH(mlMax/5)} sdt</span></div>`;
+    }).join('');
+    syrupHtml=`<div class="syrup-section"><div class="syrup-title">🥄 Konversi Sirup (sendok takar 5ml)</div>${rows}</div>`;
+  }
+  const ivWarn=(drug.route==='IV'||drug.route==='IM'||drug.route==='PR')?`<div class="note danger">⚠️ Pemberian ${drug.route} — hanya oleh tenaga medis terlatih dengan monitoring ketat.</div>`:'';
+  return `<div class="result-card">
+    <div class="result-header"><div class="drug-title">${drug.name}${routeTag}</div><div class="drug-category">${drug.category}</div></div>
+    <div class="result-body">
+      <div class="dose-row">
+        <div class="dose-box"><div class="label">Dosis Min/dosis</div><div class="value">${cMin}</div><div class="unit">mg</div></div>
+        <div class="dose-box"><div class="label">Dosis Maks/dosis</div><div class="value max">${cMax}</div><div class="unit">mg</div></div>
+      </div>
+      <div class="dose-row">
+        <div class="dose-box"><div class="label">Total/hari (${freq}×)</div><div class="value">${dailyMin}–${dailyMax}</div><div class="unit">mg/hari</div></div>
+        <div class="dose-box"><div class="label">Dasar perhitungan</div><div class="value" style="font-size:.7rem;color:var(--text2)">${drug.doseMin}–${drug.doseMax} mg/kg</div><div class="unit">× ${weight} kg</div></div>
+      </div>
+      ${isCapped?`<div class="note warning">⚠️ Dosis BB (${r1(rawMax)}mg) > batas maks ${drug.maxSingleDose}mg → pakai dosis maks.</div>`:''}
+      ${syrupHtml}${ivWarn}
+      ${drug.note?`<div class="note">ℹ️ ${drug.note}</div>`:''}
+      <div class="note">📚 ${drug.ref||''}</div>
+    </div></div>`;
+}
+
+// ─── FLUID MAINTENANCE ────────────────────────────────────────────
+function calcFluid(){
+  const w=parseFloat(document.getElementById('fw').value);
+  if(isNaN(w)||w<=0){alert('Masukkan berat badan yang valid.');return;}
+  let mlDay=w<=10?w*100:w<=20?1000+(w-10)*50:1500+(w-20)*20;
+  let mlHour=w<=10?w*4:w<=20?40+(w-10)*2:60+(w-20)*1;
+  const tpmM=Math.round(mlHour*20/60);
+  const tpmMik=Math.round(mlHour*60/60);
+  const breakdown=w<=10?`${w}kg × 100ml/kg`:w<=20?`1000ml + (${r1(w-10)}kg × 50ml/kg)`:`1500ml + (${r1(w-20)}kg × 20ml/kg)`;
+  const ft=document.getElementById('fluidType').value;
+  const allFluids=[
+    {key:'D5NaCl',label:'D5 ¼ NaCl',note:'Untuk neonatus & bayi kecil'},
+    {key:'D5half',label:'D5 ½ NaCl',note:'Anak ≥1 bulan'},
+    {key:'RL',label:'Ringer Laktat (RL)',note:'Resusitasi / maintenance'},
+    {key:'NaCl',label:'NaCl 0.9%',note:'Resusitasi'},
+  ];
+  const fluids=ft==='all'?allFluids:allFluids.filter(f=>f.key===ft);
+  const rows=fluids.map(f=>`<tr><td>${f.label}<br><span style="font-size:.58rem;color:var(--text3)">${f.note}</span></td><td><b>${Math.round(mlDay)} ml</b></td><td><b>${r1(mlHour)} ml/jam</b></td></tr>`).join('');
+  document.getElementById('fluidResult').innerHTML=`
+  <div class="fluid-result">
+    <div class="fluid-header"><h3>💧 Cairan Maintenance — BB: ${w} kg</h3></div>
+    <div class="fluid-body">
+      <div class="fluid-row">
+        <div class="fluid-box"><div class="label">Volume/Hari</div><div class="value">${Math.round(mlDay)}</div><div class="unit">ml/hari</div></div>
+        <div class="fluid-box"><div class="label">Kecepatan Infus</div><div class="value">${r1(mlHour)}</div><div class="unit">ml/jam</div></div>
+      </div>
+      <div class="fluid-row">
+        <div class="fluid-box"><div class="label">Makro drip (20 gtt/ml)</div><div class="value">${tpmM}</div><div class="unit">tetes/menit</div></div>
+        <div class="fluid-box"><div class="label">Mikro drip (60 gtt/ml)</div><div class="value">${tpmMik}</div><div class="unit">tetes/menit</div></div>
+      </div>
+      <div style="font-size:.62rem;color:var(--text3);margin-bottom:6px">Rumus: ${breakdown} = <b>${Math.round(mlDay)} ml/hari</b></div>
+      <table class="fluid-table">
+        <thead><tr><th>Jenis Cairan</th><th>Volume/hari</th><th>Kecepatan</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="fluid-note">
+        ⚠️ <b>Ini kebutuhan maintenance</b>. Sesuaikan dengan status hidrasi, ongoing loss, dan kondisi klinis.<br>
+        ℹ️ Pilihan cairan bergantung pada usia, kadar elektrolit serum, dan indikasi klinis.<br>
+        📚 Ref: Holiday MA &amp; Segar WE. <i>Pediatrics</i> 1957 · Formularium Nasional RI
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─── TABS ─────────────────────────────────────────────────────────
+function switchTab(tab){
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',['dosis','cairan'][i]===tab));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id==='tab-'+tab));
+}
+
+// ─── HELPERS ──────────────────────────────────────────────────────
+function r1(n){return Math.round(n*10)/10;}
+function rH(n){return Math.round(n*4)/4;}
+
+// ─── INIT ─────────────────────────────────────────────────────────
+renderCatFilter();
+renderDrugList();
+</script>
+
+</body>
+</html>
