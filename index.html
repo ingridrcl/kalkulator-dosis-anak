@@ -4,242 +4,330 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kalkulator Dosis Anak v3.1</title>
+<title>Dosis Obat</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,600;0,700;1,300&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#f0ede6;--surface:#faf9f6;--surface2:#ebe8df;--border:#d4cfc3;
   --accent:#2d6a4f;--accent2:#52b788;--accent3:#e76f51;
   --text:#1a1a18;--text2:#5a5750;--text3:#8a857c;
-  --warning:#c8900a;--warnbg:#fff8e1;--danger:#b93c1a;--dangerbg:#fdeee8;
-  --info:#2d6a9f;--infobg:#e8f2fb;
+  --wbg:#fff8e1;--wclr:#c8900a;--dbg:#fdeee8;--dclr:#b93c1a;
+  --ibg:#e8f2fb;--iclr:#2d6a9f;--pbg:#f0e8fb;--pclr:#6a2d9f;
   --mono:'DM Mono',monospace;--serif:'Fraunces',Georgia,serif;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:var(--mono);padding:13px 12px 80px;}
-header{text-align:center;margin-bottom:16px;padding:22px 16px 16px;background:var(--accent);border-radius:14px;color:#fff;position:relative;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);padding:12px 11px 90px;max-width:600px;margin:0 auto;}
+/* HEADER */
+header{text-align:center;margin-bottom:14px;padding:20px 14px 14px;background:var(--accent);border-radius:14px;color:#fff;position:relative;overflow:hidden;}
 header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 30%,rgba(82,183,136,.28) 0%,transparent 60%);}
-header h1{font-family:var(--serif);font-size:1.65rem;font-weight:700;position:relative;}
-header p{font-size:.65rem;opacity:.72;margin-top:4px;position:relative;}
-.tabs{display:flex;gap:4px;margin-bottom:13px;background:var(--surface2);padding:4px;border-radius:11px;}
-.tab-btn{flex:1;padding:8px 4px;border:none;border-radius:8px;font-family:var(--mono);font-size:.68rem;cursor:pointer;background:transparent;color:var(--text2);transition:all .18s;font-weight:500;}
+header h1{font-family:var(--serif);font-size:1.6rem;font-weight:700;position:relative;}
+header p{font-size:.62rem;opacity:.72;margin-top:3px;position:relative;}
+/* TABS */
+.tabs{display:flex;gap:3px;margin-bottom:12px;background:var(--surface2);padding:3px;border-radius:10px;overflow-x:auto;}
+.tab-btn{flex:1;min-width:fit-content;padding:7px 8px;border:none;border-radius:8px;font-family:var(--mono);font-size:.62rem;cursor:pointer;background:transparent;color:var(--text2);transition:all .18s;font-weight:500;white-space:nowrap;}
 .tab-btn.active{background:var(--accent);color:#fff;}
 .tab-panel{display:none;}.tab-panel.active{display:block;}
-.disclaimer{background:var(--warnbg);border:1.5px solid #e9c46a;border-radius:9px;padding:9px 12px;font-size:.64rem;color:#7a5c00;margin-bottom:13px;line-height:1.6;}
-.disclaimer strong{display:block;margin-bottom:2px;font-size:.66rem;}
-.card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:13px;margin-bottom:11px;}
-.card-title{font-family:var(--serif);font-size:.92rem;font-weight:600;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:5px;}
-.ig{margin-bottom:9px;}
-.ig label{display:block;font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);margin-bottom:3px;}
-.ig input,.ig select{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:7px;padding:8px 9px;font-family:var(--mono);font-size:.82rem;color:var(--text);outline:none;-webkit-appearance:none;appearance:none;transition:border-color .18s;}
+/* DISCLAIMER */
+.disc{background:var(--wbg);border:1.5px solid #e9c46a;border-radius:9px;padding:8px 11px;font-size:.62rem;color:#7a5c00;margin-bottom:12px;line-height:1.6;}
+.disc strong{display:block;margin-bottom:2px;font-size:.64rem;}
+/* CARDS */
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;}
+.ct{font-family:var(--serif);font-size:.88rem;font-weight:600;color:var(--accent);margin-bottom:9px;display:flex;align-items:center;gap:5px;}
+/* INPUTS */
+.ig{margin-bottom:8px;}
+.ig label{display:block;font-size:.56rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);margin-bottom:3px;}
+.ig input,.ig select{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:7px;padding:7px 9px;font-family:var(--mono);font-size:.8rem;color:var(--text);outline:none;-webkit-appearance:none;appearance:none;transition:border-color .18s;}
 .ig input:focus,.ig select:focus{border-color:var(--accent2);background:#fff;}
-.ig2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
-.ig3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
-.calc-btn{width:100%;background:var(--accent);color:#fff;border:none;border-radius:9px;padding:12px;font-family:var(--mono);font-size:.82rem;font-weight:500;cursor:pointer;letter-spacing:.04em;transition:background .2s,transform .1s;margin-top:3px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;}
+/* MODE TOGGLE */
+.mode-toggle{display:flex;gap:4px;margin-bottom:10px;background:var(--surface2);padding:3px;border-radius:8px;}
+.mode-btn{flex:1;padding:7px;border:none;border-radius:6px;font-family:var(--mono);font-size:.68rem;cursor:pointer;background:transparent;color:var(--text2);transition:all .15s;font-weight:500;}
+.mode-btn.active{background:var(--accent);color:#fff;}
+/* BUTTONS */
+.calc-btn{width:100%;background:var(--accent);color:#fff;border:none;border-radius:9px;padding:11px;font-family:var(--mono);font-size:.8rem;font-weight:500;cursor:pointer;letter-spacing:.04em;transition:background .2s,transform .1s;margin-top:3px;}
 .calc-btn:active{transform:scale(.98);}.calc-btn:hover{background:#1e4d38;}
-.btn-sm{padding:7px 10px;border-radius:7px;font-family:var(--mono);font-size:.7rem;cursor:pointer;border:none;transition:all .15s;}
-.btn-green{background:var(--accent);color:#fff;}.btn-green:hover{background:#1e4d38;}
-.btn-gray{background:var(--surface2);color:var(--text2);border:1.5px solid var(--border);}
-.cat-filter{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;}
-.cat-chip{padding:3px 9px;border-radius:20px;font-size:.6rem;border:1.5px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn-sm{padding:6px 9px;border-radius:6px;font-family:var(--mono);font-size:.68rem;cursor:pointer;border:none;transition:all .15s;}
+.btn-g{background:var(--accent);color:#fff;}.btn-gr{background:var(--surface2);color:var(--text2);border:1.5px solid var(--border);}
+/* DRUG LIST */
+.cat-filter{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:7px;}
+.cat-chip{padding:3px 8px;border-radius:20px;font-size:.58rem;border:1.5px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;transition:all .15s;white-space:nowrap;}
 .cat-chip.active{background:var(--accent);color:#fff;border-color:var(--accent);}
-.drug-list{display:flex;flex-direction:column;gap:5px;max-height:55vh;overflow-y:auto;padding-right:2px;}
-.drug-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;padding:8px 10px;display:flex;align-items:center;gap:7px;cursor:pointer;transition:all .18s;}
+.drug-list{display:flex;flex-direction:column;gap:4px;max-height:52vh;overflow-y:auto;padding-right:2px;}
+.drug-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;padding:7px 9px;display:flex;align-items:center;gap:6px;cursor:pointer;transition:all .18s;}
 .drug-item:hover{border-color:var(--accent2);background:#eef8f2;}
 .drug-item.active{border-color:var(--accent);background:#e8f5ee;}
-.drug-check{width:15px;height:15px;border:2px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .18s;}
-.drug-item.active .drug-check{background:var(--accent);border-color:var(--accent);}
-.drug-item.active .drug-check::after{content:'✓';color:#fff;font-size:9px;}
-.drug-name{font-size:.76rem;font-weight:500;line-height:1.3;}
-.drug-meta{font-size:.59rem;color:var(--text3);}
-.drug-actions{display:flex;gap:2px;flex-shrink:0;}
-.act-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:.72rem;padding:2px 4px;border-radius:3px;transition:color .15s;}
-.act-btn:hover{color:var(--accent);}.act-btn.del:hover{color:var(--danger);}
-.tag{display:inline-block;font-size:.52rem;padding:1px 5px;border-radius:3px;margin-left:3px;vertical-align:middle;}
-.tag-c{background:#e8f5ee;color:var(--accent);border:1px solid var(--accent2);}
-.tag-e{background:#e8f0f8;color:var(--info);border:1px solid #a8c4d8;}
-.add-form{display:none;flex-direction:column;gap:8px;margin-top:10px;background:var(--surface2);border-radius:9px;padding:11px;border:1.5px dashed var(--border);}
+.dchk{width:14px;height:14px;border:2px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .18s;}
+.drug-item.active .dchk{background:var(--accent);border-color:var(--accent);}
+.drug-item.active .dchk::after{content:'✓';color:#fff;font-size:9px;}
+.dname{font-size:.74rem;font-weight:500;line-height:1.3;}
+.dmeta{font-size:.57rem;color:var(--text3);}
+.dacts{display:flex;gap:2px;flex-shrink:0;}
+.abt{background:none;border:none;cursor:pointer;color:var(--text3);font-size:.7rem;padding:2px 3px;border-radius:3px;transition:color .15s;}
+.abt:hover{color:var(--accent);}.abt.del:hover{color:var(--dclr);}
+.tag{display:inline-block;font-size:.5rem;padding:1px 4px;border-radius:3px;margin-left:3px;vertical-align:middle;}
+.tc{background:#e8f5ee;color:var(--accent);border:1px solid var(--accent2);}
+.te{background:var(--ibg);color:var(--iclr);border:1px solid #a8c4d8;}
+.add-form{display:none;flex-direction:column;gap:7px;margin-top:9px;background:var(--surface2);border-radius:9px;padding:10px;border:1.5px dashed var(--border);}
 .add-form.open{display:flex;}
-.add-form input,.add-form select{background:#fff;border:1.5px solid var(--border);border-radius:6px;padding:7px 8px;font-family:var(--mono);font-size:.74rem;color:var(--text);outline:none;width:100%;-webkit-appearance:none;appearance:none;}
-.add-form input:focus,.add-form select:focus{border-color:var(--accent2);}
-.add-form label{font-size:.56rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text2);margin-bottom:2px;display:block;}
-.toggle-add{width:100%;background:var(--surface2);border:1.5px dashed var(--accent2);color:var(--accent);border-radius:8px;padding:8px;font-family:var(--mono);font-size:.72rem;cursor:pointer;margin-top:7px;transition:all .18s;}
-.toggle-add:hover{background:#eef8f2;}
-.sel-all{width:100%;background:var(--surface2);border:1.5px solid var(--border);color:var(--text2);border-radius:6px;padding:6px;font-family:var(--mono);font-size:.66rem;cursor:pointer;margin-bottom:7px;}
-.search-inp{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;font-family:var(--mono);font-size:.76rem;color:var(--text);outline:none;margin-bottom:7px;}
+.add-form input,.add-form select{background:#fff;border:1.5px solid var(--border);border-radius:6px;padding:6px 8px;font-family:var(--mono);font-size:.72rem;color:var(--text);outline:none;width:100%;-webkit-appearance:none;appearance:none;}
+.add-form label{font-size:.54rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text2);margin-bottom:1px;display:block;}
+.toggle-add{width:100%;background:var(--surface2);border:1.5px dashed var(--accent2);color:var(--accent);border-radius:8px;padding:7px;font-family:var(--mono);font-size:.7rem;cursor:pointer;margin-top:6px;}
+.sel-all{width:100%;background:var(--surface2);border:1.5px solid var(--border);color:var(--text2);border-radius:6px;padding:5px;font-family:var(--mono);font-size:.64rem;cursor:pointer;margin-bottom:6px;}
+.search-inp{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:7px;padding:6px 9px;font-family:var(--mono);font-size:.74rem;color:var(--text);outline:none;margin-bottom:6px;}
 .search-inp:focus{border-color:var(--accent2);background:#fff;}
+/* MODAL */
 .modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:1000;align-items:flex-end;justify-content:center;}
 .modal-ov.open{display:flex;}
-.modal{background:var(--surface);border-radius:14px 14px 0 0;padding:16px 14px 30px;width:100%;max-width:480px;max-height:88vh;overflow-y:auto;}
-.modal-title{font-family:var(--serif);font-size:.9rem;font-weight:600;color:var(--accent);margin-bottom:11px;}
-.modal input,.modal select{background:var(--surface2);border:1.5px solid var(--border);border-radius:6px;padding:7px 8px;font-family:var(--mono);font-size:.74rem;color:var(--text);outline:none;width:100%;-webkit-appearance:none;appearance:none;margin-top:3px;}
-.modal input:focus,.modal select:focus{border-color:var(--accent2);background:#fff;}
-.modal label{font-size:.56rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text2);display:block;margin-top:8px;}
-.modal-btns{display:flex;gap:6px;margin-top:13px;}
-.modal-btns button{flex:1;padding:8px;border-radius:7px;font-family:var(--mono);font-size:.74rem;cursor:pointer;border:none;}
-.m-save{background:var(--accent);color:#fff;}.m-cancel{background:var(--surface2);color:var(--text2);border:1.5px solid var(--border);}
-.results-sec{margin-top:13px;}
-@keyframes sIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
-.res-card{background:var(--surface);border:2px solid var(--accent2);border-radius:12px;margin-bottom:9px;overflow:hidden;animation:sIn .2s ease;}
-.res-head{background:var(--accent);color:#fff;padding:8px 12px;}
-.res-head .rtitle{font-family:var(--serif);font-size:.88rem;font-weight:600;}
-.res-head .rcat{font-size:.56rem;opacity:.8;background:rgba(255,255,255,.2);padding:1px 6px;border-radius:20px;margin-top:2px;display:inline-block;}
-.res-body{padding:11px 12px;}
-.route-tabs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;}
-.route-tab{padding:4px 10px;border-radius:20px;font-size:.62rem;border:1.5px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;transition:all .15s;}
-.route-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
-.ind-tabs{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:9px;}
-.ind-tab{padding:3px 9px;border-radius:20px;font-size:.59rem;border:1.5px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;transition:all .15s;}
-.ind-tab.active{background:#e76f51;color:#fff;border-color:#e76f51;}
-.dose-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:7px;}
-.dbox{background:var(--surface2);border-radius:7px;padding:8px 9px;text-align:center;}
-.dbox .dl{font-size:.54rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:2px;}
-.dbox .dv{font-size:.98rem;font-weight:500;color:var(--accent);}
+.modal{background:var(--surface);border-radius:14px 14px 0 0;padding:15px 13px 28px;width:100%;max-width:480px;max-height:88vh;overflow-y:auto;}
+.modal-t{font-family:var(--serif);font-size:.88rem;font-weight:600;color:var(--accent);margin-bottom:10px;}
+.modal input,.modal select{background:var(--surface2);border:1.5px solid var(--border);border-radius:6px;padding:7px 8px;font-family:var(--mono);font-size:.73rem;color:var(--text);outline:none;width:100%;-webkit-appearance:none;appearance:none;margin-top:3px;}
+.modal label{font-size:.55rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text2);display:block;margin-top:8px;}
+.modal-btns{display:flex;gap:6px;margin-top:12px;}
+.modal-btns button{flex:1;padding:8px;border-radius:7px;font-family:var(--mono);font-size:.72rem;cursor:pointer;border:none;}
+.msave{background:var(--accent);color:#fff;}.mcancel{background:var(--surface2);color:var(--text2);border:1.5px solid var(--border);}
+/* RESULTS */
+.res-sec{margin-top:12px;}
+@keyframes sIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.res-card{background:var(--surface);border:2px solid var(--accent2);border-radius:12px;margin-bottom:8px;overflow:hidden;animation:sIn .18s ease;}
+.rhead{background:var(--accent);color:#fff;padding:7px 11px;}
+.rtitle{font-family:var(--serif);font-size:.86rem;font-weight:600;}
+.rcat{font-size:.54rem;opacity:.8;background:rgba(255,255,255,.2);padding:1px 6px;border-radius:20px;margin-top:2px;display:inline-block;}
+.rbody{padding:10px 11px;}
+/* ROUTE/IND TABS */
+.rtabs{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:8px;}
+.rtab{padding:3px 9px;border-radius:20px;font-size:.6rem;border:1.5px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;transition:all .15s;}
+.rtab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.itabs{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:8px;}
+.itab{padding:3px 9px;border-radius:20px;font-size:.58rem;border:1.5px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;transition:all .15s;}
+.itab.active{background:var(--accent3);color:#fff;border-color:var(--accent3);}
+/* DOSE BOXES */
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;}
+.dgrid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;}
+.dbox{background:var(--surface2);border-radius:6px;padding:7px 8px;text-align:center;}
+.dbox .dl{font-size:.52rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:2px;}
+.dbox .dv{font-size:.95rem;font-weight:500;color:var(--accent);}
 .dbox .dv.mx{color:var(--accent3);}
-.dbox .du{font-size:.58rem;color:var(--text2);}
-.syrup-sec{background:var(--warnbg);border:1px solid #e9c46a;border-radius:7px;padding:8px 10px;margin-top:6px;}
-.syrup-t{font-size:.58rem;text-transform:uppercase;letter-spacing:.07em;color:#7a5c00;margin-bottom:5px;font-weight:500;}
-.syrup-r{display:flex;justify-content:space-between;font-size:.7rem;margin-bottom:3px;gap:8px;}
-.syrup-r .sd{color:var(--text2);flex-shrink:0;}.syrup-r .sv{font-weight:500;color:#5a4400;text-align:right;}
-.note{font-size:.61rem;margin-top:6px;line-height:1.55;padding:5px 7px;border-radius:5px;}
-.note-info{background:var(--infobg);color:var(--info);}
-.note-warn{background:var(--warnbg);color:var(--warning);}
-.note-danger{background:var(--dangerbg);color:var(--danger);}
-.note-gray{color:var(--text3);background:none;padding:0;margin-top:5px;}
-/* FIXED-DOSE TABLE */
-.fixed-table{width:100%;border-collapse:collapse;font-size:.68rem;margin-bottom:7px;}
-.fixed-table th{background:var(--surface2);padding:5px 8px;text-align:left;font-size:.57rem;text-transform:uppercase;color:var(--text3);}
-.fixed-table td{padding:5px 8px;border-bottom:1px solid var(--border);}
-.fixed-table tr:last-child td{border-bottom:none;}
-.fixed-table tr.hl td{background:#e8f5ee;font-weight:500;color:var(--accent);}
+.dbox .du{font-size:.56rem;color:var(--text2);}
+/* SYRINGE PUMP BOX */
+.pump-box{background:var(--pbg);border:1.5px solid #c8a8e8;border-radius:8px;padding:9px 11px;margin-top:6px;}
+.pump-t{font-size:.58rem;text-transform:uppercase;letter-spacing:.07em;color:var(--pclr);margin-bottom:6px;font-weight:500;display:flex;align-items:center;gap:4px;}
+.pump-row{display:flex;justify-content:space-between;align-items:flex-start;font-size:.7rem;margin-bottom:4px;gap:8px;}
+.pump-row .pl{color:var(--text2);flex-shrink:0;}
+.pump-row .pv{font-weight:500;color:var(--pclr);text-align:right;}
+/* SYRUP BOX */
+.syr-box{background:var(--wbg);border:1px solid #e9c46a;border-radius:7px;padding:7px 9px;margin-top:6px;}
+.syr-t{font-size:.56rem;text-transform:uppercase;letter-spacing:.07em;color:#7a5c00;margin-bottom:4px;font-weight:500;}
+.syr-r{display:flex;justify-content:space-between;font-size:.69rem;margin-bottom:3px;gap:6px;}
+.syr-r .sl{color:var(--text2);flex-shrink:0;}.syr-r .sv{font-weight:500;color:#5a4400;text-align:right;}
+/* PREP BOX */
+.prep-box{background:var(--ibg);border:1px solid #a8c4d8;border-radius:7px;padding:7px 9px;margin-top:6px;}
+.prep-t{font-size:.56rem;text-transform:uppercase;letter-spacing:.07em;color:var(--iclr);margin-bottom:4px;font-weight:500;}
+.prep-r{font-size:.68rem;color:var(--iclr);margin-bottom:3px;line-height:1.5;}
+/* NOTES */
+.note{font-size:.6rem;margin-top:5px;line-height:1.55;padding:5px 7px;border-radius:5px;}
+.ni{background:var(--ibg);color:var(--iclr);}
+.nw{background:var(--wbg);color:var(--wclr);}
+.nd{background:var(--dbg);color:var(--dclr);}
+.ng{color:var(--text3);background:none;padding:2px 0;margin-top:4px;}
+/* ELECTROLYTE */
+.elec-res{margin-top:10px;}
+.elec-card{background:var(--surface);border:2px solid var(--iclr);border-radius:12px;overflow:hidden;margin-bottom:8px;animation:sIn .18s ease;}
+.elec-head{background:var(--iclr);color:#fff;padding:7px 11px;}
+.elec-head h3{font-family:var(--serif);font-size:.86rem;}
+.elec-body{padding:10px 11px;}
 /* FLUID */
-.fluid-res{background:var(--surface);border:2px solid var(--info);border-radius:12px;overflow:hidden;margin-top:11px;animation:sIn .2s ease;}
-.fluid-head{background:var(--info);color:#fff;padding:8px 12px;}
-.fluid-head h3{font-family:var(--serif);font-size:.88rem;}
-.fluid-body{padding:11px 12px;}
-.fluid-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:7px;}
-.fbox{background:var(--surface2);border-radius:7px;padding:8px 9px;text-align:center;}
-.fbox .fl{font-size:.54rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:2px;}
-.fbox .fv{font-size:.98rem;font-weight:500;color:var(--info);}
-.fbox .fu{font-size:.58rem;color:var(--text2);}
-.ftable{width:100%;border-collapse:collapse;font-size:.68rem;margin-top:6px;}
-.ftable th{background:var(--surface2);padding:5px 7px;text-align:left;font-size:.56rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);}
-.ftable td{padding:5px 7px;border-bottom:1px solid var(--border);vertical-align:top;}
-.ftable tr:last-child td{border-bottom:none;}
-.fnote{font-size:.6rem;color:var(--text3);margin-top:7px;line-height:1.55;}
-footer{text-align:center;font-size:.57rem;color:var(--text3);margin-top:16px;line-height:1.7;}
+.fluid-res{background:var(--surface);border:2px solid var(--iclr);border-radius:12px;overflow:hidden;margin-top:10px;animation:sIn .18s ease;}
+.fluid-head{background:var(--iclr);color:#fff;padding:7px 11px;}
+.fluid-head h3{font-family:var(--serif);font-size:.86rem;}
+.fluid-body{padding:10px 11px;}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;}
+.fbox{background:var(--surface2);border-radius:6px;padding:7px 8px;text-align:center;}
+.fbox .fl{font-size:.52rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:2px;}
+.fbox .fv{font-size:.95rem;font-weight:500;color:var(--iclr);}
+.fbox .fu{font-size:.56rem;color:var(--text2);}
+.ftbl{width:100%;border-collapse:collapse;font-size:.67rem;margin-top:5px;}
+.ftbl th{background:var(--surface2);padding:4px 6px;text-align:left;font-size:.55rem;text-transform:uppercase;color:var(--text2);}
+.ftbl td{padding:4px 6px;border-bottom:1px solid var(--border);vertical-align:top;}
+.ftbl tr:last-child td{border-bottom:none;}
+.fnote{font-size:.59rem;color:var(--text3);margin-top:6px;line-height:1.55;}
+footer{text-align:center;font-size:.55rem;color:var(--text3);margin-top:14px;line-height:1.7;}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>🩺 Dosis Anak</h1>
-  <p>Kalkulator Dosis Pediatri · Decision Support Tool · v3.1</p>
+  <h1>💊 Dosis Obat</h1>
+  <p>Kalkulator Dosis Anak & Dewasa · Decision Support Tool · v4.0</p>
 </header>
 
-<div class="disclaimer">
-  <strong>⚠️ PERINGATAN KLINIS PENTING</strong>
-  Alat bantu keputusan klinis — bukan pengganti penilaian klinis dokter. Semua dosis yang ditampilkan adalah <b>dosis per kali pemberian</b> kecuali disebutkan lain. Referensi: Formularium Nasional RI, BNFC 2023–2024, Medscape Pediatric, WHO Guidelines. Tenaga medis bertanggung jawab penuh.
+<div class="disc">
+  <strong>⚠️ PERINGATAN KLINIS</strong>
+  Alat bantu keputusan — bukan pengganti penilaian klinis. Semua dosis = <b>dosis per kali pemberian</b> kecuali dinyatakan lain. Ref: Formularium Nasional RI, BNFC 2023–2024, Medscape, WHO, ACLS/PALS Guidelines. Dokter/apoteker bertanggung jawab penuh.
 </div>
 
 <div class="tabs">
   <button class="tab-btn active" onclick="switchTab('dosis')">💊 Dosis Obat</button>
-  <button class="tab-btn" onclick="switchTab('cairan')">💧 Cairan Maintenance</button>
+  <button class="tab-btn" onclick="switchTab('vasoaktif')">🫀 Vasoaktif</button>
+  <button class="tab-btn" onclick="switchTab('elektrolit')">🧪 Elektrolit</button>
+  <button class="tab-btn" onclick="switchTab('cairan')">💧 Cairan</button>
 </div>
 
-<!-- ============================================================ TAB DOSIS -->
+<!-- ════════════════════════════════════ TAB DOSIS ════ -->
 
 <div class="tab-panel active" id="tab-dosis">
   <div class="card">
-    <div class="card-title">👶 Data Pasien</div>
-    <div class="ig2">
-      <div class="ig"><label>Berat Badan (kg)</label><input type="number" id="weight" placeholder="cth: 12.5" min="0.5" max="100" step="0.1"></div>
-      <div class="ig"><label>Usia</label><input type="number" id="age" placeholder="cth: 3" min="0" max="18" step="0.1"></div>
-      <div class="ig"><label>Satuan Usia</label>
-        <select id="ageUnit"><option value="tahun">Tahun</option><option value="bulan">Bulan</option></select>
+    <div class="ct">👤 Data Pasien</div>
+    <!-- MODE -->
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="modeAnak" onclick="setMode('anak')">👶 Anak (per kgBB)</button>
+      <button class="mode-btn" id="modeDewasa" onclick="setMode('dewasa')">🧑 Dewasa</button>
+    </div>
+    <div id="anakInputs">
+      <div class="g2">
+        <div class="ig"><label>Berat Badan (kg)</label><input type="number" id="weight" placeholder="cth: 12.5" min="0.5" max="200" step="0.1"></div>
+        <div class="ig"><label>Usia</label><input type="number" id="age" placeholder="cth: 3" min="0" max="18" step="0.1"></div>
+        <div class="ig"><label>Satuan Usia</label>
+          <select id="ageUnit"><option value="tahun">Tahun</option><option value="bulan">Bulan</option></select>
+        </div>
+      </div>
+    </div>
+    <div id="dewasaInputs" style="display:none">
+      <div class="g2">
+        <div class="ig"><label>Berat Badan (kg) — opsional</label><input type="number" id="weightD" placeholder="cth: 65" min="30" max="200" step="0.5"></div>
+        <div class="ig"><label>Tinggi Badan (cm) — opsional</label><input type="number" id="heightD" placeholder="cth: 165" min="100" max="220" step="1"></div>
       </div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title">💊 Pilih Obat</div>
+    <div class="ct">💊 Pilih Obat</div>
     <input type="text" class="search-inp" id="searchDrug" placeholder="🔍 Cari nama atau kategori...">
     <div class="cat-filter" id="catFilter"></div>
     <button class="sel-all" onclick="toggleSelAll()">☑ Pilih / Hapus Semua</button>
     <div class="drug-list" id="drugList"></div>
     <button class="toggle-add" onclick="toggleAddForm()">+ Tambah Obat Baru</button>
     <div class="add-form" id="addForm">
-      <div style="font-size:.76rem;font-weight:500;color:var(--accent)">📝 Tambah Obat Baru</div>
-      <div class="ig2">
-        <div class="ig"><label>Nama Obat *</label><input type="text" id="nName" placeholder="Nama obat"></div>
+      <div style="font-size:.74rem;font-weight:500;color:var(--accent)">📝 Tambah Obat Baru</div>
+      <div class="g2">
+        <div class="ig"><label>Nama Obat *</label><input type="text" id="nName"></div>
         <div class="ig"><label>Kategori *</label>
-          <select id="nCat">
-            <option>Analgetik / Antipiretik</option><option>Antiemetik</option><option>Antibiotik</option>
-            <option>Antiviral</option><option>Antihistamin</option><option>Kortikosteroid</option>
-            <option>Bronkodilator</option><option>Gastrointestinal</option><option>Sedasi / Antikonvulsan</option>
-            <option>Kardiovaskular</option><option>Suplemen / Vitamin</option><option>Probiotik</option>
-            <option>Antijamur</option><option>Lainnya</option>
-          </select>
+          <select id="nCat"><option>Analgetik / Antipiretik</option><option>Antiemetik</option><option>Antibiotik</option><option>Antiviral</option><option>Antihistamin</option><option>Kortikosteroid</option><option>Bronkodilator</option><option>Gastrointestinal</option><option>Sedasi / Antikonvulsan</option><option>Kardiovaskular</option><option>Suplemen / Vitamin</option><option>Probiotik</option><option>Antijamur</option><option>Lainnya</option></select>
         </div>
       </div>
-      <div class="ig3">
+      <div class="g3">
         <div class="ig"><label>Dosis Min /dosis (mg/kg)</label><input type="number" id="nDmin" step="0.001"></div>
         <div class="ig"><label>Dosis Max /dosis (mg/kg)</label><input type="number" id="nDmax" step="0.001"></div>
         <div class="ig"><label>Maks/dosis (mg)</label><input type="number" id="nMsd" step="0.1"></div>
       </div>
-      <div class="ig2">
-        <div class="ig"><label>Maks/hari (mg/kg)</label><input type="number" id="nMdd" step="0.1"></div>
-        <div class="ig"><label>Frekuensi default</label>
-          <select id="nFreq"><option value="1">1x/hari</option><option value="2">2x/hari</option><option value="3" selected>3x/hari</option><option value="4">4x/hari</option></select>
-        </div>
+      <div class="g2">
+        <div class="ig"><label>Frekuensi /hari</label><select id="nFreq"><option value="1">1x</option><option value="2">2x</option><option value="3" selected>3x</option><option value="4">4x</option></select></div>
+        <div class="ig"><label>Sirup mg/5ml (pisah koma)</label><input type="text" id="nSyr"></div>
       </div>
-      <div class="ig"><label>Sirup mg/5ml (pisah koma, cth: 125,250)</label><input type="text" id="nSyr" placeholder="kosongkan jika tidak ada"></div>
-      <div class="ig"><label>Drop mg/0.6ml atau mg/mL (opsional)</label><input type="text" id="nDrop" placeholder="cth: 80 (artinya 80mg/0.6ml)"></div>
-      <div class="ig"><label>Catatan Klinis</label><input type="text" id="nNote" placeholder="cth: Berikan setelah makan"></div>
-      <div style="display:flex;gap:6px;margin-top:4px;">
-        <button class="btn-sm btn-green" onclick="saveDrug()">💾 Simpan</button>
-        <button class="btn-sm btn-gray" onclick="toggleAddForm()">Batal</button>
+      <div class="ig"><label>Catatan Klinis</label><input type="text" id="nNote"></div>
+      <div style="display:flex;gap:5px;margin-top:3px;">
+        <button class="btn-sm btn-g" onclick="saveDrug()">💾 Simpan</button>
+        <button class="btn-sm btn-gr" onclick="toggleAddForm()">Batal</button>
       </div>
     </div>
   </div>
 
 <button class="calc-btn" onclick="calculate()">⚗️ HITUNG DOSIS</button>
 
-  <div class="results-sec" id="results"></div>
+  <div class="res-sec" id="results"></div>
 </div>
 
-<!-- ============================================================ TAB CAIRAN -->
+<!-- ════════════════════════════════════ TAB VASOAKTIF ════ -->
+
+<div class="tab-panel" id="tab-vasoaktif">
+  <div class="card">
+    <div class="ct">🫀 Kalkulator Vasoaktif & Syringe Pump</div>
+    <div class="g2">
+      <div class="ig"><label>Berat Badan (kg)</label><input type="number" id="vWeight" placeholder="cth: 50" min="1" max="200" step="0.1"></div>
+      <div class="ig"><label>Mode Pasien</label>
+        <select id="vMode"><option value="anak">Anak</option><option value="dewasa">Dewasa</option></select>
+      </div>
+    </div>
+    <div class="ig"><label>Pilih Obat Vasoaktif</label>
+      <select id="vDrug" onchange="updateVasoDose()">
+        <option value="">-- Pilih obat --</option>
+        <option value="norepinephrine">Norepinefrin (Noradrenalin)</option>
+        <option value="epinephrine_inf">Epinefrin/Adrenalin (infus)</option>
+        <option value="dopamine">Dopamin</option>
+        <option value="dobutamine">Dobutamin</option>
+        <option value="amiodarone">Amiodaron</option>
+        <option value="lidocaine">Lidokain</option>
+        <option value="aminophylline">Aminofilin</option>
+        <option value="nicardipine">Nikardipin</option>
+        <option value="nitroglycerin">Nitrogliserin</option>
+        <option value="insulin_inf">Insulin (infus kontinu)</option>
+        <option value="morphine_inf">Morfin (infus kontinu)</option>
+        <option value="midazolam_inf">Midazolam (infus kontinu)</option>
+      </select>
+    </div>
+    <div id="vasoInfo" style="display:none">
+      <div class="ig" id="vasoRateDiv">
+        <label id="vasoRateLabel">Dosis Target (mcg/kg/mnt)</label>
+        <input type="number" id="vasoRate" placeholder="cth: 0.1" step="0.001" oninput="calcSyringe()">
+      </div>
+      <div class="ig" id="vasoConcDiv">
+        <label>Volume Syringe / Infus (ml)</label>
+        <select id="vasoVol" onchange="calcSyringe()">
+          <option value="50">50 ml (syringe pump standar)</option>
+          <option value="100">100 ml</option>
+          <option value="250">250 ml (infus)</option>
+          <option value="500">500 ml (infus)</option>
+        </select>
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calcSyringe()" style="margin-top:8px">🔧 HITUNG SYRINGE PUMP</button>
+    <div id="vasoResult"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ TAB ELEKTROLIT ════ -->
+
+<div class="tab-panel" id="tab-elektrolit">
+  <div class="card">
+    <div class="ct">🧪 Koreksi Elektrolit & Asam-Basa</div>
+    <div class="ig"><label>Pilih Koreksi</label>
+      <select id="elecType" onchange="renderElecInputs()">
+        <option value="">-- Pilih jenis koreksi --</option>
+        <option value="bicarb">Bikarbonat (Koreksi Asidosis Metabolik)</option>
+        <option value="kalium">Kalium / Hipokalemia</option>
+        <option value="natrium_hipo">Natrium / Hiponatremia</option>
+        <option value="natrium_hiper">Natrium / Hipernatremia</option>
+        <option value="kalsium">Kalsium / Hipokalsemia</option>
+        <option value="magnesium">Magnesium / Hipomagnesemia</option>
+        <option value="fosfat">Fosfat / Hipofosfatemia</option>
+      </select>
+    </div>
+    <div id="elecInputs"></div>
+    <button class="calc-btn" id="elecBtn" onclick="calcElec()" style="display:none;margin-top:6px">🧮 HITUNG KOREKSI</button>
+    <div id="elecResult"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ TAB CAIRAN ════ -->
 
 <div class="tab-panel" id="tab-cairan">
   <div class="card">
-    <div class="card-title">💧 Cairan Maintenance — Holiday-Segar</div>
-    <div class="ig2">
-      <div class="ig"><label>Berat Badan (kg)</label><input type="number" id="fw" placeholder="cth: 15" min="1" max="100" step="0.1"></div>
+    <div class="ct">💧 Cairan Maintenance — Holiday-Segar</div>
+    <div class="g2">
+      <div class="ig"><label>Berat Badan (kg)</label><input type="number" id="fw" placeholder="cth: 15" min="1" max="200" step="0.1"></div>
       <div class="ig"><label>Pilihan Cairan</label>
-        <select id="fluidType">
-          <option value="all">Tampilkan semua</option>
-          <option value="D5NaCl">D5 ¼ NaCl</option>
-          <option value="D5half">D5 ½ NaCl</option>
-          <option value="RL">Ringer Laktat</option>
-          <option value="NaCl">NaCl 0.9%</option>
-        </select>
+        <select id="fluidType"><option value="all">Tampilkan semua</option><option value="D5NaCl">D5 ¼ NaCl</option><option value="D5half">D5 ½ NaCl</option><option value="RL">Ringer Laktat</option><option value="NaCl">NaCl 0.9%</option></select>
       </div>
     </div>
     <button class="calc-btn" onclick="calcFluid()">💧 HITUNG CAIRAN</button>
     <div id="fluidResult"></div>
   </div>
   <div class="card">
-    <div class="card-title">📖 Rumus Holiday-Segar</div>
-    <div style="font-size:.7rem;line-height:2;color:var(--text2)">
-      <b style="color:var(--accent)">Kebutuhan per hari:</b><br>
-      &bull; 0–10 kg → <b>100 ml/kg/hari</b><br>
-      &bull; 10–20 kg → 1000 ml + <b>50 ml/kg</b> di atas 10<br>
-      &bull; &gt;20 kg → 1500 ml + <b>20 ml/kg</b> di atas 20<br><br>
-      <b style="color:var(--accent)">Rumus 4-2-1 (ml/jam):</b><br>
-      &bull; 0–10 kg → <b>4 ml/kg/jam</b><br>
-      &bull; 10–20 kg → 40 + <b>2 ml/kg/jam</b> di atas 10<br>
-      &bull; &gt;20 kg → 60 + <b>1 ml/kg/jam</b> di atas 20<br><br>
-      <span style="font-size:.6rem;color:var(--text3)">📚 Holiday MA & Segar WE. Pediatrics 1957 · Formularium Nasional RI</span>
+    <div class="ct">📖 Rumus Holiday-Segar</div>
+    <div style="font-size:.68rem;line-height:2;color:var(--text2)">
+      <b style="color:var(--accent)">Per hari:</b> 0–10kg → 100ml/kg · 10–20kg → 1000+50ml/kg · >20kg → 1500+20ml/kg<br>
+      <b style="color:var(--accent)">Per jam (4-2-1):</b> 0–10kg → 4ml/kg · 10–20kg → 40+2ml/kg · >20kg → 60+1ml/kg<br>
+      <span style="font-size:.58rem;color:var(--text3)">📚 Holiday & Segar, Pediatrics 1957</span>
     </div>
   </div>
 </div>
@@ -248,799 +336,689 @@ footer{text-align:center;font-size:.57rem;color:var(--text3);margin-top:16px;lin
 
 <div class="modal-ov" id="editModal">
   <div class="modal">
-    <div class="modal-title">✏️ Edit Data Obat</div>
+    <div class="modal-t">✏️ Edit Data Obat</div>
     <input type="hidden" id="eId">
     <label>Nama Obat</label><input type="text" id="eName">
     <label>Kategori</label>
-    <select id="eCat">
-      <option>Analgetik / Antipiretik</option><option>Antiemetik</option><option>Antibiotik</option>
-      <option>Antiviral</option><option>Antihistamin</option><option>Kortikosteroid</option>
-      <option>Bronkodilator</option><option>Gastrointestinal</option><option>Sedasi / Antikonvulsan</option>
-      <option>Kardiovaskular</option><option>Suplemen / Vitamin</option><option>Probiotik</option>
-      <option>Antijamur</option><option>Lainnya</option>
-    </select>
+    <select id="eCat"><option>Analgetik / Antipiretik</option><option>Antiemetik</option><option>Antibiotik</option><option>Antiviral</option><option>Antihistamin</option><option>Kortikosteroid</option><option>Bronkodilator</option><option>Gastrointestinal</option><option>Sedasi / Antikonvulsan</option><option>Kardiovaskular</option><option>Suplemen / Vitamin</option><option>Probiotik</option><option>Antijamur</option><option>Lainnya</option></select>
     <label>Dosis Min /dosis (mg/kg)</label><input type="number" id="eDmin" step="0.001">
     <label>Dosis Max /dosis (mg/kg)</label><input type="number" id="eDmax" step="0.001">
     <label>Maks/dosis (mg)</label><input type="number" id="eMsd" step="0.1">
-    <label>Maks/hari (mg/kg)</label><input type="number" id="eMdd" step="0.1">
     <label>Sirup mg/5ml (pisah koma)</label><input type="text" id="eSyr">
     <label>Catatan Klinis</label><input type="text" id="eNote">
     <div class="modal-btns">
-      <button class="m-save" onclick="saveEdit()">💾 Simpan</button>
-      <button class="m-cancel" onclick="closeModal()">Batal</button>
+      <button class="msave" onclick="saveEdit()">💾 Simpan</button>
+      <button class="mcancel" onclick="closeModal()">Batal</button>
     </div>
   </div>
 </div>
 
 <footer>
-  Referensi: Formularium Nasional RI · BNFC 2023–2024 · Medscape Pediatric · WHO Guidelines · Holiday-Segar (Pediatrics 1957)<br>
-  v3.1 · Semua dosis = dosis per kali pemberian · Untuk penggunaan profesional kesehatan terlatih
+  Ref: Formularium Nasional RI · BNFC 2023–2024 · Medscape Pediatric & Adult · WHO · ACLS/PALS Guidelines · Holiday-Segar 1957<br>
+  v4.0 · Dosis per kali pemberian · Decision Support — bukan pengganti keputusan klinis
 </footer>
 
 <script>
 // ================================================================
-// CATATAN METODOLOGI DOSIS
-// Semua doseMin/doseMax adalah DOSIS PER KALI PEMBERIAN (per dosis)
-// bukan dosis harian. freq = berapa kali sehari.
-// Untuk obat yg referensi menulis "mg/kg/hari", nilai sudah dibagi freq.
-// Obat tertentu menggunakan unit bukan mg/kg → gunakan field unit & fixedDose
+// VASOACTIVE DRUG DATABASE
 // ================================================================
+const vasoDrugs = {
+  norepinephrine:{
+    name:'Norepinefrin (Noradrenalin)', unit:'mcg/kg/mnt',
+    anak:{min:0.01, max:2, start:0.05, note:'Mulai 0.01–0.05 mcg/kg/mnt, titrasi tiap 5–10 mnt sesuai MAP target.'},
+    dewasa:{min:0.01, max:3, start:0.1, unitFlat:'mcg/mnt', flatMin:2, flatMax:80,
+      note:'Dosis dewasa: 2–80 mcg/mnt (atau 0.01–3 mcg/kg/mnt). Titrasi sesuai MAP.'},
+    amp:'4mg/4ml (1mg/ml)', dilution:'Encerkan dalam D5W atau NaCl 0.9%',
+    stdConc:{anak:'0.1mg/ml (5mg dalam 50ml D5W)', dewasa:'0.1–0.4mg/ml (8mg/50ml atau 16mg/50ml)'},
+    route:'IV sentral (pilihan utama); IV perifer hanya sementara darurat',
+    bolus:false, indication:'Syok septik/vasodilator, MAP target ≥65mmHg',
+    warning:'Risiko nekrosis jika ekstravasasi. Gunakan CVC. Antidot ekstravasasi: fentolamin lokal.',
+    ref:'SCCM 2021, Medscape'
+  },
+  epinephrine_inf:{
+    name:'Epinefrin/Adrenalin (infus kontinu)', unit:'mcg/kg/mnt',
+    anak:{min:0.01, max:1, start:0.05, note:'Mulai 0.01 mcg/kg/mnt, titrasi sesuai respons hemodinamik.'},
+    dewasa:{min:0.01, max:1, start:0.1, unitFlat:'mcg/mnt', flatMin:1, flatMax:100,
+      note:'Dosis dewasa: 1–100 mcg/mnt. Titrasi sesuai MAP dan HR.'},
+    amp:'1mg/ml (1:1000)', dilution:'Encerkan dalam D5W atau NaCl 0.9%',
+    stdConc:{anak:'0.01mg/ml (0.5mg dalam 50ml NaCl 0.9%)', dewasa:'0.02mg/ml (1mg/50ml NaCl 0.9%)'},
+    route:'IV sentral (pilihan). IV perifer hanya darurat.',
+    bolus:false, indication:'Syok anafilaktik refrakter, syok kardiogenik, henti jantung',
+    warning:'Sangat vasokonstriktif. Monitor EKG, tekanan darah ketat. Risiko aritmia.',
+    ref:'ACLS/PALS 2020, Medscape'
+  },
+  dopamine:{
+    name:'Dopamin', unit:'mcg/kg/mnt',
+    anak:{min:2, max:20, start:5, note:'2–5 mcg/kg/mnt: efek dopaminergik (renal). 5–10: inotropik. >10: vasopressor.'},
+    dewasa:{min:2, max:20, start:5, note:'Efek sama dengan anak. Mulai 2–5 mcg/kg/mnt, titrasi.'},
+    amp:'200mg/5ml (40mg/ml)', dilution:'Encerkan dalam D5W atau NaCl 0.9%',
+    stdConc:{anak:'1.6mg/ml (80mg dalam 50ml D5W)', dewasa:'3.2mg/ml (160mg dalam 50ml D5W)'},
+    route:'IV sentral (pilihan). Perifer hanya sementara.',
+    bolus:false, indication:'Syok kardiogenik, hipotensi, bradikardi simtomatik',
+    warning:'Dosis >10 mcg/kg/mnt menyebabkan vasokonstriksi kuat. Monitor EKG dan TD.',
+    ref:'Medscape, ACLS 2020'
+  },
+  dobutamine:{
+    name:'Dobutamin', unit:'mcg/kg/mnt',
+    anak:{min:2, max:20, start:5, note:'Mulai 2–5 mcg/kg/mnt, titrasi sesuai CO/CI dan tekanan darah.'},
+    dewasa:{min:2, max:20, start:5, note:'Dosis sama. Titrasi sesuai cardiac output.'},
+    amp:'250mg/20ml (12.5mg/ml)', dilution:'Encerkan dalam D5W atau NaCl 0.9%',
+    stdConc:{anak:'5mg/ml (250mg dalam 50ml D5W)', dewasa:'5mg/ml (250mg dalam 50ml D5W)'},
+    route:'IV sentral atau perifer (kurang iritasi vena dibanding norepinefrin)',
+    bolus:false, indication:'Gagal jantung akut, syok kardiogenik, kardiomiopati',
+    warning:'Dapat menyebabkan takikardia dan aritmia. Monitor EKG. Hindari bila MAP <70 tanpa vasopresor.',
+    ref:'ESC 2021, Medscape'
+  },
+  amiodarone:{
+    name:'Amiodaron', unit:'mg/kg',
+    anak:{min:5, max:5, freq:'bolus', note:'VF/VT tanpa nadi: 5mg/kg IV bolus cepat. Dapat diulang 2x (total maks 15mg/kg atau 300mg). Untuk aritmia stabil: 5mg/kg infus 20–60 mnt.'},
+    dewasa:{min:150, max:300, unitFlat:'mg', note:'VF/VT tanpa nadi: 300mg IV bolus. Dapat diulang 150mg. Aritmia stabil: 150mg/100ml infus 10 mnt, lanjut 360mg/6jam.', unitMode:'flat'},
+    amp:'150mg/3ml (50mg/ml)', dilution:'HARUS diencerkan dalam D5W (TIDAK NaCl — presipitasi)',
+    stdConc:{anak:'1.5mg/ml (75mg dalam 50ml D5W)', dewasa:'1.8mg/ml (150mg/83ml D5W atau 6mg/ml untuk bolus)'},
+    route:'IV sentral atau perifer (besar, hindari ekstremitas kecil)',
+    bolus:true, bolusNote:'VF/VT: bolus IV cepat. Aritmia stabil: infus lambat 20–60 mnt.',
+    indication:'VF, VT tanpa nadi, SVT refrakter, AF dengan gangguan hemodinamik',
+    warning:'⚠️ TIDAK boleh dicampur NaCl (presipitasi). Gunakan D5W. Hipotiroid/hipertiroid jangka panjang. Fotosensitif.',
+    ref:'ACLS 2020, Medscape'
+  },
+  lidocaine:{
+    name:'Lidokain', unit:'mg/kg',
+    anak:{min:1, max:1.5, freq:'bolus', note:'Bolus: 1–1.5mg/kg IV pelan. Dapat diulang 0.5–1mg/kg tiap 5–10 mnt, maks 3mg/kg total. Lanjut infus: 20–50 mcg/kg/mnt.'},
+    dewasa:{min:1, max:1.5, unitFlat:'mg/kg', note:'Bolus: 1–1.5mg/kg IV (maks 100mg). Infus: 1–4 mg/mnt.', unitMode:'per_kg'},
+    amp:'2% = 20mg/ml (20ml amp)', dilution:'Bolus langsung dari ampul 2% atau encerkan dalam NaCl 0.9%',
+    stdConc:{anak:'4mg/ml (200mg dalam 50ml NaCl 0.9%) untuk infus kontinu', dewasa:'4mg/ml (800mg dalam 200ml NaCl 0.9%)'},
+    route:'IV perifer atau sentral',
+    bolus:true, bolusNote:'Berikan bolus IV pelan 2–3 mnt, kemudian lanjut infus kontinu.',
+    indication:'VT monomorfik stabil, aritmia ventrikel, blok jantung', 
+    warning:'Toksisitas: seizure, hipotensi, henti jantung bila overdosis. Pantau kadar bila infus >24jam.',
+    ref:'ACLS 2020, Medscape'
+  },
+  aminophylline:{
+    name:'Aminofilin', unit:'mg/kg',
+    anak:{min:5, max:6, freq:'loading', note:'Loading: 5–6mg/kg IV infus 20–30 mnt. Lanjut maintenance: 0.5–1mg/kg/jam (bayi <6bln: 0.5mg/kg/jam; anak 1–9th: 1mg/kg/jam). Jika sudah pakai teofilin oral: skip loading.'},
+    dewasa:{min:250, max:500, unitFlat:'mg', note:'Loading: 5mg/kg (maks 500mg) infus 20–30 mnt. Maintenance: 0.5mg/kg/jam.', unitMode:'flat'},
+    amp:'24mg/ml (10ml = 240mg)', dilution:'Encerkan dalam NaCl 0.9% atau D5W. Konsentrasi maks 1mg/ml untuk infus.',
+    stdConc:{anak:'1mg/ml (50mg dalam 50ml NaCl 0.9%)', dewasa:'1–2mg/ml'},
+    route:'IV perifer atau sentral — infus LAMBAT',
+    bolus:false, bolusNote:'TIDAK boleh bolus cepat — risiko aritmia dan hipotensi fatal.',
+    indication:'Asma berat, apnea prematuritas (neonatus)',
+    warning:'⚠️ JANGAN bolus cepat — aritmia fatal. Pantau kadar teofilin (target 10–20 mcg/ml). Interaksi banyak obat.',
+    ref:'BNFC 2023, Medscape'
+  },
+  nicardipine:{
+    name:'Nikardipin', unit:'mcg/kg/mnt',
+    anak:{min:0.5, max:4, start:1, note:'Mulai 0.5–1 mcg/kg/mnt, titrasi tiap 15 mnt sampai target TD.'},
+    dewasa:{min:5, max:15, unitFlat:'mg/jam', note:'Dewasa: 5–15 mg/jam. Mulai 5mg/jam, titrasi 2.5mg/jam tiap 15 mnt. Maks 15mg/jam.', unitMode:'flat'},
+    amp:'2.5mg/ml (10ml amp)', dilution:'Encerkan dalam D5W atau NaCl 0.9% (hindari RL — inkompatibel)',
+    stdConc:{anak:'0.1mg/ml (5mg dalam 50ml D5W)', dewasa:'0.1mg/ml (25mg dalam 250ml D5W)'},
+    route:'IV sentral (pilihan). Perifer menyebabkan flebitis.',
+    bolus:false, indication:'Hipertensi berat/urgensi, hypertensive emergency, SAH, stroke iskemik',
+    warning:'Hindari RL. Flebitis jika perifer. Pantau TD ketat tiap 5 mnt saat titrasi.',
+    ref:'JNC 2017, Medscape'
+  },
+  nitroglycerin:{
+    name:'Nitrogliserin (NTG)', unit:'mcg/kg/mnt',
+    anak:{min:0.1, max:5, start:0.5, note:'Mulai 0.5–1 mcg/kg/mnt, titrasi tiap 3–5 mnt.'},
+    dewasa:{min:5, max:200, unitFlat:'mcg/mnt', note:'Dewasa: 5–200 mcg/mnt. Mulai 5mcg/mnt, naik 5mcg tiap 3–5 mnt.', unitMode:'flat'},
+    amp:'5mg/ml (10ml)', dilution:'Encerkan dalam D5W atau NaCl 0.9%. JANGAN PVC — gunakan selang non-PVC khusus NTG',
+    stdConc:{anak:'0.1mg/ml (5mg dalam 50ml D5W)', dewasa:'0.2–0.4mg/ml (10–20mg/50ml D5W)'},
+    route:'IV perifer atau sentral — WAJIB selang non-PVC',
+    bolus:false, indication:'Angina tidak stabil, gagal jantung akut, edema paru, kontrol TD',
+    warning:'⚠️ GUNAKAN selang infus non-PVC khusus (NTG diserap plastik PVC standar). Hipotensi, sakit kepala. Toleransi timbul dalam 24–48 jam.',
+    ref:'ESC 2020, Medscape'
+  },
+  insulin_inf:{
+    name:'Insulin Regular (infus kontinu)', unit:'unit/jam',
+    anak:{min:0.05, max:0.1, unitFlat:'unit/kg/jam', note:'DKA: 0.05–0.1 unit/kg/jam (maks 10 unit/jam). Mulai setelah 1 jam resusitasi cairan. Monitor GD tiap 1 jam.'},
+    dewasa:{min:0.1, max:0.2, unitFlat:'unit/kg/jam', note:'DKA/HHS: 0.1 unit/kg/jam atau bolus 0.1 unit/kg dulu lalu infus 0.1 unit/kg/jam. Monitor GD tiap 1 jam. Target penurunan GD 50–75 mg/dL/jam.', unitMode:'flat'},
+    amp:'100 unit/ml (10ml)', dilution:'Encerkan dalam NaCl 0.9%. Bilas selang dulu 20ml (insulin melekat selang)',
+    stdConc:{anak:'1 unit/ml (50 unit dalam 50ml NaCl 0.9%)', dewasa:'1 unit/ml (50 unit/50ml NaCl 0.9%)'},
+    route:'IV perifer atau sentral',
+    bolus:false, indication:'DKA, HHS, hiperglikemia pada ICU, hiperkalemia (bersama D40%)',
+    warning:'Monitor GD TIAP JAM. Siapkan D40% untuk hipoglikemia. Bilas selang sebelum mulai (adsorpsi 20–30%).',
+    ref:'ADA 2023, Medscape'
+  },
+  morphine_inf:{
+    name:'Morfin (infus kontinu)', unit:'mg/kg/jam',
+    anak:{min:0.01, max:0.04, start:0.02, note:'0.01–0.04 mg/kg/jam, titrasi sesuai skala nyeri (FLACC/NRS).'},
+    dewasa:{min:2, max:10, unitFlat:'mg/jam', note:'Dewasa: 2–10 mg/jam. Biasanya 2–4 mg/jam untuk nyeri sedang.', unitMode:'flat'},
+    amp:'10mg/ml', dilution:'Encerkan dalam NaCl 0.9% atau D5W',
+    stdConc:{anak:'0.1mg/ml (5mg dalam 50ml NaCl)', dewasa:'1mg/ml (50mg/50ml NaCl)'},
+    route:'IV perifer atau sentral',
+    bolus:true, bolusNote:'Bolus PRN: 0.05–0.1 mg/kg IV pelan tiap 4 jam (anak); 2–4mg tiap 4 jam (dewasa). Siapkan nalokson.',
+    indication:'Nyeri berat pasca operasi, paliatif, sedasi ICU',
+    warning:'Depresi napas. Siapkan nalokson 0.01mg/kg IV. Monitor SpO2 dan laju napas.',
+    ref:'BNFC 2023, Medscape'
+  },
+  midazolam_inf:{
+    name:'Midazolam (infus kontinu)', unit:'mcg/kg/jam',
+    anak:{min:30, max:200, start:60, note:'Sedasi ICU: 30–200 mcg/kg/jam (0.03–0.2 mg/kg/jam). Titrasi sesuai skala sedasi RASS/Ramsey.'},
+    dewasa:{min:20, max:100, unitFlat:'mcg/kg/jam', note:'Dewasa: 20–100 mcg/kg/jam, atau 0.02–0.1 mg/kg/jam. Titrasi sesuai target RASS.', unitMode:'per_kg'},
+    amp:'5mg/ml (5ml amp)', dilution:'Encerkan dalam NaCl 0.9% atau D5W',
+    stdConc:{anak:'0.5mg/ml (25mg dalam 50ml NaCl)', dewasa:'1mg/ml (50mg/50ml NaCl)'},
+    route:'IV sentral (pilihan). IV perifer untuk jangka pendek.',
+    bolus:true, bolusNote:'Bolus loading: 0.05–0.1 mg/kg IV pelan sebelum mulai infus.',
+    indication:'Sedasi ICU, status epileptikus, prosedur',
+    warning:'Depresi napas dan hipotensi, terutama dengan opioid. Toleransi timbul >48 jam. Monitor RASS.',
+    ref:'BNFC 2023, Medscape, SCCM'
+  },
+};
 
+// ================================================================
+// DRUG DATABASE (Dosis Tab)
+// ================================================================
 let builtinDrugs = [
-
-// ══════════════════════════════════════════════════
-// ANALGETIK / ANTIPIRETIK
-// ══════════════════════════════════════════════════
-{id:'paracetamol', name:'Parasetamol', category:'Analgetik / Antipiretik',
+// ── ANALGETIK / ANTIPIRETIK ─────────────────────────────────────
+{id:'paracetamol',name:'Parasetamol',category:'Analgetik / Antipiretik',
  syrups:[{conc:120,per:5,label:'120mg/5ml'},{conc:250,per:5,label:'250mg/5ml'}],
  drops:[{conc:80,per:0.8,label:'80mg/0.8ml (drop)'}],
- ref:'Formularium Nasional RI, BNFC 2023',
+ ref:'Formularium Nasional, BNFC 2023',
  variants:[
-  {route:'PO', indications:[
-    // 10–15 mg/kg/dosis, tiap 4–6 jam
-    {label:'Demam / Nyeri ringan-sedang', doseMin:10, doseMax:15, freq:4,
-     maxSingleDose:500, maxDailyDose:null,
-     note:'Per DOSIS: 10–15 mg/kg. Interval min 4–6 jam (4x/hari). Maks 60mg/kg/hari atau 4g/hari dewasa.'},
+  {route:'PO',indications:[
+    {label:'Demam / Nyeri',doseMin:10,doseMax:15,freq:4,maxSingleDose:500,
+     adult:{fixed:'500–1000mg/dosis, tiap 4–6 jam. Maks 4g/hari.'},
+     prep:'Tablet/sirup. Berikan langsung.',
+     note:'Per dosis: 10–15mg/kg. Interval min 4–6 jam. Maks 60mg/kg/hari (anak), 4g/hari (dewasa).'},
   ]},
-  {route:'Rektal (supp)', indications:[
-    {label:'Demam (tidak bisa minum)', doseMin:15, doseMax:20, freq:4,
-     maxSingleDose:500, maxDailyDose:null,
-     note:'Per DOSIS: 15–20 mg/kg. Suppositoria 125mg, 250mg. Interval 4–6 jam.'},
+  {route:'Rektal',indications:[
+    {label:'Demam (tidak bisa minum)',doseMin:15,doseMax:20,freq:4,maxSingleDose:500,
+     adult:{fixed:'500–1000mg/dosis, tiap 6–8 jam.'},
+     prep:'Suppositoria 125mg, 250mg, 500mg.',
+     note:'Per dosis: 15–20mg/kg rektal. Suppositoria.'},
   ]},
-  {route:'IV (infus)', indications:[
-    {label:'Demam/Nyeri pasca operasi', doseMin:10, doseMax:15, freq:4,
-     maxSingleDose:500, maxDailyDose:null,
-     note:'Per DOSIS: 10–15 mg/kg. BB <10kg: 7.5mg/kg/dosis. Infus 15 menit.'},
+  {route:'IV (infus)',indications:[
+    {label:'Pasca operasi / Rawat inap',doseMin:10,doseMax:15,freq:4,maxSingleDose:500,
+     adult:{fixed:'1000mg/dosis IV, tiap 6 jam. Infus 15 mnt.'},
+     prep:'Infus IV selama 15 menit. Tersedia vial 1g/100ml.',
+     note:'BB <10kg: 7.5mg/kg/dosis.'},
   ]},
  ]},
 
-{id:'ibuprofen', name:'Ibuprofen', category:'Analgetik / Antipiretik',
- syrups:[{conc:100,per:5,label:'100mg/5ml'},{conc:200,per:5,label:'200mg/5ml'}],
- drops:[],
- ref:'Formularium Nasional RI, BNFC 2023',
+{id:'ibuprofen',name:'Ibuprofen',category:'Analgetik / Antipiretik',
+ syrups:[{conc:100,per:5,label:'100mg/5ml'},{conc:200,per:5,label:'200mg/5ml'}],drops:[],
+ ref:'Formularium Nasional, BNFC 2023',
  variants:[
-  {route:'PO', indications:[
-    // 5–10 mg/kg/dosis tiap 6–8 jam
-    {label:'Demam / Nyeri ringan-sedang', doseMin:5, doseMax:10, freq:3,
-     maxSingleDose:400, maxDailyDose:null,
-     note:'Per DOSIS: 5–10 mg/kg tiap 6–8 jam. Maks 30mg/kg/hari. Berikan bersama makanan. Hindari <6 bulan, dehidrasi, GFR rendah.'},
-    // JIA: 30–50mg/kg/hari ÷ 4 = 7.5–12.5 mg/kg/dosis
-    {label:'Artritis Juvenil (JIA)', doseMin:7.5, doseMax:12.5, freq:4,
-     maxSingleDose:800, maxDailyDose:null,
-     note:'Per DOSIS: 7.5–12.5 mg/kg (total 30–50mg/kg/hari terbagi 4x). Pantau GI dan ginjal. Supervisi spesialis.'},
+  {route:'PO',indications:[
+    {label:'Demam / Nyeri ringan-sedang',doseMin:5,doseMax:10,freq:3,maxSingleDose:400,
+     adult:{fixed:'400–600mg/dosis tiap 6–8 jam. Maks 2400mg/hari.'},
+     prep:'Berikan bersama atau setelah makan.',
+     note:'Per dosis: 5–10mg/kg tiap 6–8 jam. Hindari <6 bulan, dehidrasi, gangguan ginjal.'},
   ]},
  ]},
 
-// KETOROLAC (baru)
-{id:'ketorolac', name:'Ketorolak', category:'Analgetik / Antipiretik',
- syrups:[], drops:[],
- ref:'BNFC 2023, Medscape',
+{id:'ketorolac',name:'Ketorolak',category:'Analgetik / Antipiretik',
+ syrups:[],drops:[],ref:'BNFC 2023, Medscape',
  variants:[
-  {route:'IV/IM', indications:[
-    // 0.5mg/kg/dosis tiap 6 jam, maks 30mg/dosis
-    {label:'Nyeri pasca operasi (≥2 tahun)', doseMin:0.5, doseMax:0.5, freq:4,
-     maxSingleDose:30, maxDailyDose:null,
-     note:'Per DOSIS: 0.5 mg/kg IV/IM tiap 6 jam. Maks 30mg/dosis. Durasi maks 5 hari. Hindari <2 tahun, gangguan ginjal, dan risiko perdarahan.'},
+  {route:'IV/IM',indications:[
+    {label:'Nyeri pasca operasi (≥2 tahun)',doseMin:0.5,doseMax:0.5,freq:4,maxSingleDose:30,
+     adult:{fixed:'15–30mg IV/IM tiap 6 jam. Maks 120mg/hari. Total maks 5 hari.'},
+     prep:'Injeksi IV pelan 15 detik atau IM. Dapat diencerkan NaCl 0.9%.',
+     note:'Per dosis: 0.5mg/kg. Maks 30mg/dosis. Durasi maks 5 hari. Hindari <2th, GFR rendah, risiko perdarahan.'},
   ]},
-  {route:'PO', indications:[
-    // step-down dari IV, 0.25mg/kg/dosis tiap 6 jam
-    {label:'Nyeri sedang-berat (step-down dari IV)', doseMin:0.25, doseMax:0.25, freq:4,
-     maxSingleDose:10, maxDailyDose:null,
-     note:'Per DOSIS: 0.25mg/kg PO tiap 6 jam. Maks 10mg/dosis. Hanya untuk step-down dari IV, durasi maks 5 hari total (IV+PO).'},
+  {route:'PO',indications:[
+    {label:'Nyeri (step-down dari IV)',doseMin:0.25,doseMax:0.25,freq:4,maxSingleDose:10,
+     adult:{fixed:'10mg/dosis tiap 4–6 jam. Maks 40mg/hari. Hanya step-down dari IV.'},
+     prep:'Tablet 10mg. Setelah makan.',
+     note:'Per dosis: 0.25mg/kg. Hanya step-down dari IV. Total IV+PO maks 5 hari.'},
   ]},
  ]},
 
-// TRAMADOL (baru)
-{id:'tramadol', name:'Tramadol', category:'Analgetik / Antipiretik',
- syrups:[], drops:[],
- ref:'BNFC 2023, Medscape',
+{id:'tramadol',name:'Tramadol',category:'Analgetik / Antipiretik',
+ syrups:[],drops:[],ref:'BNFC 2023, Medscape',
  variants:[
-  {route:'PO', indications:[
-    // 1–2 mg/kg/dosis tiap 4–6 jam, maks 8mg/kg/hari atau 400mg/hari
-    {label:'Nyeri sedang-berat (usia ≥12 tahun)', doseMin:1, doseMax:2, freq:4,
-     maxSingleDose:100, maxDailyDose:8,
-     note:'Per DOSIS: 1–2 mg/kg tiap 4–6 jam. Maks 100mg/dosis, 400mg/hari. Hanya ≥12 tahun (BPOM RI). Perhatikan risiko depresi napas.'},
+  {route:'PO',indications:[
+    {label:'Nyeri sedang-berat (≥12 tahun)',doseMin:1,doseMax:2,freq:4,maxSingleDose:100,maxDailyDose:8,
+     adult:{fixed:'50–100mg tiap 4–6 jam. Maks 400mg/hari.'},
+     prep:'Tablet 50mg. Dapat dengan atau tanpa makan.',
+     note:'Per dosis: 1–2mg/kg. Hanya ≥12 tahun (BPOM RI). Risiko depresi napas.'},
   ]},
-  {route:'IV/IM', indications:[
-    {label:'Nyeri pasca operasi (usia ≥12 tahun)', doseMin:1, doseMax:2, freq:4,
-     maxSingleDose:100, maxDailyDose:8,
-     note:'Per DOSIS: 1–2 mg/kg IV pelan atau infus 15–30 mnt. Maks 100mg/dosis. Monitor pernapasan dan sedasi.'},
+  {route:'IV/IM',indications:[
+    {label:'Nyeri pasca operasi (≥12 tahun)',doseMin:1,doseMax:2,freq:4,maxSingleDose:100,
+     adult:{fixed:'50–100mg IV pelan atau infus 15 mnt, tiap 4–6 jam. Maks 400mg/hari.'},
+     prep:'Injeksi IV pelan >2–3 mnt, atau infus dalam 100ml NaCl 0.9% selama 15 mnt.',
+     note:'Bolus cepat menyebabkan mual/muntah. Infus lebih tolerabel.'},
   ]},
  ]},
 
-// MORFIN (baru)
-{id:'morphine', name:'Morfin', category:'Analgetik / Antipiretik',
- syrups:[], drops:[],
- ref:'BNFC 2023, Medscape',
+{id:'morphine',name:'Morfin',category:'Analgetik / Antipiretik',
+ syrups:[],drops:[],ref:'BNFC 2023, Medscape',
  variants:[
-  {route:'IV (injeksi lambat/infus)', indications:[
-    // 0.1mg/kg/dosis tiap 4 jam untuk nyeri akut
-    {label:'Nyeri berat / Pasca operasi', doseMin:0.05, doseMax:0.1, freq:4,
-     maxSingleDose:15, maxDailyDose:null,
-     note:'Per DOSIS: 0.05–0.1 mg/kg IV pelan tiap 4 jam. Maks 15mg/dosis. Neonatus/bayi: 0.05mg/kg. Monitor SpO2, RR, skala nyeri. Siapkan nalokson.'},
-    {label:'Infus kontinu (paliatif/ICU)', doseMin:0.01, doseMax:0.04, freq:1,
-     unit:'mg/kg/jam', note:'Infus kontinu 0.01–0.04 mg/kg/jam, titrasi sesuai respons nyeri. ICU. Monitor ketat.'},
+  {route:'IV (bolus)',indications:[
+    {label:'Nyeri berat / Pasca operasi',doseMin:0.05,doseMax:0.1,freq:4,maxSingleDose:15,
+     adult:{fixed:'2–4mg IV tiap 4 jam. Titrasi sesuai respons nyeri. Siapkan nalokson.'},
+     prep:'Injeksi IV pelan 2–5 mnt. Encerkan dalam 10ml NaCl 0.9% untuk injeksi lambat.',
+     note:'Per dosis: 0.05–0.1mg/kg. Neonatus: 0.05mg/kg. Siapkan nalokson 0.01mg/kg.'},
   ]},
-  {route:'PO (oral/sublingual)', indications:[
-    // morfin oral: 0.2–0.5 mg/kg/dosis tiap 4–6 jam
-    {label:'Nyeri berat (oral)', doseMin:0.2, doseMax:0.5, freq:4,
-     maxSingleDose:20, maxDailyDose:null,
-     note:'Per DOSIS: 0.2–0.5 mg/kg PO tiap 4–6 jam. Maks 20mg/dosis. Titrasi perlahan. Pantau efek samping opioid.'},
-  ]},
-  {route:'IM / SC', indications:[
-    {label:'Nyeri berat (IM/SC)', doseMin:0.1, doseMax:0.2, freq:4,
-     maxSingleDose:15, maxDailyDose:null,
-     note:'Per DOSIS: 0.1–0.2 mg/kg IM/SC tiap 4 jam. Hindari rute ini bila IV tersedia. Monitor pernapasan.'},
+  {route:'PO',indications:[
+    {label:'Nyeri berat (oral)',doseMin:0.2,doseMax:0.5,freq:4,maxSingleDose:20,
+     adult:{fixed:'5–15mg PO tiap 4 jam. Titrasi sesuai nyeri.'},
+     prep:'Tablet/sirup. Titrasi perlahan.',
+     note:'Per dosis: 0.2–0.5mg/kg. Monitor efek samping opioid.'},
   ]},
  ]},
 
-// DEXKETOPROFEN (baru)
-{id:'dexketoprofen', name:'Deksketoprofen', category:'Analgetik / Antipiretik',
- syrups:[], drops:[],
- ref:'BNFC 2023, Medscape, EMA',
+// ── ANTIEMETIK ──────────────────────────────────────────────────
+{id:'ondansetron',name:'Ondansetron',category:'Antiemetik',
+ syrups:[{conc:4,per:5,label:'4mg/5ml'}],drops:[],ref:'BNFC 2023, Medscape',
  variants:[
-  {route:'IV/IM', indications:[
-    // Anak >12 tahun: 0.5mg/kg/dosis tiap 8 jam, maks 25mg/dosis
-    {label:'Nyeri sedang-berat (usia ≥18 tahun, off-label <18)', doseMin:0.5, doseMax:0.5, freq:3,
-     maxSingleDose:25, maxDailyDose:null,
-     note:'Per DOSIS: ~0.5 mg/kg IV/IM tiap 8 jam. Maks 25mg/dosis. Belum zugelassen untuk <18 tahun (off-label). Hindari pada gangguan ginjal, perdarahan GI, asma NSAID. Hati-hati.'},
+  {route:'PO',indications:[
+    {label:'Mual / Muntah',doseMin:0.1,doseMax:0.15,freq:3,maxSingleDose:4,
+     adult:{fixed:'4–8mg tiap 8 jam. Maks 24mg/hari.'},
+     prep:'Tablet atau sirup. Dapat dengan atau tanpa makan.',
+     note:'Per dosis: 0.1–0.15mg/kg. Maks 4mg/dosis (anak).'},
   ]},
-  {route:'PO', indications:[
-    {label:'Nyeri sedang-berat (PO, ≥18 tahun, off-label)', doseMin:0.35, doseMax:0.5, freq:3,
-     maxSingleDose:25, maxDailyDose:null,
-     note:'Per DOSIS: ~25mg/dosis tiap 8 jam (dewasa). Penggunaan pada anak di bawah 18 tahun bersifat off-label. Berikan bersama makanan.'},
+  {route:'IV/IM',indications:[
+    {label:'Mual/Muntah pasca operasi',doseMin:0.1,doseMax:0.15,freq:3,maxSingleDose:4,
+     adult:{fixed:'4mg IV pelan tiap 4–6 jam.'},
+     prep:'Injeksi IV pelan 2–5 mnt. Atau infus dalam 50ml NaCl 0.9% selama 15 mnt.',
+     note:'Per dosis: 0.1–0.15mg/kg IV.'},
+    {label:'Mual akibat kemoterapi',doseMin:0.15,doseMax:0.15,freq:1,maxSingleDose:8,
+     adult:{fixed:'8–32mg IV sebelum kemoterapi.'},
+     prep:'Infus dalam 50ml NaCl 0.9% selama 15–30 mnt, berikan 30 mnt sebelum kemoterapi.',
+     note:'Per dosis: 0.15mg/kg. Maks 8mg.'},
   ]},
  ]},
 
-// ══════════════════════════════════════════════════
-// ANTIEMETIK
-// ══════════════════════════════════════════════════
-{id:'ondansetron', name:'Ondansetron', category:'Antiemetik',
- syrups:[{conc:4,per:5,label:'4mg/5ml'}], drops:[],
- ref:'BNFC 2023, Medscape',
+{id:'domperidone',name:'Domperidon',category:'Antiemetik',
+ syrups:[{conc:5,per:5,label:'5mg/5ml'}],drops:[{conc:5,per:5,label:'5mg/5ml drop'}],
+ ref:'BNFC 2023',
  variants:[
-  {route:'PO', indications:[
-    // 0.1–0.15 mg/kg/dosis, sudah per dosis
-    {label:'Mual / Muntah', doseMin:0.1, doseMax:0.15, freq:3,
-     maxSingleDose:4, maxDailyDose:null,
-     note:'Per DOSIS: 0.1–0.15 mg/kg tiap 8 jam. Maks 4mg/dosis.'},
-  ]},
-  {route:'IV/IM', indications:[
-    {label:'Mual/Muntah pasca operasi', doseMin:0.1, doseMax:0.15, freq:3,
-     maxSingleDose:4, maxDailyDose:null,
-     note:'Per DOSIS: 0.1–0.15 mg/kg IV pelan 2–5 mnt. Maks 4mg/dosis.'},
-    {label:'Mual akibat kemoterapi', doseMin:0.15, doseMax:0.15, freq:1,
-     maxSingleDose:8, maxDailyDose:null,
-     note:'Per DOSIS: 0.15 mg/kg IV 30 mnt sebelum kemoterapi. Maks 8mg/dosis.'},
+  {route:'PO',indications:[
+    {label:'Mual / Muntah / Refluks',doseMin:0.2,doseMax:0.4,freq:3,maxSingleDose:10,
+     adult:{fixed:'10mg 3x sehari, 15–30 mnt sebelum makan. Maks 30mg/hari.'},
+     prep:'Berikan 15–30 mnt sebelum makan.',
+     note:'Per dosis: 0.2–0.4mg/kg. Hindari <1 tahun. Maks 10mg/dosis.'},
   ]},
  ]},
 
-{id:'domperidone', name:'Domperidon', category:'Antiemetik',
- syrups:[{conc:5,per:5,label:'5mg/5ml'}], drops:[{conc:5,per:5,label:'5mg/5ml drop'}],
- ref:'BNFC 2023, Medscape',
+// ── GASTROINTESTINAL ────────────────────────────────────────────
+{id:'omeprazole',name:'Omeprazole',category:'Gastrointestinal',
+ syrups:[],drops:[],ref:'BNFC 2023, Medscape',
  variants:[
-  {route:'PO', indications:[
-    // 0.2–0.4 mg/kg/dosis, sudah per dosis
-    {label:'Mual / Muntah / Refluks', doseMin:0.2, doseMax:0.4, freq:3,
-     maxSingleDose:10, maxDailyDose:null,
-     note:'Per DOSIS: 0.2–0.4 mg/kg tiap 8 jam, 15–30 mnt sebelum makan. Maks 10mg/dosis. Hindari <1 tahun.'},
+  {route:'PO',indications:[
+    {label:'GERD / Esofagitis',doseMin:0.7,doseMax:1.0,freq:1,maxSingleDose:20,
+     adult:{fixed:'20–40mg 1x sehari, 30 mnt sebelum makan.'},
+     prep:'Kapsul tidak boleh dikunyah. Dapat dibuka dan dicampur makanan lunak asam.',
+     note:'Per dosis: 0.7–1mg/kg 1x sehari.'},
+    {label:'Ulkus / H. pylori',doseMin:0.5,doseMax:1.0,freq:2,maxSingleDose:40,
+     adult:{fixed:'20–40mg 2x sehari (bagian triple therapy).'},
+     prep:'Berikan 30 mnt sebelum makan pagi dan malam.',
+     note:'Per dosis: 0.5–1mg/kg 2x sehari.'},
+  ]},
+  {route:'IV',indications:[
+    {label:'Perdarahan GI / pasca operasi',doseMin:0.5,doseMax:1.5,freq:1,maxSingleDose:40,
+     adult:{fixed:'40mg IV 1–2x sehari. Perdarahan GI aktif: 80mg bolus lalu 8mg/jam infus 72 jam.'},
+     prep:'Larutkan dalam 100ml NaCl 0.9%, infus 20–30 mnt.',
+     note:'Perdarahan GI aktif dewasa: bolus 80mg IV + infus kontinu 8mg/jam. Spesialis.'},
   ]},
  ]},
 
-// ══════════════════════════════════════════════════
-// GASTROINTESTINAL
-// ══════════════════════════════════════════════════
-{id:'omeprazole', name:'Omeprazole', category:'Gastrointestinal',
- syrups:[], drops:[],
- ref:'BNFC 2023, Medscape',
+{id:'ranitidine',name:'Ranitidin',category:'Gastrointestinal',
+ syrups:[{conc:75,per:5,label:'75mg/5ml'}],drops:[],ref:'BNFC 2023',
  variants:[
-  {route:'PO', indications:[
-    // GERD: 0.7–1.0 mg/kg/hari → 1x sehari → per dosis = sama
-    {label:'GERD / Esofagitis', doseMin:0.7, doseMax:1.0, freq:1,
-     maxSingleDose:20, maxDailyDose:null,
-     note:'Per DOSIS: 0.7–1.0 mg/kg 1x sehari, 30 mnt sebelum makan. Maks 20mg/dosis.'},
-    // H. pylori: 1–2 mg/kg/hari ÷ 2 = 0.5–1.0 mg/kg/dosis
-    {label:'H. pylori (triple therapy)', doseMin:0.5, doseMax:1.0, freq:2,
-     maxSingleDose:40, maxDailyDose:null,
-     note:'Per DOSIS: 0.5–1.0 mg/kg 2x sehari sebagai bagian triple therapy.'},
+  {route:'PO',indications:[
+    {label:'GERD / Ulkus',doseMin:1,doseMax:2,freq:2,maxSingleDose:150,
+     adult:{fixed:'150mg 2x sehari atau 300mg sebelum tidur.'},
+     prep:'Dapat diberikan dengan atau tanpa makan.',
+     note:'Per dosis: 1–2mg/kg (total 2–4mg/kg/hari ÷ 2).'},
   ]},
-  {route:'IV (infus)', indications:[
-    // 0.5–1.5 mg/kg/hari → 1x = per dosis sama
-    {label:'Perdarahan GI / pasca operasi', doseMin:0.5, doseMax:1.5, freq:1,
-     maxSingleDose:40, maxDailyDose:null,
-     note:'Per DOSIS: 0.5–1.5 mg/kg 1x sehari. Infus IV lambat 20–30 mnt. Maks 40mg/dosis.'},
+  {route:'IV',indications:[
+    {label:'Profilaksis / Rawat inap',doseMin:0.5,doseMax:1,freq:3,maxSingleDose:50,
+     adult:{fixed:'50mg IV tiap 6–8 jam.'},
+     prep:'Encerkan dalam 20ml NaCl 0.9%, injeksi pelan >2 mnt. Atau infus dalam 50ml NaCl 0.9% selama 15–30 mnt.',
+     note:'Per dosis: 0.5–1mg/kg tiap 6–8 jam.'},
   ]},
  ]},
 
-{id:'ranitidine', name:'Ranitidin', category:'Gastrointestinal',
- syrups:[{conc:75,per:5,label:'75mg/5ml'}], drops:[],
- ref:'BNFC 2023, Medscape',
+{id:'sucralfate',name:'Sukralfat',category:'Gastrointestinal',
+ syrups:[{conc:500,per:5,label:'500mg/5ml suspensi'}],drops:[],ref:'Medscape, BNFC 2023',
  variants:[
-  {route:'PO', indications:[
-    // 2–4 mg/kg/hari ÷ 2 = 1–2 mg/kg/dosis
-    {label:'GERD / Ulkus / Refluks', doseMin:1, doseMax:2, freq:2,
-     maxSingleDose:150, maxDailyDose:null,
-     note:'Per DOSIS: 1–2 mg/kg 2x sehari (total 2–4 mg/kg/hari). Maks 150mg/dosis.'},
-  ]},
-  {route:'IV/IM', indications:[
-    // 1mg/kg/dosis tiap 6–8 jam (sudah per dosis)
-    {label:'Profilaksis / Terapi rawat inap', doseMin:0.5, doseMax:1, freq:3,
-     maxSingleDose:50, maxDailyDose:null,
-     note:'Per DOSIS: 0.5–1 mg/kg tiap 6–8 jam. IV pelan 2–5 mnt atau infus 15–30 mnt. Maks 50mg/dosis.'},
+  {route:'PO',indications:[
+    {label:'Ulkus peptikum',doseMin:10,doseMax:20,freq:4,maxSingleDose:1000,
+     adult:{fixed:'1g (1 tab/10ml) 4x sehari, 1 jam sebelum makan dan sebelum tidur.'},
+     prep:'Berikan 1 jam sebelum makan dan sebelum tidur. Jauhkan dari antasid.',
+     note:'Per dosis: 10–20mg/kg (total 40–80mg/kg/hari ÷ 4). Maks 1g/dosis.'},
   ]},
  ]},
 
-{id:'sucralfate', name:'Sukralfat', category:'Gastrointestinal',
- syrups:[{conc:500,per:5,label:'500mg/5ml (suspensi)'}], drops:[],
- ref:'Medscape, BNFC 2023',
- variants:[
-  {route:'PO', indications:[
-    // 40–80 mg/kg/HARI ÷ 4 = 10–20 mg/kg/dosis
-    {label:'Ulkus peptikum / Gastritis', doseMin:10, doseMax:20, freq:4,
-     maxSingleDose:1000, maxDailyDose:null,
-     note:'Per DOSIS: 10–20 mg/kg (total 40–80 mg/kg/hari terbagi 4x). Berikan 1 jam sebelum makan dan sebelum tidur. Maks 1g/dosis.'},
-  ]},
- ]},
-
-{id:'antasida', name:'Antasida (Al-Mg Hidroksida)', category:'Gastrointestinal',
- syrups:[], drops:[], fixedDose:true,
+{id:'antasida',name:'Antasida',category:'Gastrointestinal',
+ syrups:[],drops:[],fixedDose:true,
  fixedDoseTable:[
    {min:0,max:6,label:'<6 tahun',dose:'Tidak direkomendasikan rutin'},
-   {min:6,max:12,label:'6–12 tahun',dose:'5–10 ml (1–2 sdt) 3–4x/hari'},
-   {min:12,max:99,label:'>12 tahun',dose:'10–20 ml atau 1–2 tablet, 3–4x/hari'},
+   {min:6,max:12,label:'6–12 tahun',dose:'5–10 ml 3–4x sehari'},
+   {min:12,max:999,label:'>12 thn / Dewasa',dose:'10–20 ml atau 1–2 tablet, 3–4x sehari'},
  ],
- note:'Berikan 1–2 jam setelah makan dan sebelum tidur.',
- ref:'MIMS Indonesia, BNFC 2023', variants:[]},
+ adultDose:'10–20 ml atau 1–2 tablet, 3–4x sehari, 1–2 jam setelah makan.',
+ note:'Berikan 1–2 jam setelah makan dan sebelum tidur.',ref:'MIMS Indonesia',variants:[]},
 
-{id:'attapulgite', name:'Attapulgite', category:'Gastrointestinal',
- syrups:[], drops:[], fixedDose:true,
- fixedDoseTable:[
-   {min:0,max:3,label:'<3 tahun',dose:'Tidak direkomendasikan'},
-   {min:3,max:6,label:'3–6 tahun',dose:'300mg tiap BAB cair, maks 7x/hari'},
-   {min:6,max:12,label:'6–12 tahun',dose:'600mg tiap BAB cair, maks 7x/hari'},
-   {min:12,max:99,label:'>12 tahun',dose:'1200–1500mg tiap BAB cair, maks 7x/hari'},
- ],
- note:'Berikan setelah setiap BAB. Minum banyak cairan.',
- ref:'MIMS Indonesia', variants:[]},
-
-{id:'zinc', name:'Zinc', category:'Gastrointestinal',
- syrups:[{conc:20,per:5,label:'20mg/5ml (sirup)'},{conc:10,per:5,label:'10mg/5ml (sirup)'}],
- drops:[{conc:10,per:1,label:'10mg/ml (drop)'}],
+{id:'zinc',name:'Zinc',category:'Gastrointestinal',
+ syrups:[{conc:20,per:5,label:'20mg/5ml'},{conc:10,per:5,label:'10mg/5ml'}],
+ drops:[{conc:10,per:1,label:'10mg/ml drop'}],
  fixedDose:true,
  fixedDoseTable:[
-   {min:0,max:0.5,label:'<6 bulan',dose:'10 mg 1x sehari × 10 hari'},
-   {min:0.5,max:99,label:'≥6 bulan',dose:'20 mg 1x sehari × 10 hari'},
+   {min:0,max:0.5,label:'<6 bulan',dose:'10mg 1x sehari × 10 hari'},
+   {min:0.5,max:999,label:'≥6 bulan / Dewasa',dose:'20mg 1x sehari × 10 hari'},
  ],
- note:'WHO: mulai segera saat diare, lanjutkan 10 hari penuh. Juga untuk defisiensi zinc.',
- ref:'WHO 2006, Formularium Nasional', variants:[]},
+ adultDose:'20–40mg/hari (defisiensi: 25–50mg/hari selama 4–6 minggu).',
+ note:'WHO: mulai saat diare, lanjutkan 10 hari.',ref:'WHO 2006',variants:[]},
 
-{id:'lactulose', name:'Laktulosa', category:'Gastrointestinal',
- syrups:[{conc:3350,per:15,label:'3.35g/15ml (10g/15ml)'}], drops:[],
- ref:'BNFC 2023, Medscape',
- variants:[
-  {route:'PO', indications:[
-    // 0.5–1 ml/kg/dosis
-    {label:'Konstipasi', doseMin:0.5, doseMax:1.0, freq:2, unit:'ml/kg',
-     note:'Per DOSIS: 0.5–1 ml/kg 1–3x/hari. Sesuaikan hingga BAB lunak 1–2x/hari. Efek 24–48 jam.'},
-  ]},
- ]},
-
-// ══════════════════════════════════════════════════
-// ANTIBIOTIK
-// ══════════════════════════════════════════════════
-{id:'amoxicillin', name:'Amoksisilin', category:'Antibiotik',
+// ── ANTIBIOTIK ─────────────────────────────────────────────────
+{id:'amoxicillin',name:'Amoksisilin',category:'Antibiotik',
  syrups:[{conc:125,per:5,label:'125mg/5ml'},{conc:250,per:5,label:'250mg/5ml'}],
- drops:[{conc:100,per:1,label:'100mg/ml (drop)'}],
- ref:'Formularium Nasional RI, BNFC 2023, WHO',
+ drops:[{conc:100,per:1,label:'100mg/ml drop'}],ref:'Formularium Nasional, BNFC 2023',
  variants:[
-  {route:'PO', indications:[
-    // 25–50 mg/kg/hari ÷ 3 = 8.3–16.7 mg/kg/dosis
-    {label:'ISPA ringan / Faringitis / Tonsilitis', doseMin:8.3, doseMax:16.7, freq:3,
-     maxSingleDose:500, maxDailyDose:null,
-     note:'Per DOSIS: 8.3–16.7 mg/kg (total 25–50 mg/kg/hari ÷ 3). Durasi 7–10 hari. Habiskan.'},
-    // 40–50 mg/kg/hari ÷ 3 = 13.3–16.7 mg/kg/dosis
-    {label:'Otitis Media Akut (OMA) standar', doseMin:13.3, doseMax:16.7, freq:3,
-     maxSingleDose:500, maxDailyDose:null,
-     note:'Per DOSIS: 13–17 mg/kg (total 40–50 mg/kg/hari ÷ 3). Durasi 5–7 hari.'},
-    // 80–90 mg/kg/hari ÷ 3 = 26.7–30 mg/kg/dosis
-    {label:'OMA dosis tinggi (resisten / <2 thn)', doseMin:26.7, doseMax:30, freq:3,
-     maxSingleDose:1000, maxDailyDose:null,
-     note:'Per DOSIS: 27–30 mg/kg (total 80–90 mg/kg/hari ÷ 3). Untuk kuman resisten, daycare, usia <2 tahun.'},
-    // Pneumonia 40–50 ÷ 3
-    {label:'Pneumonia ringan (rawat jalan)', doseMin:13.3, doseMax:16.7, freq:3,
-     maxSingleDose:500, maxDailyDose:null,
-     note:'Per DOSIS: 13–17 mg/kg (total 40–50 mg/kg/hari ÷ 3). Durasi 5 hari. WHO.'},
-    // Pneumonia berat 80–100 ÷ 3
-    {label:'Pneumonia berat (rawat inap)', doseMin:26.7, doseMax:33.3, freq:3,
-     maxSingleDose:1000, maxDailyDose:null,
-     note:'Per DOSIS: 27–33 mg/kg (total 80–100 mg/kg/hari ÷ 3). Durasi 7–10 hari.'},
-    // ISK 20–40 ÷ 3
-    {label:'ISK (Infeksi Saluran Kemih)', doseMin:6.7, doseMax:13.3, freq:3,
-     maxSingleDose:500, maxDailyDose:null,
-     note:'Per DOSIS: 7–13 mg/kg (total 20–40 mg/kg/hari ÷ 3). Durasi 7–10 hari.'},
+  {route:'PO',indications:[
+    {label:'ISPA / Faringitis',doseMin:8.3,doseMax:16.7,freq:3,maxSingleDose:500,
+     adult:{fixed:'500mg 3x sehari atau 875mg 2x sehari. Durasi 7–10 hari.'},
+     prep:'Dapat diminum dengan atau tanpa makan.',
+     note:'Per dosis: 8–17mg/kg (total 25–50mg/kg/hari ÷ 3). Habiskan.'},
+    {label:'OMA standar',doseMin:13.3,doseMax:16.7,freq:3,maxSingleDose:500,
+     adult:{fixed:'500mg 3x sehari, 5–7 hari.'},prep:'',
+     note:'Per dosis: 13–17mg/kg (40–50mg/kg/hari ÷ 3).'},
+    {label:'OMA dosis tinggi / Pneumonia berat',doseMin:26.7,doseMax:30,freq:3,maxSingleDose:1000,
+     adult:{fixed:'875–1000mg 2–3x sehari.'},prep:'',
+     note:'Per dosis: 27–30mg/kg (80–90mg/kg/hari ÷ 3). Kuman resisten/daycare/<2th.'},
+    {label:'ISK',doseMin:6.7,doseMax:13.3,freq:3,maxSingleDose:500,
+     adult:{fixed:'500mg 3x sehari, 7–14 hari.'},prep:'',
+     note:'Per dosis: 7–13mg/kg (20–40mg/kg/hari ÷ 3).'},
   ]},
  ]},
 
-{id:'cefixime', name:'Cefixime', category:'Antibiotik',
- syrups:[{conc:100,per:5,label:'100mg/5ml'}], drops:[],
- ref:'BNFC 2023, Medscape',
+{id:'cefixime',name:'Cefixime',category:'Antibiotik',
+ syrups:[{conc:100,per:5,label:'100mg/5ml'}],drops:[],ref:'BNFC 2023, Medscape',
  variants:[
-  {route:'PO', indications:[
-    // 8mg/kg/hari ÷ 2 = 4 mg/kg/dosis (atau 8mg/kg 1x sehari)
-    {label:'OMA / ISPA / Sinusitis', doseMin:4, doseMax:6, freq:2,
-     maxSingleDose:400, maxDailyDose:null,
-     note:'Per DOSIS: 4–6 mg/kg 2x sehari (total 8–12 mg/kg/hari). Atau 8mg/kg 1x sehari. Durasi 5–10 hari.'},
-    // 8mg/kg 1x/hari
-    {label:'Faringitis / Tonsilitis', doseMin:8, doseMax:8, freq:1,
-     maxSingleDose:400, maxDailyDose:null,
-     note:'Per DOSIS: 8 mg/kg 1x sehari selama 10 hari.'},
-    {label:'ISK (tanpa komplikasi)', doseMin:4, doseMax:6, freq:2,
-     maxSingleDose:400, maxDailyDose:null,
-     note:'Per DOSIS: 4–6 mg/kg 2x sehari. Durasi 7–14 hari. Sesuaikan hasil kultur.'},
-    // Tifoid: 15–20 mg/kg/hari ÷ 2 = 7.5–10 mg/kg/dosis
-    {label:'Tifoid (step-down dari IV)', doseMin:7.5, doseMax:10, freq:2,
-     maxSingleDose:400, maxDailyDose:null,
-     note:'Per DOSIS: 7.5–10 mg/kg 2x sehari (total 15–20 mg/kg/hari). Durasi total 10–14 hari.'},
+  {route:'PO',indications:[
+    {label:'ISPA / OMA / Sinusitis',doseMin:4,doseMax:6,freq:2,maxSingleDose:400,
+     adult:{fixed:'400mg 1x sehari atau 200mg 2x sehari.'},prep:'',
+     note:'Per dosis: 4–6mg/kg 2x sehari.'},
+    {label:'ISK',doseMin:4,doseMax:6,freq:2,maxSingleDose:400,
+     adult:{fixed:'400mg/hari dibagi 1–2x. Durasi 7–14 hari.'},prep:'',
+     note:'Per dosis: 4–6mg/kg 2x sehari.'},
+    {label:'Tifoid (step-down)',doseMin:7.5,doseMax:10,freq:2,maxSingleDose:400,
+     adult:{fixed:'400mg 2x sehari. Durasi 10–14 hari total.'},prep:'',
+     note:'Per dosis: 7.5–10mg/kg 2x sehari.'},
   ]},
  ]},
 
-{id:'amoxclav', name:'Amoksisilin-Klavulanat', category:'Antibiotik',
- syrups:[{conc:156.25,per:5,label:'156.25mg/5ml (125+31.25)'},{conc:312.5,per:5,label:'312.5mg/5ml (250+62.5)'}],
- drops:[],
- ref:'BNFC 2023, Medscape',
+{id:'azithromycin',name:'Azithromisin',category:'Antibiotik',
+ syrups:[{conc:200,per:5,label:'200mg/5ml'}],drops:[],ref:'BNFC 2023, WHO',
  variants:[
-  {route:'PO', indications:[
-    // 25–45 mg/kg/hari amox ÷ 3 = 8.3–15 mg/kg/dosis
-    {label:'ISPA / OMA / Sinusitis (lini 2)', doseMin:8.3, doseMax:15, freq:3,
-     maxSingleDose:500, maxDailyDose:null,
-     note:'Per DOSIS: 8–15 mg/kg (total 25–45 mg/kg/hari amoksisilin ÷ 3). Durasi 7–10 hari. Bersama makanan.'},
-    // Dosis tinggi: 80–90 mg/kg/hari amox ÷ 2 = 40–45 mg/kg/dosis
-    {label:'OMA / Sinusitis dosis tinggi (resisten)', doseMin:40, doseMax:45, freq:2,
-     maxSingleDose:875, maxDailyDose:null,
-     note:'Per DOSIS: 40–45 mg/kg 2x sehari (formula 14:1, total 80–90 mg/kg/hari amox). Maks 875mg amox/dosis.'},
-    // Infeksi kulit: 25–45 ÷ 3
-    {label:'Infeksi kulit & jaringan lunak', doseMin:8.3, doseMax:15, freq:3,
-     maxSingleDose:500, maxDailyDose:null,
-     note:'Per DOSIS: 8–15 mg/kg tiap 8 jam. Durasi 7–10 hari.'},
+  {route:'PO',indications:[
+    {label:'ISPA / Faringitis (alergi penisilin)',doseMin:10,doseMax:10,freq:1,maxSingleDose:500,
+     adult:{fixed:'500mg hari 1, lalu 250mg hari 2–5.'},prep:'Dapat diminum dengan atau tanpa makan.',
+     note:'Hari 1: 10mg/kg (maks 500mg), hari 2–5: 5mg/kg. Total 5 hari.'},
+    {label:'Pneumonia atipikal',doseMin:10,doseMax:10,freq:1,maxSingleDose:500,
+     adult:{fixed:'500mg/hari × 3 hari atau 500mg hari 1 + 250mg hari 2–5.'},prep:'',
+     note:'Mycoplasma/Chlamydia. Lini pertama.'},
+    {label:'Tifoid (alternatif)',doseMin:10,doseMax:20,freq:1,maxSingleDose:1000,
+     adult:{fixed:'1g hari 1, lalu 500mg hari 2–7.'},prep:'',
+     note:'Hari 1: 20mg/kg (maks 1g), lanjut 10mg/kg.'},
+  ]},
+  {route:'IV',indications:[
+    {label:'Pneumonia rawat inap',doseMin:10,doseMax:10,freq:1,maxSingleDose:500,
+     adult:{fixed:'500mg IV 1x sehari infus 1 jam.'},
+     prep:'Larutkan dalam 250ml NaCl 0.9% atau D5W, infus selama 1 jam. Konsentrasi maks 2mg/ml.',
+     note:'Per dosis: 10mg/kg IV 1x sehari. Beralih ke PO secepatnya.'},
   ]},
  ]},
 
-{id:'azithromycin', name:'Azithromisin', category:'Antibiotik',
- syrups:[{conc:200,per:5,label:'200mg/5ml'}], drops:[],
- ref:'BNFC 2023, Medscape, WHO',
+{id:'chloramphenicol',name:'Kloramfenikol',category:'Antibiotik',
+ syrups:[{conc:125,per:5,label:'125mg/5ml palmitat'}],drops:[],ref:'Formularium Nasional, BNFC 2023',
  variants:[
-  {route:'PO', indications:[
-    // 10mg/kg hari 1, lalu 5mg/kg hari 2-5 (1x sehari) → tampilkan dosis hari 1
-    {label:'ISPA / Faringitis (alergi penisilin)', doseMin:10, doseMax:10, freq:1,
-     maxSingleDose:500, maxDailyDose:null,
-     note:'Per DOSIS: 10 mg/kg hari 1 (maks 500mg), lalu 5mg/kg hari 2–5. Total 5 hari.'},
-    {label:'Pneumonia atipikal (Mycoplasma/Chlamydia)', doseMin:10, doseMax:10, freq:1,
-     maxSingleDose:500, maxDailyDose:null,
-     note:'Per DOSIS: 10 mg/kg hari 1, lalu 5mg/kg hari 2–5. Lini pertama pneumonia atipikal.'},
-    {label:'Pertusis', doseMin:10, doseMax:10, freq:1,
-     maxSingleDose:500, maxDailyDose:null,
-     note:'Per DOSIS: 10 mg/kg/hari selama 5 hari. Mulai sesegera mungkin.'},
-    // Tifoid: 20mg/kg hari 1, 10mg/kg hari 2–7
-    {label:'Tifoid (lini alternatif)', doseMin:10, doseMax:20, freq:1,
-     maxSingleDose:1000, maxDailyDose:null,
-     note:'Per DOSIS: 20mg/kg hari 1 (maks 1g), lanjut 10mg/kg hari 2–7. Konsultasikan sensitivitas lokal.'},
-    {label:'Diare (Campylobacter)', doseMin:10, doseMax:10, freq:1,
-     maxSingleDose:500, maxDailyDose:null,
-     note:'Per DOSIS: 10 mg/kg/hari selama 3 hari. Untuk kasus berat/komplikasi.'},
+  {route:'PO',indications:[
+    {label:'Demam Tifoid',doseMin:12.5,doseMax:18.75,freq:4,maxSingleDose:750,
+     adult:{fixed:'500–750mg tiap 6 jam (2–3g/hari). Durasi 10–14 hari.'},prep:'Berikan 30 mnt sebelum makan.',
+     note:'Per dosis: 12.5–18.75mg/kg (total 50–75mg/kg/hari ÷ 4). Monitor darah lengkap/minggu.'},
   ]},
-  {route:'IV (infus)', indications:[
-    {label:'Pneumonia rawat inap', doseMin:10, doseMax:10, freq:1,
-     maxSingleDose:500, maxDailyDose:null,
-     note:'Per DOSIS: 10 mg/kg IV infus 1 jam 1x sehari. Maks 500mg. Beralih ke PO secepatnya.'},
+  {route:'IV',indications:[
+    {label:'Tifoid / Meningitis (rawat inap)',doseMin:12.5,doseMax:25,freq:4,maxSingleDose:1000,
+     adult:{fixed:'500mg–1g IV tiap 6 jam.'},
+     prep:'Suksinat IV: larutkan dalam 50–100ml NaCl 0.9%, infus 15–30 mnt.',
+     note:'Per dosis: 12.5–25mg/kg tiap 6 jam. Risiko anemia aplastik. Monitor darah.'},
   ]},
  ]},
 
-{id:'chloramphenicol', name:'Kloramfenikol', category:'Antibiotik',
- syrups:[{conc:125,per:5,label:'125mg/5ml (palmitat)'}], drops:[],
- ref:'Formularium Nasional RI, BNFC 2023, WHO',
+{id:'ciprofloxacin',name:'Siprofloksasin',category:'Antibiotik',
+ syrups:[{conc:250,per:5,label:'250mg/5ml suspensi'}],drops:[],ref:'BNFC 2023, Medscape',
  variants:[
-  {route:'PO', indications:[
-    // Tifoid: 50–75 mg/kg/HARI ÷ 4 = 12.5–18.75 mg/kg/dosis
-    {label:'Demam Tifoid', doseMin:12.5, doseMax:18.75, freq:4,
-     maxSingleDose:750, maxDailyDose:null,
-     note:'Per DOSIS: 12.5–18.75 mg/kg tiap 6 jam (total 50–75 mg/kg/hari ÷ 4). Maks 750mg/dosis. Durasi 10–14 hari. Monitor darah lengkap tiap minggu.'},
-    // Meningitis: 75–100 ÷ 4 = 18.75–25 mg/kg/dosis
-    {label:'Meningitis bakterialis (alternatif)', doseMin:18.75, doseMax:25, freq:4,
-     maxSingleDose:1000, maxDailyDose:null,
-     note:'Per DOSIS: 19–25 mg/kg tiap 6 jam (total 75–100 mg/kg/hari ÷ 4). Maks 1g/dosis. Hanya bila alternatif tidak tersedia.'},
+  {route:'PO',indications:[
+    {label:'ISK / Pielonefritis',doseMin:10,doseMax:20,freq:2,maxSingleDose:500,
+     adult:{fixed:'500mg 2x sehari, 7–14 hari.'},prep:'',
+     note:'Per dosis: 10–20mg/kg 2x sehari.'},
+    {label:'Diare bakteri / Tifoid',doseMin:10,doseMax:15,freq:2,maxSingleDose:500,
+     adult:{fixed:'500mg 2x sehari, 3–10 hari tergantung indikasi.'},prep:'',
+     note:'Per dosis: 10–15mg/kg 2x sehari.'},
   ]},
-  {route:'IV (infus)', indications:[
-    {label:'Demam Tifoid (rawat inap)', doseMin:12.5, doseMax:18.75, freq:4,
-     maxSingleDose:750, maxDailyDose:null,
-     note:'Per DOSIS: 12.5–18.75 mg/kg IV tiap 6 jam (suksinat). Infus 15–30 mnt. Monitor darah lengkap.'},
-    {label:'Meningitis bakterialis (rawat inap)', doseMin:18.75, doseMax:25, freq:4,
-     maxSingleDose:1000, maxDailyDose:null,
-     note:'Per DOSIS: 19–25 mg/kg IV tiap 6 jam. Hanya bila pilihan lain tidak tersedia. Risiko anemia aplastik.'},
+  {route:'IV',indications:[
+    {label:'Infeksi berat',doseMin:10,doseMax:15,freq:3,maxSingleDose:400,
+     adult:{fixed:'400mg IV tiap 8–12 jam.'},
+     prep:'Infus IV selama 60 menit. JANGAN bolus.',
+     note:'Per dosis: 10–15mg/kg tiap 8 jam. Infus 60 mnt.'},
   ]},
  ]},
 
-{id:'ciprofloxacin', name:'Siprofloksasin', category:'Antibiotik',
- syrups:[{conc:250,per:5,label:'250mg/5ml (suspensi)'}], drops:[],
- ref:'BNFC 2023, Medscape',
+// ── ANTIHISTAMIN ───────────────────────────────────────────────
+{id:'cetirizine',name:'Cetirizin',category:'Antihistamin',
+ syrups:[{conc:5,per:5,label:'5mg/5ml'}],drops:[{conc:10,per:1,label:'10mg/ml drop'}],
+ ref:'BNFC 2023',
  variants:[
-  {route:'PO', indications:[
-    // 20–40 mg/kg/hari ÷ 2 = 10–20 mg/kg/dosis
-    {label:'ISK / Pielonefritis', doseMin:10, doseMax:20, freq:2,
-     maxSingleDose:500, maxDailyDose:null,
-     note:'Per DOSIS: 10–20 mg/kg 2x sehari (total 20–40 mg/kg/hari). Durasi 7–14 hari.'},
-    // 30mg/kg/hari ÷ 2 = 15 mg/kg/dosis
-    {label:'Diare bakteri berat (Shigella)', doseMin:10, doseMax:15, freq:2,
-     maxSingleDose:500, maxDailyDose:null,
-     note:'Per DOSIS: 10–15 mg/kg 2x sehari. Durasi 3–5 hari.'},
-    {label:'Tifoid (lini alternatif)', doseMin:15, doseMax:20, freq:2,
-     maxSingleDose:500, maxDailyDose:null,
-     note:'Per DOSIS: 15–20 mg/kg 2x sehari. Durasi 7–10 hari.'},
-    // CF: 30–40 mg/kg/hari ÷ 2
-    {label:'Eksaserbasi paru Cystic Fibrosis', doseMin:15, doseMax:20, freq:2,
-     maxSingleDose:750, maxDailyDose:null,
-     note:'Per DOSIS: 15–20 mg/kg 2x sehari. Durasi 10–14 hari. Supervisi spesialis.'},
-  ]},
-  {route:'IV (infus)', indications:[
-    // 10mg/kg/dosis tiap 8 jam
-    {label:'Infeksi berat / ICU', doseMin:10, doseMax:15, freq:3,
-     maxSingleDose:400, maxDailyDose:null,
-     note:'Per DOSIS: 10–15 mg/kg tiap 8 jam. IV infus 60 mnt. Maks 400mg/dosis.'},
+  {route:'PO',indications:[
+    {label:'Alergi / Urtikaria (2–6 thn)',doseMin:0.25,doseMax:0.25,freq:1,maxSingleDose:5,
+     adult:{fixed:'10mg 1x sehari.'},prep:'Dapat dengan atau tanpa makan.',
+     note:'2–6 thn: maks 5mg/hari.'},
+    {label:'Alergi / Urtikaria (>6 thn)',doseMin:0.25,doseMax:0.25,freq:1,maxSingleDose:10,
+     adult:{fixed:'10mg 1x sehari.'},prep:'',note:'>6 thn: maks 10mg/hari.'},
   ]},
  ]},
 
-// ══════════════════════════════════════════════════
-// ANTIVIRAL
-// ══════════════════════════════════════════════════
-{id:'acyclovir', name:'Acyclovir', category:'Antiviral',
- syrups:[], drops:[],
- ref:'BNFC 2023, Medscape, WHO',
+{id:'ctm',name:'CTM (Klorfeniramin)',category:'Antihistamin',
+ syrups:[{conc:2,per:5,label:'2mg/5ml'}],drops:[],ref:'Medscape, BNFC 2023',
  variants:[
-  {route:'PO', indications:[
-    // 20 mg/kg/dosis 5x sehari (sudah per dosis)
-    {label:'Varisela (Cacar Air) — imunokompeten', doseMin:20, doseMax:20, freq:5,
-     maxSingleDose:800, maxDailyDose:null,
-     note:'Per DOSIS: 20 mg/kg 5x sehari selama 7 hari. Maks 800mg/dosis. Mulai ≤24 jam setelah ruam.'},
-    {label:'Herpes Zoster — imunokompeten', doseMin:20, doseMax:20, freq:5,
-     maxSingleDose:800, maxDailyDose:null,
-     note:'Per DOSIS: 20 mg/kg 5x sehari selama 7 hari.'},
-    {label:'Herpes Simplex (HSV oral ringan)', doseMin:10, doseMax:20, freq:5,
-     maxSingleDose:400, maxDailyDose:null,
-     note:'Per DOSIS: 10–20 mg/kg 5x sehari selama 5–10 hari.'},
-  ]},
-  {route:'IV (infus)', indications:[
-    {label:'Varisela / HSV pada imunokompromais', doseMin:250, doseMax:500, freq:3, unit:'mg/m²',
-     note:'Per DOSIS: 250–500 mg/m² tiap 8 jam. Dosis berbasis LPT. Infus pelan 1 jam. Hidrasi adekuat.'},
-    {label:'Ensefalitis HSV', doseMin:500, doseMax:500, freq:3, unit:'mg/m²',
-     note:'Per DOSIS: 500 mg/m² tiap 8 jam selama 14–21 hari. ICU. Supervisi spesialis.'},
+  {route:'PO',indications:[
+    {label:'Alergi / Rinitis / Urtikaria',doseMin:0.1,doseMax:0.1,freq:3,maxSingleDose:4,maxDailyDose:0.5,
+     adult:{fixed:'4mg tiap 4–6 jam. Maks 24mg/hari.'},prep:'',
+     note:'Per dosis: 0.1mg/kg tiap 4–6 jam. Maks 4mg/dosis. Sedasi signifikan.'},
   ]},
  ]},
 
-// ══════════════════════════════════════════════════
-// ANTIHISTAMIN
-// ══════════════════════════════════════════════════
-{id:'cetirizine', name:'Cetirizin', category:'Antihistamin',
- syrups:[{conc:5,per:5,label:'5mg/5ml'}], drops:[{conc:10,per:1,label:'10mg/ml (drop)'}],
- ref:'BNFC 2023, Medscape',
+// ── KORTIKOSTEROID ─────────────────────────────────────────────
+{id:'dexamethasone',name:'Deksametason',category:'Kortikosteroid',
+ syrups:[{conc:0.5,per:5,label:'0.5mg/5ml elixir'}],drops:[],ref:'BNFC 2023, Medscape',
  variants:[
-  {route:'PO', indications:[
-    // 0.25mg/kg 1x sehari = per dosis
-    {label:'Rinitis alergi / Urtikaria (2–6 tahun)', doseMin:0.25, doseMax:0.25, freq:1,
-     maxSingleDose:5, maxDailyDose:null,
-     note:'Per DOSIS: 0.25 mg/kg 1x sehari. Maks 5mg/hari untuk usia 2–6 tahun.'},
-    {label:'Rinitis alergi / Urtikaria (>6 tahun)', doseMin:0.25, doseMax:0.25, freq:1,
-     maxSingleDose:10, maxDailyDose:null,
-     note:'Per DOSIS: 0.25 mg/kg 1x sehari (biasanya 5–10mg). Maks 10mg/hari.'},
+  {route:'PO',indications:[
+    {label:'Croup (dosis tunggal)',doseMin:0.15,doseMax:0.6,freq:1,maxSingleDose:10,
+     adult:{fixed:'8–16mg/hari dibagi 2–4x (tergantung indikasi).'},
+     prep:'Tablet 0.5mg, 0.75mg. Formulasi IV dapat diberikan PO.',
+     note:'Per dosis: 0.15–0.6mg/kg dosis tunggal.'},
+    {label:'Anti-inflamasi',doseMin:0.04,doseMax:0.15,freq:2,maxSingleDose:8,
+     adult:{fixed:'4–8mg 2x sehari. Taper sesuai respons klinis.'},prep:'',
+     note:'Per dosis: 0.04–0.15mg/kg 2x sehari.'},
+  ]},
+  {route:'IV/IM',indications:[
+    {label:'Croup berat / Edema / Alergi',doseMin:0.15,doseMax:0.6,freq:1,maxSingleDose:10,
+     adult:{fixed:'4–10mg IV/IM. Dapat diulang tiap 6–12 jam.'},
+     prep:'Injeksi IV pelan atau IM. Dapat diencerkan dalam NaCl 0.9%.',
+     note:'Per dosis: 0.15–0.6mg/kg. IV atau IM.'},
   ]},
  ]},
 
-{id:'ctm', name:'CTM (Klorfeniramin)', category:'Antihistamin',
- syrups:[{conc:2,per:5,label:'2mg/5ml'}], drops:[],
- ref:'Medscape, BNFC 2023',
+{id:'methylprednisolone',name:'Metilprednisolon',category:'Kortikosteroid',
+ syrups:[],drops:[],ref:'BNFC 2023, GINA 2023',
  variants:[
-  {route:'PO', indications:[
-    // 0.1mg/kg/dosis tiap 4–6 jam (sudah per dosis)
-    {label:'Alergi / Rinitis / Urtikaria', doseMin:0.1, doseMax:0.1, freq:3,
-     maxSingleDose:4, maxDailyDose:0.5,
-     note:'Per DOSIS: 0.1 mg/kg tiap 4–6 jam. Maks 4mg/dosis. Maks 0.5mg/kg/hari. Efek sedasi signifikan.'},
+  {route:'PO',indications:[
+    {label:'Asma akut',doseMin:0.5,doseMax:1,freq:2,maxSingleDose:40,
+     adult:{fixed:'40mg 1x sehari atau 20mg 2x sehari × 5 hari.'},
+     prep:'Berikan setelah makan.',
+     note:'Per dosis: 0.5–1mg/kg 2x sehari (total 1–2mg/kg/hari ÷ 2).'},
+    {label:'Nefrotik sindrom',doseMin:2,doseMax:2,freq:1,maxSingleDose:60,
+     adult:{fixed:'Supervisi spesialis.'},prep:'',
+     note:'Per dosis: 2mg/kg 1x sehari (maks 60mg). ISKDC protocol 4 minggu.'},
+  ]},
+  {route:'IV',indications:[
+    {label:'Status asmatikus',doseMin:1,doseMax:2,freq:4,maxSingleDose:125,
+     adult:{fixed:'60–125mg IV tiap 6 jam.'},
+     prep:'Larutkan dalam 50ml NaCl 0.9%, infus 15–30 mnt. Jangan bolus cepat.',
+     note:'Per dosis: 1–2mg/kg tiap 6 jam. Maks 125mg/dosis.'},
+    {label:'Pulse therapy (vaskulitis/SLE)',doseMin:10,doseMax:30,freq:1,maxSingleDose:1000,
+     adult:{fixed:'500–1000mg IV 1x sehari × 3 hari.'},
+     prep:'Larutkan dalam 100–250ml NaCl 0.9%, infus 1–3 jam. Monitor EKG, GD.',
+     note:'Per dosis: 10–30mg/kg (maks 1g). Supervisi spesialis.'},
   ]},
  ]},
 
-{id:'diphenhydramine', name:'Difenhidramin', category:'Antihistamin',
- syrups:[], drops:[],
- ref:'Medscape, BNFC 2023',
+// ── BRONKODILATOR ──────────────────────────────────────────────
+{id:'salbutamol',name:'Salbutamol (Albuterol)',category:'Bronkodilator',
+ syrups:[{conc:2,per:5,label:'2mg/5ml'}],drops:[],ref:'BNFC 2023, GINA 2023',
  variants:[
-  {route:'PO', indications:[
-    // 1–1.5 mg/kg/dosis tiap 4–6 jam (sudah per dosis)
-    {label:'Alergi / Urtikaria', doseMin:1, doseMax:1.5, freq:4,
-     maxSingleDose:25, maxDailyDose:5,
-     note:'Per DOSIS: 1–1.5 mg/kg tiap 4–6 jam. Maks 25mg/dosis. Sedasi kuat. Hindari <2 tahun.'},
-    {label:'Mabuk perjalanan / Mual', doseMin:1, doseMax:1.5, freq:3,
-     maxSingleDose:25, maxDailyDose:null,
-     note:'Per DOSIS: 1–1.5 mg/kg tiap 6–8 jam, berikan 30 mnt sebelum perjalanan.'},
+  {route:'PO',indications:[
+    {label:'Bronkospasme ringan',doseMin:0.1,doseMax:0.15,freq:3,maxSingleDose:4,
+     adult:{fixed:'2–4mg 3–4x sehari.'},prep:'',
+     note:'Per dosis: 0.1–0.15mg/kg.'},
   ]},
-  {route:'IV/IM', indications:[
-    {label:'Reaksi alergi berat / Anafilaksis (adjuvan)', doseMin:1, doseMax:2, freq:4,
-     maxSingleDose:50, maxDailyDose:null,
-     note:'Per DOSIS: 1–2 mg/kg IV/IM. Maks 50mg. Adjuvan epinefrin pada anafilaksis.'},
+  {route:'Nebulisasi',indications:[
+    {label:'Serangan asma akut',doseMin:0.15,doseMax:0.15,freq:3,maxSingleDose:5,
+     adult:{fixed:'2.5–5mg tiap 20 mnt × 3 (serangan akut), lalu tiap 1–4 jam.'},
+     prep:'Encerkan dalam NaCl 0.9% hingga total 3–4ml. Nebulisasi 10–15 mnt.',
+     note:'Per dosis: 0.15mg/kg (min 2.5mg). Dapat diulang tiap 20 mnt × 3 saat serangan.'},
   ]},
  ]},
 
-{id:'loratadine', name:'Loratadin', category:'Antihistamin',
- syrups:[{conc:5,per:5,label:'5mg/5ml'}], drops:[],
- ref:'BNFC 2023, Medscape',
+{id:'aminophylline_po',name:'Aminofilin (PO/Tablet)',category:'Bronkodilator',
+ syrups:[],drops:[],ref:'BNFC 2023, Medscape',
  variants:[
-  {route:'PO', indications:[
-    {label:'Rinitis alergi / Urtikaria (2–12 th, <30kg)', doseMin:0.2, doseMax:0.2, freq:1,
-     maxSingleDose:5, maxDailyDose:null,
-     note:'Per DOSIS: ~5mg 1x sehari (<30kg). Non-sedatif.'},
-    {label:'Rinitis alergi / Urtikaria (>12 th atau >30kg)', doseMin:0.2, doseMax:0.2, freq:1,
-     maxSingleDose:10, maxDailyDose:null,
-     note:'Per DOSIS: ~10mg 1x sehari (>30kg atau >12 tahun).'},
+  {route:'PO',indications:[
+    {label:'Asma / PPOK maintenance',doseMin:5,doseMax:6,freq:3,maxSingleDose:300,
+     adult:{fixed:'100–300mg 3x sehari (teofilin). Kadar darah target 10–20mcg/ml.'},
+     prep:'Berikan bersama makanan untuk kurangi mual.',
+     note:'Per dosis: 5–6mg/kg/dosis (amonioflin oral). Pantau kadar teofilin.'},
   ]},
  ]},
 
-{id:'tremenza', name:'Tremenza (Pseudoefedrin+Triprolidin)', category:'Antihistamin',
- syrups:[], drops:[], fixedDose:true,
- fixedDoseTable:[
-   {min:0,max:2,label:'<2 tahun',dose:'Tidak direkomendasikan'},
-   {min:2,max:6,label:'2–6 tahun',dose:'½ tablet atau 2.5 ml sirup, 3x/hari'},
-   {min:6,max:12,label:'6–12 tahun',dose:'1 tablet atau 5 ml sirup, 3x/hari'},
-   {min:12,max:99,label:'>12 tahun',dose:'2 tablet atau 10 ml sirup, 3x/hari'},
- ],
- note:'Pseudoefedrin 15mg + Triprolidin 1.25mg per 5ml. Dosis berbasis usia.',
- ref:'MIMS Indonesia', variants:[]},
-
-// ══════════════════════════════════════════════════
-// KORTIKOSTEROID
-// ══════════════════════════════════════════════════
-{id:'dexamethasone', name:'Deksametason', category:'Kortikosteroid',
- syrups:[{conc:0.5,per:5,label:'0.5mg/5ml (elixir)'}], drops:[],
- ref:'BNFC 2023, Medscape, AAP',
+// ── SEDASI / ANTIKONVULSAN ─────────────────────────────────────
+{id:'diazepam',name:'Diazepam',category:'Sedasi / Antikonvulsan',
+ syrups:[],drops:[],ref:'BNFC 2023, Medscape',
  variants:[
-  {route:'PO', indications:[
-    // Croup: 0.15–0.6 mg/kg dosis tunggal (1x)
-    {label:'Croup (Laringotrakeobronkitis)', doseMin:0.15, doseMax:0.6, freq:1,
-     maxSingleDose:10, maxDailyDose:null,
-     note:'Per DOSIS: 0.15–0.6 mg/kg dosis tunggal 1x. Efek mulai 1–2 jam.'},
-    // Anti-inflamasi: 0.08–0.3 mg/kg/hari ÷ 2 = 0.04–0.15 mg/kg/dosis
-    {label:'Anti-inflamasi (umum)', doseMin:0.04, doseMax:0.15, freq:2,
-     maxSingleDose:8, maxDailyDose:null,
-     note:'Per DOSIS: 0.04–0.15 mg/kg 2x sehari (total 0.08–0.3 mg/kg/hari ÷ 2).'},
-  ]},
-  {route:'IV/IM', indications:[
-    {label:'Croup berat (dosis tunggal)', doseMin:0.15, doseMax:0.6, freq:1,
-     maxSingleDose:10, maxDailyDose:null,
-     note:'Per DOSIS: 0.15–0.6 mg/kg dosis tunggal. Onset lebih cepat dibanding PO.'},
-    // Edema serebral: loading 0.5–1 mg/kg IV, lanjut 0.25 tiap 6 jam
-    {label:'Edema serebral (loading)', doseMin:0.5, doseMax:1.0, freq:4,
-     maxSingleDose:10, maxDailyDose:null,
-     note:'Per DOSIS: loading 0.5–1 mg/kg IV, lanjut 0.25mg/kg tiap 6 jam. Supervisi spesialis.'},
-    {label:'Anti-inflamasi / Anti-alergi berat', doseMin:0.04, doseMax:0.15, freq:2,
-     maxSingleDose:10, maxDailyDose:null,
-     note:'Per DOSIS: 0.04–0.15 mg/kg tiap 12 jam.'},
-  ]},
- ]},
-
-{id:'methylprednisolone', name:'Metilprednisolon', category:'Kortikosteroid',
- syrups:[], drops:[],
- ref:'BNFC 2023, Medscape, GINA 2023',
- variants:[
-  {route:'PO', indications:[
-    // Asma: 1–2 mg/kg/hari ÷ 2 = 0.5–1 mg/kg/dosis
-    {label:'Asma akut', doseMin:0.5, doseMax:1, freq:2,
-     maxSingleDose:40, maxDailyDose:null,
-     note:'Per DOSIS: 0.5–1 mg/kg 2x sehari (total 1–2 mg/kg/hari ÷ 2) selama 3–5 hari. Maks 40mg/hari. Setelah makan.'},
-    // Alergi: 0.5–1 mg/kg/hari ÷ 2
-    {label:'Alergi berat / Angioedema', doseMin:0.25, doseMax:0.5, freq:2,
-     maxSingleDose:32, maxDailyDose:null,
-     note:'Per DOSIS: 0.25–0.5 mg/kg 2x sehari.'},
-    // Nefrotik: 2 mg/kg/hari 1x sehari → per dosis = 2 mg/kg
-    {label:'Nefrotik sindrom (remisi awal)', doseMin:2, doseMax:2, freq:1,
-     maxSingleDose:60, maxDailyDose:null,
-     note:'Per DOSIS: 2 mg/kg 1x sehari (maks 60mg) selama 4 minggu, lalu taper. Supervisi nefrologi.'},
-  ]},
-  {route:'IV (infus)', indications:[
-    // Status asmatikus: 1–2 mg/kg/dosis tiap 6 jam (sudah per dosis)
-    {label:'Status asmatikus / Asma berat', doseMin:1, doseMax:2, freq:4,
-     maxSingleDose:125, maxDailyDose:null,
-     note:'Per DOSIS: 1–2 mg/kg tiap 6 jam. Maks 125mg/dosis. Infus 15–30 mnt.'},
-    // Pulse therapy: 10–30 mg/kg 1x sehari × 3 hari
-    {label:'Pulse therapy (vaskulitis/SLE aktif)', doseMin:10, doseMax:30, freq:1,
-     maxSingleDose:1000, maxDailyDose:null,
-     note:'Per DOSIS: 10–30 mg/kg IV 1x sehari × 3 hari (maks 1g). Infus 1–3 jam. Monitor EKG, GD. Spesialis.'},
-  ]},
- ]},
-
-// ══════════════════════════════════════════════════
-// BRONKODILATOR
-// ══════════════════════════════════════════════════
-{id:'salbutamol', name:'Salbutamol (Albuterol)', category:'Bronkodilator',
- syrups:[{conc:2,per:5,label:'2mg/5ml'}], drops:[],
- ref:'BNFC 2023, GINA 2023, Medscape',
- variants:[
-  {route:'PO', indications:[
-    // 0.1–0.15 mg/kg/dosis tiap 6–8 jam (sudah per dosis)
-    {label:'Bronkospasme / Asma ringan', doseMin:0.1, doseMax:0.15, freq:3,
-     maxSingleDose:4, maxDailyDose:null,
-     note:'Per DOSIS: 0.1–0.15 mg/kg tiap 6–8 jam. Maks 4mg/dosis.'},
-  ]},
-  {route:'Inhalasi (Nebulisasi)', indications:[
-    // 0.15 mg/kg/dosis (sudah per dosis)
-    {label:'Serangan asma akut', doseMin:0.15, doseMax:0.15, freq:3,
-     maxSingleDose:5, maxDailyDose:null,
-     note:'Per DOSIS: 0.15 mg/kg (min 2.5mg) dalam NaCl 0.9% hingga 3–4ml. Maks 5mg. Dapat diulang tiap 20 mnt ×3 pada serangan akut.'},
-    {label:'Bronkiolitis (bila ada respons)', doseMin:0.15, doseMax:0.15, freq:3,
-     maxSingleDose:2.5, maxDailyDose:null,
-     note:'Per DOSIS: 0.15 mg/kg. Efektivitas pada bronkiolitis masih diperdebatkan, lanjutkan hanya bila ada respons jelas.'},
-  ]},
-  {route:'IV (infus kontinu)', indications:[
-    {label:'Status asmatikus refrakter', doseMin:0.005, doseMax:0.01, freq:1, unit:'mcg/kg/mnt',
-     note:'Infus kontinu 0.005–0.01 mcg/kg/mnt, titrasi s.d. 0.2 mcg/kg/mnt. ICU. Monitor EKG, K+.'},
-  ]},
- ]},
-
-// ══════════════════════════════════════════════════
-// SEDASI / ANTIKONVULSAN
-// ══════════════════════════════════════════════════
-{id:'diazepam', name:'Diazepam', category:'Sedasi / Antikonvulsan',
- syrups:[], drops:[],
- ref:'BNFC 2023, Medscape',
- variants:[
-  // DIAZEPAM REKTAL: TIDAK per kgBB — fixed dose berdasarkan BB
-  {route:'Rektal (supp/enema)', indications:[
-    {label:'Kejang akut / Kejang Demam', doseMin:0, doseMax:0, freq:1,
-     fixedByWeight:true,
+  {route:'Rektal',indications:[
+    {label:'Kejang akut / Kejang Demam',doseMin:0,doseMax:0,freq:1,fixedByWeight:true,
      fixedWeightTable:[
-       {maxKg:10, dose:5, doseLabel:'5 mg (BB <10 kg)'},
-       {maxKg:999, dose:10, doseLabel:'10 mg (BB ≥10 kg)'},
+       {maxKg:10,dose:5,doseLabel:'5 mg rektal (BB <10 kg)'},
+       {maxKg:999,dose:10,doseLabel:'10 mg rektal (BB ≥10 kg)'},
      ],
-     note:'Dosis TIDAK berdasarkan kg, tapi berdasarkan berat badan: <10kg → 5mg rektal; ≥10kg → 10mg rektal. Dapat diulang 1x setelah 10 mnt bila kejang berlanjut. Siapkan resusitasi.'},
+     adult:{fixed:'10mg rektal. Dapat diulang 1x setelah 5 mnt.'},
+     prep:'Suppositoria rektal atau larutan rektal enema.',
+     note:'Bukan per kgBB: <10kg → 5mg; ≥10kg → 10mg. Ulang 1x setelah 10 mnt.'},
   ]},
-  {route:'IV (injeksi lambat)', indications:[
-    // 0.2–0.3 mg/kg/dosis (sudah per dosis)
-    {label:'Kejang akut / Status epileptikus', doseMin:0.2, doseMax:0.3, freq:1,
-     maxSingleDose:10, maxDailyDose:null,
-     note:'Per DOSIS: 0.2–0.3 mg/kg IV pelan 1mg/menit. Maks 10mg. Ulang setelah 5 mnt (1x). Monitor pernapasan.'},
-    {label:'Sedasi prosedural', doseMin:0.1, doseMax:0.2, freq:1,
-     maxSingleDose:5, maxDailyDose:null,
-     note:'Per DOSIS: 0.1–0.2 mg/kg IV titrasi pelan. Maks 5mg. Siapkan flumazenil.'},
+  {route:'IV',indications:[
+    {label:'Kejang akut / Status epileptikus',doseMin:0.2,doseMax:0.3,freq:1,maxSingleDose:10,
+     adult:{fixed:'5–10mg IV pelan. Dapat diulang tiap 5 mnt, maks 30mg.'},
+     prep:'Injeksi IV pelan 1mg/menit. Encerkan 1:1 dengan NaCl 0.9% bila perlu.',
+     note:'Per dosis: 0.2–0.3mg/kg IV pelan. Maks 10mg. Monitor pernapasan.'},
   ]},
  ]},
 
-{id:'midazolam', name:'Midazolam', category:'Sedasi / Antikonvulsan',
- syrups:[], drops:[],
- ref:'BNFC 2023, Medscape',
+{id:'midazolam',name:'Midazolam',category:'Sedasi / Antikonvulsan',
+ syrups:[],drops:[],ref:'BNFC 2023, Medscape',
  variants:[
-  {route:'IV (injeksi)', indications:[
-    // sudah per dosis
-    {label:'Sedasi prosedural', doseMin:0.05, doseMax:0.1, freq:1,
-     maxSingleDose:2.5, maxDailyDose:null,
-     note:'Per DOSIS: 0.05–0.1 mg/kg IV pelan, titrasi per 2 mnt. Pantau SpO2.'},
-    {label:'Status epileptikus', doseMin:0.1, doseMax:0.2, freq:1,
-     maxSingleDose:10, maxDailyDose:null,
-     note:'Per DOSIS: 0.1–0.2 mg/kg IV pelan. Maks 10mg. Monitor pernapasan.'},
+  {route:'IV',indications:[
+    {label:'Sedasi prosedural',doseMin:0.05,doseMax:0.1,freq:1,maxSingleDose:2.5,
+     adult:{fixed:'1–2.5mg IV pelan, titrasi per 2–3 mnt. Maks 5mg.'},
+     prep:'Injeksi IV pelan. Dapat diencerkan dengan NaCl 0.9%.',
+     note:'Per dosis: 0.05–0.1mg/kg. Titrasi pelan. Pantau SpO2.'},
+    {label:'Status epileptikus',doseMin:0.1,doseMax:0.2,freq:1,maxSingleDose:10,
+     adult:{fixed:'5–10mg IV bolus pelan.'},
+     prep:'Injeksi IV pelan 2–3 mnt.',note:'Per dosis: 0.1–0.2mg/kg. Maks 10mg.'},
   ]},
-  {route:'Intranasal / Bukal', indications:[
-    {label:'Kejang akut (tanpa akses IV)', doseMin:0.2, doseMax:0.3, freq:1,
-     maxSingleDose:10, maxDailyDose:null,
-     note:'Per DOSIS: 0.2–0.3 mg/kg. Maks 10mg. Atomizer nasal atau diteteskan bukal. Efektif dan aman.'},
-  ]},
-  {route:'IM', indications:[
-    {label:'Sedasi pra-operasi', doseMin:0.05, doseMax:0.15, freq:1,
-     maxSingleDose:5, maxDailyDose:null,
-     note:'Per DOSIS: 0.05–0.15 mg/kg IM, 30–60 mnt sebelum prosedur. Maks 5mg.'},
+  {route:'Intranasal / Bukal',indications:[
+    {label:'Kejang akut (tanpa akses IV)',doseMin:0.2,doseMax:0.3,freq:1,maxSingleDose:10,
+     adult:{fixed:'10mg intranasal/bukal.'},
+     prep:'Gunakan atomizer nasal atau teteskan larutan IV di antara pipi dan gusi (bukal).',
+     note:'Per dosis: 0.2–0.3mg/kg. Sangat efektif pra-hospital.'},
   ]},
  ]},
 
-{id:'phenytoin', name:'Fenitoin', category:'Sedasi / Antikonvulsan',
- syrups:[], drops:[],
- ref:'BNFC 2023, Medscape',
+{id:'phenytoin',name:'Fenitoin',category:'Sedasi / Antikonvulsan',
+ syrups:[],drops:[],ref:'BNFC 2023, Medscape',
  variants:[
-  {route:'IV (infus lambat)', indications:[
-    // Loading: 15–20 mg/kg dosis tunggal
-    {label:'Status epileptikus — loading dose', doseMin:15, doseMax:20, freq:1,
-     maxSingleDose:1000, maxDailyDose:null,
-     note:'Per DOSIS: 15–20 mg/kg IV dosis tunggal, kecepatan maks 1mg/kg/mnt. Monitor EKG dan TD. Spesialis.'},
-    // Maintenance: 5–8 mg/kg/hari ÷ 2 = 2.5–4 mg/kg/dosis
-    {label:'Epilepsi — maintenance', doseMin:2.5, doseMax:4, freq:2,
-     maxSingleDose:300, maxDailyDose:null,
-     note:'Per DOSIS: 2.5–4 mg/kg tiap 12 jam (total 5–8 mg/kg/hari ÷ 2). Pantau kadar (target 10–20 mcg/ml).'},
+  {route:'IV',indications:[
+    {label:'Status epileptikus — loading',doseMin:15,doseMax:20,freq:1,maxSingleDose:1000,
+     adult:{fixed:'15–20mg/kg IV (maks 1g). Maks 50mg/mnt.'},
+     prep:'Encerkan dalam NaCl 0.9% (BUKAN D5W — kristalisasi). Kecepatan maks 1mg/kg/mnt (anak), 50mg/mnt (dewasa). Monitor EKG dan TD.',
+     note:'Per dosis tunggal loading: 15–20mg/kg. HANYA dalam NaCl 0.9%. Monitor EKG ketat.'},
+    {label:'Epilepsi — maintenance',doseMin:2.5,doseMax:4,freq:2,maxSingleDose:300,
+     adult:{fixed:'300–400mg/hari, dibagi 1–3x. Target kadar 10–20 mcg/ml.'},
+     prep:'Infus dalam NaCl 0.9% pelan. Pantau kadar fenitoin.',
+     note:'Per dosis: 2.5–4mg/kg tiap 12 jam (total 5–8mg/kg/hari ÷ 2).'},
   ]},
  ]},
 
-// ══════════════════════════════════════════════════
-// KARDIOVASKULAR
-// ══════════════════════════════════════════════════
-{id:'atropine', name:'Atropin', category:'Kardiovaskular',
- syrups:[], drops:[],
- ref:'Medscape, BNFC 2023',
+// ── KARDIOVASKULAR ─────────────────────────────────────────────
+{id:'atropine',name:'Atropin / Sulfas Atropin',category:'Kardiovaskular',
+ syrups:[],drops:[],ref:'BNFC 2023, ACLS 2020',
  variants:[
-  {route:'IV/IM', indications:[
-    // 0.02 mg/kg/dosis tunggal (sudah per dosis)
-    {label:'Bradikardi simtomatik', doseMin:0.02, doseMax:0.02, freq:1,
-     maxSingleDose:0.5, maxDailyDose:null,
-     note:'Per DOSIS: 0.02 mg/kg IV. Min 0.1mg (cegah bradikardi paradoksal), maks 0.5mg. Ulang 1x setelah 5 mnt bila perlu.'},
-    {label:'Premedikasi anestesi', doseMin:0.01, doseMax:0.02, freq:1,
-     maxSingleDose:0.4, maxDailyDose:null,
-     note:'Per DOSIS: 0.01–0.02 mg/kg IM/IV 30–60 mnt sebelum induksi.'},
-    // Organofosfat: 0.05–0.1 mg/kg titrasi
-    {label:'Keracunan organofosfat', doseMin:0.05, doseMax:0.1, freq:1,
-     maxSingleDose:null, maxDailyDose:null,
-     note:'Per DOSIS: 0.05–0.1 mg/kg IV/IM. Ulang tiap 5–10 mnt sampai sekret mengering. Titrasi agresif.'},
+  {route:'IV/IM',indications:[
+    {label:'Bradikardi simtomatik',doseMin:0.02,doseMax:0.02,freq:1,maxSingleDose:0.5,
+     adult:{fixed:'0.5mg IV bolus. Dapat diulang tiap 3–5 mnt. Maks 3mg total (dewasa).'},
+     prep:'Injeksi IV bolus langsung (undiluted) atau encerkan dalam 10ml NaCl 0.9%.',
+     note:'Per dosis: 0.02mg/kg. Min 0.1mg (hindari bradikardi paradoksal). Maks 0.5mg (anak), 3mg total (dewasa).'},
+    {label:'Premedikasi anestesi',doseMin:0.01,doseMax:0.02,freq:1,maxSingleDose:0.4,
+     adult:{fixed:'0.3–0.6mg IM/IV 30–60 mnt sebelum induksi.'},
+     prep:'IM atau IV 30–60 mnt sebelum prosedur.',note:'Per dosis: 0.01–0.02mg/kg IM/IV.'},
+    {label:'Keracunan organofosfat',doseMin:0.05,doseMax:0.1,freq:1,maxSingleDose:null,
+     adult:{fixed:'2–4mg IV bolus. Ulang tiap 5–10 mnt sampai sekret mengering. Bisa butuh dosis sangat besar.'},
+     prep:'Bolus IV langsung. Titrasi agresif sampai sekret mengering.',
+     note:'Per dosis: 0.05–0.1mg/kg IV/IM. Ulangi tiap 5–10 mnt — tidak ada maks absolut pada keracunan berat.'},
   ]},
  ]},
 
-{id:'epinephrine', name:'Epinefrin (Adrenalin)', category:'Kardiovaskular',
- syrups:[], drops:[],
- ref:'BNFC 2023, WAO 2020, ILCOR 2021',
+{id:'epinephrine_im',name:'Epinefrin / Adrenalin (Bolus/IM)',category:'Kardiovaskular',
+ syrups:[],drops:[],ref:'BNFC 2023, WAO 2020, ACLS 2020',
  variants:[
-  {route:'IM (paha anterolateral)', indications:[
-    {label:'ANAFILAKSIS — lini pertama', doseMin:0.01, doseMax:0.01, freq:1,
-     maxSingleDose:0.5, maxDailyDose:null,
-     note:'🚨 Per DOSIS: 0.01 mg/kg dari larutan 1:1000. Maks 0.5mg. Suntik IM paha luar. Ulang tiap 5–10 mnt. DARURAT — panggil bantuan!'},
+  {route:'IM',indications:[
+    {label:'ANAFILAKSIS — lini pertama',doseMin:0.01,doseMax:0.01,freq:1,maxSingleDose:0.5,
+     adult:{fixed:'0.3–0.5mg IM (0.3–0.5ml dari 1:1000). Paha anterolateral. Ulang tiap 5–10 mnt.'},
+     prep:'Larutan 1:1000 (1mg/ml). Suntik IM langsung dari ampul ke paha luar.',
+     note:'🚨 DARURAT! Per dosis: 0.01mg/kg IM (maks 0.5mg). Tidak perlu encerkan untuk IM.'},
   ]},
-  {route:'IV (infus kontinu)', indications:[
-    {label:'Syok anafilaktik refrakter', doseMin:0.05, doseMax:1.0, freq:1, unit:'mcg/kg/mnt',
-     note:'Infus kontinu 0.05–1 mcg/kg/mnt. Titrasi sesuai hemodinamik. ICU.'},
+  {route:'IV (bolus)',indications:[
+    {label:'Henti Jantung (ACLS/PALS)',doseMin:0.01,doseMax:0.01,freq:1,maxSingleDose:1,
+     adult:{fixed:'1mg IV bolus tiap 3–5 mnt selama henti jantung.'},
+     prep:'Bolus IV langsung dari larutan 1:10.000 (0.1mg/ml). Bilas dengan 20ml NaCl 0.9%.',
+     note:'Per dosis: 0.01mg/kg IV (maks 1mg). Dapat diulang tiap 3–5 mnt.'},
   ]},
-  {route:'Inhalasi (Nebulisasi)', indications:[
-    // 0.5 ml/kg → fixed-ish, capped 5ml
-    {label:'Croup berat (L-epinefrin)', doseMin:0.5, doseMax:0.5, freq:1, unit:'ml',
-     note:'L-epinefrin 1:1000: 0.5ml/kg (maks 5ml) + NaCl 0.9% hingga 3ml. Observasi 2 jam (rebound effect).'},
+  {route:'Nebulisasi',indications:[
+    {label:'Croup berat',doseMin:0.5,doseMax:0.5,freq:1,unit:'ml',
+     adult:{fixed:'5ml larutan 1:1000 nebulisasi (tidak diindikasikan dewasa tanpa croup).'},
+     prep:'L-epinefrin 1:1000: 0.5ml/kg (maks 5ml) + NaCl 0.9% hingga 3ml. Nebulisasi 10–15 mnt.',
+     note:'Volume (bukan mg/kg): 0.5ml/kg, maks 5ml. Observasi 2 jam pasca nebulisasi.'},
   ]},
  ]},
 
-// ══════════════════════════════════════════════════
-// LAINNYA
-// ══════════════════════════════════════════════════
-{id:'ambroxol', name:'Ambroxol', category:'Lainnya',
+// ── LAINNYA ────────────────────────────────────────────────────
+{id:'ambroxol',name:'Ambroxol',category:'Lainnya',
  syrups:[{conc:15,per:5,label:'15mg/5ml'},{conc:30,per:5,label:'30mg/5ml'}],
- drops:[{conc:7.5,per:1,label:'7.5mg/ml (drop)'}],
- ref:'Medscape, MIMS Indonesia',
+ drops:[{conc:7.5,per:1,label:'7.5mg/ml drop'}],ref:'Medscape, MIMS',
  variants:[
-  {route:'PO', indications:[
-    // 1.2–1.6 mg/kg/dosis (sudah per dosis)
-    {label:'Sekret bronkus / Batuk berdahak', doseMin:1.2, doseMax:1.6, freq:3,
-     maxSingleDose:30, maxDailyDose:null,
-     note:'Per DOSIS: 1.2–1.6 mg/kg 2–3x sehari bersama makanan. Maks 30mg/dosis.'},
+  {route:'PO',indications:[
+    {label:'Batuk berdahak',doseMin:1.2,doseMax:1.6,freq:3,maxSingleDose:30,
+     adult:{fixed:'30mg 2–3x sehari (atau 75mg slow-release 1x sehari).'},
+     prep:'Berikan bersama makanan.',note:'Per dosis: 1.2–1.6mg/kg 2–3x sehari.'},
   ]},
  ]},
 
-{id:'lactob', name:'Lacto-B (Probiotik)', category:'Probiotik',
- syrups:[], drops:[], fixedDose:true,
- fixedDoseTable:[{min:0,max:99,label:'Semua usia',dose:'1–2 sachet, 3x sehari bersama/setelah makan'}],
- note:'Larutkan dalam air/susu tidak panas. Mengandung L. acidophilus, Bifidobacterium, S. thermophilus.',
- ref:'MIMS Indonesia', variants:[]},
+{id:'lactob',name:'Lacto-B (Probiotik)',category:'Probiotik',
+ syrups:[],drops:[],fixedDose:true,
+ fixedDoseTable:[{min:0,max:999,label:'Semua usia / Dewasa',dose:'1–2 sachet, 3x sehari bersama/setelah makan'}],
+ adultDose:'1–2 sachet, 3x sehari.',
+ note:'Larutkan dalam air/susu tidak panas.',ref:'MIMS Indonesia',variants:[]},
 
-{id:'ketoconazole', name:'Ketokonazol', category:'Antijamur',
- syrups:[], drops:[],
- ref:'BNFC 2023, Medscape',
+{id:'ketoconazole',name:'Ketokonazol',category:'Antijamur',
+ syrups:[],drops:[],ref:'BNFC 2023, Medscape',
  variants:[
-  {route:'PO', indications:[
-    // 3.3–6.6 mg/kg/hari ÷ 1 = per dosis (1x sehari)
-    {label:'Kandidiasis / Tinea kapitis', doseMin:3.3, doseMax:6.6, freq:1,
-     maxSingleDose:200, maxDailyDose:null,
-     note:'Per DOSIS: 3.3–6.6 mg/kg 1x sehari bersama makanan. Maks 200mg/hari. Monitor fungsi hati. Banyak interaksi obat.'},
+  {route:'PO',indications:[
+    {label:'Kandidiasis / Tinea kapitis',doseMin:3.3,doseMax:6.6,freq:1,maxSingleDose:200,
+     adult:{fixed:'200mg 1x sehari bersama makanan. Maks 400mg/hari.'},
+     prep:'Berikan bersama makanan.',
+     note:'Per dosis: 3.3–6.6mg/kg 1x sehari. Monitor fungsi hati.'},
   ]},
  ]},
 ];
@@ -1048,48 +1026,57 @@ let builtinDrugs = [
 // ================================================================
 // CUSTOM DRUGS & EDITS
 // ================================================================
-let customDrugs = [], builtinEdits = {};
-try{const s=localStorage.getItem('pdcv31');if(s)customDrugs=JSON.parse(s);}catch(e){}
-try{const s=localStorage.getItem('pdcv31e');if(s)builtinEdits=JSON.parse(s);}catch(e){}
+let customDrugs=[], builtinEdits={};
+try{const s=localStorage.getItem('pdcv4');if(s)customDrugs=JSON.parse(s);}catch(e){}
+try{const s=localStorage.getItem('pdcv4e');if(s)builtinEdits=JSON.parse(s);}catch(e){}
 builtinDrugs=builtinDrugs.map(d=>builtinEdits[d.id]?{...d,...builtinEdits[d.id]}:d);
 
 function allDrugs(){return[...builtinDrugs,...customDrugs];}
 function findDrug(id){return allDrugs().find(d=>d.id===id);}
 
 // ================================================================
-// STATE & RENDERING
+// MODE (anak/dewasa)
+// ================================================================
+let patientMode='anak';
+function setMode(m){
+  patientMode=m;
+  document.getElementById('modeAnak').classList.toggle('active',m==='anak');
+  document.getElementById('modeDewasa').classList.toggle('active',m==='dewasa');
+  document.getElementById('anakInputs').style.display=m==='anak'?'block':'none';
+  document.getElementById('dewasaInputs').style.display=m==='dewasa'?'block':'none';
+}
+
+// ================================================================
+// DRUG LIST
 // ================================================================
 let activeCat='Semua', selectedDrugs=new Set(), allSelected=false;
-
 function getCategories(){return['Semua',...[...new Set(allDrugs().map(d=>d.category))].sort()];}
 function renderCatFilter(){
   document.getElementById('catFilter').innerHTML=getCategories().map(c=>
     `<div class="cat-chip ${activeCat===c?'active':''}" onclick="setCat('${c}')">${c}</div>`).join('');
 }
 function setCat(c){activeCat=c;renderCatFilter();renderDrugList();}
-
 function renderDrugList(filter=''){
   const list=document.getElementById('drugList');
   const q=filter.toLowerCase();
   const filtered=allDrugs().filter(d=>{
-    const matchCat=activeCat==='Semua'||d.category===activeCat;
-    const matchQ=!q||d.name.toLowerCase().includes(q)||(d.category||'').toLowerCase().includes(q);
-    return matchCat&&matchQ;
+    return (activeCat==='Semua'||d.category===activeCat)&&
+      (!q||d.name.toLowerCase().includes(q)||(d.category||'').toLowerCase().includes(q));
   });
-  if(!filtered.length){list.innerHTML='<div style="text-align:center;color:var(--text3);font-size:.73rem;padding:16px">Tidak ada obat ditemukan</div>';return;}
+  if(!filtered.length){list.innerHTML='<div style="text-align:center;color:var(--text3);font-size:.71rem;padding:14px">Tidak ditemukan</div>';return;}
   list.innerHTML=filtered.map(d=>{
-    const isCustom=!!customDrugs.find(c=>c.id===d.id);
-    const isEdited=!!builtinEdits[d.id];
+    const isC=!!customDrugs.find(c=>c.id===d.id);
+    const isE=!!builtinEdits[d.id];
     const routes=d.fixedDose?['Per usia']:(d.variants||[]).map(v=>v.route);
     return `<div class="drug-item ${selectedDrugs.has(d.id)?'active':''}" onclick="toggleDrug('${d.id}')">
-      <div class="drug-check"></div>
+      <div class="dchk"></div>
       <div style="flex:1;min-width:0">
-        <div class="drug-name">${d.name}${isCustom?'<span class="tag tag-c">custom</span>':''}${isEdited&&!isCustom?'<span class="tag tag-e">edited</span>':''}</div>
-        <div class="drug-meta">${routes.join(' · ')} · ${d.category}</div>
+        <div class="dname">${d.name}${isC?'<span class="tag tc">custom</span>':''}${isE&&!isC?'<span class="tag te">edited</span>':''}</div>
+        <div class="dmeta">${routes.join(' · ')} · ${d.category}</div>
       </div>
-      <div class="drug-actions">
-        <button class="act-btn" onclick="event.stopPropagation();openEdit('${d.id}')">✏️</button>
-        ${isCustom?`<button class="act-btn del" onclick="event.stopPropagation();delDrug('${d.id}')">✕</button>`:''}
+      <div class="dacts">
+        <button class="abt" onclick="event.stopPropagation();openEdit('${d.id}')">✏️</button>
+        ${isC?`<button class="abt del" onclick="event.stopPropagation();delDrug('${d.id}')">✕</button>`:''}
       </div>
     </div>`;
   }).join('');
@@ -1097,7 +1084,7 @@ function renderDrugList(filter=''){
 document.getElementById('searchDrug').addEventListener('input',e=>renderDrugList(e.target.value));
 function toggleDrug(id){selectedDrugs.has(id)?selectedDrugs.delete(id):selectedDrugs.add(id);renderDrugList(document.getElementById('searchDrug').value);}
 function toggleSelAll(){allSelected=!allSelected;if(allSelected)allDrugs().forEach(d=>selectedDrugs.add(d.id));else selectedDrugs.clear();renderDrugList(document.getElementById('searchDrug').value);}
-function delDrug(id){if(!confirm('Hapus?'))return;customDrugs=customDrugs.filter(d=>d.id!==id);selectedDrugs.delete(id);localStorage.setItem('pdcv31',JSON.stringify(customDrugs));renderCatFilter();renderDrugList();}
+function delDrug(id){if(!confirm('Hapus?'))return;customDrugs=customDrugs.filter(d=>d.id!==id);selectedDrugs.delete(id);localStorage.setItem('pdcv4',JSON.stringify(customDrugs));renderCatFilter();renderDrugList();}
 
 // ================================================================
 // ADD DRUG
@@ -1105,26 +1092,18 @@ function delDrug(id){if(!confirm('Hapus?'))return;customDrugs=customDrugs.filter
 function toggleAddForm(){document.getElementById('addForm').classList.toggle('open');}
 function saveDrug(){
   const name=document.getElementById('nName').value.trim();
-  const cat=document.getElementById('nCat').value;
+  if(!name){alert('Nama wajib diisi.');return;}
   const dMin=parseFloat(document.getElementById('nDmin').value);
   const dMax=parseFloat(document.getElementById('nDmax').value);
-  const msd=parseFloat(document.getElementById('nMsd').value)||null;
-  const mdd=parseFloat(document.getElementById('nMdd').value)||null;
-  const freq=parseInt(document.getElementById('nFreq').value)||3;
-  const note=document.getElementById('nNote').value.trim();
+  if(isNaN(dMin)||isNaN(dMax)){alert('Isi dosis min dan max.');return;}
   const sr=document.getElementById('nSyr').value.trim();
-  const dr=document.getElementById('nDrop').value.trim();
-  if(!name){alert('Nama obat wajib diisi.');return;}
-  if(isNaN(dMin)||isNaN(dMax)){alert('Isi dosis min dan max (per dosis).');return;}
   const syrups=sr?sr.split(',').map(s=>({conc:parseFloat(s.trim()),per:5,label:`${s.trim()}mg/5ml`})).filter(s=>!isNaN(s.conc)):[];
-  const drops=dr?[{conc:parseFloat(dr),per:0.6,label:`${dr}mg/0.6ml (drop)`}].filter(s=>!isNaN(s.conc)):[];
-  const drug={id:'c_'+Date.now(),name,category:cat,syrups,drops,ref:'Ditambahkan manual',
-    variants:[{route:'PO',indications:[{label:'Umum',doseMin:dMin,doseMax:dMax,freq,maxSingleDose:msd,maxDailyDose:mdd,note}]}]};
-  customDrugs.push(drug);
-  localStorage.setItem('pdcv31',JSON.stringify(customDrugs));
-  ['nName','nDmin','nDmax','nMsd','nMdd','nNote','nSyr','nDrop'].forEach(i=>document.getElementById(i).value='');
-  toggleAddForm();renderCatFilter();renderDrugList();
-  alert(`✓ ${name} ditambahkan.`);
+  const drug={id:'c_'+Date.now(),name,category:document.getElementById('nCat').value,syrups,drops:[],ref:'Manual',
+    variants:[{route:'PO',indications:[{label:'Umum',doseMin:dMin,doseMax:dMax,freq:parseInt(document.getElementById('nFreq').value)||3,
+      maxSingleDose:null,adult:{fixed:'Lihat referensi'},prep:'',note:document.getElementById('nNote').value.trim()}]}]};
+  customDrugs.push(drug);localStorage.setItem('pdcv4',JSON.stringify(customDrugs));
+  ['nName','nDmin','nDmax','nMsd','nNote','nSyr'].forEach(i=>document.getElementById(i).value='');
+  toggleAddForm();renderCatFilter();renderDrugList();alert(`✓ ${name} ditambahkan.`);
 }
 
 // ================================================================
@@ -1132,14 +1111,13 @@ function saveDrug(){
 // ================================================================
 function openEdit(id){
   const d=findDrug(id);if(!d)return;
-  const v=(d.variants&&d.variants[0]&&d.variants[0].indications&&d.variants[0].indications[0])||{};
+  const v=d.variants&&d.variants[0]&&d.variants[0].indications&&d.variants[0].indications[0]||{};
   document.getElementById('eId').value=id;
   document.getElementById('eName').value=d.name;
   document.getElementById('eCat').value=d.category;
   document.getElementById('eDmin').value=v.doseMin||'';
   document.getElementById('eDmax').value=v.doseMax||'';
   document.getElementById('eMsd').value=v.maxSingleDose||'';
-  document.getElementById('eMdd').value=v.maxDailyDose||'';
   document.getElementById('eSyr').value=d.syrups?d.syrups.map(s=>s.conc).join(', '):'';
   document.getElementById('eNote').value=v.note||'';
   document.getElementById('editModal').classList.add('open');
@@ -1151,245 +1129,532 @@ function saveEdit(){
   const sr=document.getElementById('eSyr').value.trim();
   const syrups=sr?sr.split(',').map(s=>({conc:parseFloat(s.trim()),per:5,label:`${s.trim()}mg/5ml`})).filter(s=>!isNaN(s.conc)):[];
   const updates={name:document.getElementById('eName').value.trim(),category:document.getElementById('eCat').value,syrups};
-  const noteVal=document.getElementById('eNote').value.trim();
   const dMin=parseFloat(document.getElementById('eDmin').value);
   const dMax=parseFloat(document.getElementById('eDmax').value);
   const msd=parseFloat(document.getElementById('eMsd').value)||null;
-  const mdd=parseFloat(document.getElementById('eMdd').value)||null;
-  const patchInd=(d)=>{
+  const note=document.getElementById('eNote').value.trim();
+  const patch=d=>{
     if(!isNaN(dMin)&&!isNaN(dMax)&&d.variants&&d.variants[0]&&d.variants[0].indications&&d.variants[0].indications[0])
-      d.variants[0].indications[0]={...d.variants[0].indications[0],doseMin:dMin,doseMax:dMax,maxSingleDose:msd,maxDailyDose:mdd,note:noteVal};
+      d.variants[0].indications[0]={...d.variants[0].indications[0],doseMin:dMin,doseMax:dMax,maxSingleDose:msd,note};
     return d;
   };
   const bi=builtinDrugs.findIndex(d=>d.id===id);
-  if(bi>=0){builtinDrugs[bi]=patchInd({...builtinDrugs[bi],...updates});builtinEdits[id]=updates;localStorage.setItem('pdcv31e',JSON.stringify(builtinEdits));}
-  else{const ci=customDrugs.findIndex(d=>d.id===id);if(ci>=0){customDrugs[ci]=patchInd({...customDrugs[ci],...updates});localStorage.setItem('pdcv31',JSON.stringify(customDrugs));}}
+  if(bi>=0){builtinDrugs[bi]=patch({...builtinDrugs[bi],...updates});builtinEdits[id]=updates;localStorage.setItem('pdcv4e',JSON.stringify(builtinEdits));}
+  else{const ci=customDrugs.findIndex(d=>d.id===id);if(ci>=0){customDrugs[ci]=patch({...customDrugs[ci],...updates});localStorage.setItem('pdcv4',JSON.stringify(customDrugs));}}
   closeModal();renderCatFilter();renderDrugList();
 }
 
 // ================================================================
-// CALCULATE
+// CALCULATE DOSES
 // ================================================================
 function calculate(){
-  const weight=parseFloat(document.getElementById('weight').value);
+  const isDewasa=patientMode==='dewasa';
+  const weight=isDewasa?parseFloat(document.getElementById('weightD').value):parseFloat(document.getElementById('weight').value);
   const age=parseFloat(document.getElementById('age').value);
   const ageUnit=document.getElementById('ageUnit').value;
-  if(isNaN(weight)||weight<=0){alert('Masukkan berat badan yang valid.');return;}
+  if(!isDewasa&&(isNaN(weight)||weight<=0)){alert('Masukkan berat badan.');return;}
   if(selectedDrugs.size===0){alert('Pilih minimal satu obat.');return;}
   const ageYears=ageUnit==='bulan'?age/12:age;
+  const W=isNaN(weight)?70:weight;
   const res=document.getElementById('results');
-  res.innerHTML=`<div class="card-title" style="margin-bottom:8px">📋 Hasil — BB: ${weight}kg${!isNaN(age)?` · Usia: ${age} ${ageUnit}`:''}</div>`;
-  allDrugs().filter(d=>selectedDrugs.has(d.id)).forEach(drug=>{res.innerHTML+=buildCard(drug,weight,ageYears);});
+  res.innerHTML=`<div class="ct" style="margin-bottom:7px">📋 Hasil — ${isDewasa?'Dewasa':'BB: '+W+'kg'+((!isNaN(age))?' · Usia: '+age+' '+ageUnit:'')}</div>`;
+  allDrugs().filter(d=>selectedDrugs.has(d.id)).forEach(drug=>{res.innerHTML+=buildCard(drug,W,ageYears,isDewasa);});
   res.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-// ================================================================
-// BUILD RESULT CARD
-// ================================================================
-function buildCard(drug, W, ageY){
+function buildCard(drug,W,ageY,isDewasa){
   if(drug.fixedDose){
-    const row=(drug.fixedDoseTable&&drug.fixedDoseTable.find(r=>ageY>=r.min&&ageY<r.max))||{dose:'Konsultasikan dokter'};
-    // try to show syrup/drop conversion for fixed-dose drugs if dose is numeric
-    let convHtml='';
-    if(drug.syrups&&drug.syrups.length&&row.doseNum){
-      convHtml=buildSyrupDropHtml(drug, row.doseNum, row.doseNum);
-    }
-    return `<div class="res-card">
-      <div class="res-head"><div class="rtitle">${drug.name}</div><div class="rcat">${drug.category}</div></div>
-      <div class="res-body">
-        <div class="dbox" style="text-align:left;padding:9px 11px;margin-bottom:7px"><div class="dl">Dosis sesuai usia</div><div class="dv" style="font-size:.84rem">${row.dose}</div></div>
-        ${convHtml}
-        <div class="note note-warn">⚠️ ${drug.note||''}</div>
-        <div class="note note-gray">📚 ${drug.ref||''}</div>
+    const row=(drug.fixedDoseTable&&drug.fixedDoseTable.find(r=>isDewasa?r.min>=12:ageY>=r.min&&ageY<r.max))||
+      (isDewasa&&drug.fixedDoseTable?drug.fixedDoseTable[drug.fixedDoseTable.length-1]:null)||{dose:'Konsultasikan dokter'};
+    const adultBlock=isDewasa&&drug.adultDose?`<div class="dbox" style="text-align:left;padding:8px 10px;margin-bottom:6px"><div class="dl">Dosis Dewasa</div><div class="dv" style="font-size:.82rem">${drug.adultDose}</div></div>`:'';
+    return `<div class="res-card"><div class="rhead"><div class="rtitle">${drug.name}</div><div class="rcat">${drug.category}</div></div>
+      <div class="rbody">
+        ${adultBlock}
+        ${!isDewasa?`<div class="dbox" style="text-align:left;padding:8px 10px;margin-bottom:6px"><div class="dl">Dosis Anak</div><div class="dv" style="font-size:.82rem">${row.dose}</div></div>`:''}
+        <div class="note nw">⚠️ ${drug.note||''}</div>
+        <div class="note ng">📚 ${drug.ref||''}</div>
       </div></div>`;
   }
   if(!drug.variants||!drug.variants.length)return'';
   const cid='rc'+Math.random().toString(36).slice(2,8);
-  return `<div class="res-card" id="${cid}">
-    <div class="res-head"><div class="rtitle">${drug.name}</div><div class="rcat">${drug.category}</div></div>
-    <div class="res-body" id="${cid}b">${innerBody(drug,0,0,W,ageY,cid)}</div>
+  return `<div class="res-card" id="${cid}"><div class="rhead"><div class="rtitle">${drug.name}</div><div class="rcat">${drug.category}</div></div>
+    <div class="rbody" id="${cid}b">${innerBody(drug,0,0,W,ageY,cid,isDewasa)}</div></div>`;
+}
+
+function innerBody(drug,ri,ii,W,ageY,cid,isDewasa){
+  const routeTabs=drug.variants.map((v,i)=>
+    `<div class="rtab ${i===ri?'active':''}" onclick="swR('${drug.id}','${cid}',${i},${W},${ageY},${isDewasa})">${v.route}</div>`).join('');
+  const v=drug.variants[ri];
+  const indTabs=v.indications.map((ind,i)=>
+    `<div class="itab ${i===ii?'active':''}" onclick="swI('${drug.id}','${cid}',${ri},${i},${W},${ageY},${isDewasa})">${ind.label}</div>`).join('');
+  const ind=v.indications[ii];
+  const doseBlock=buildDoseBlock(drug,v,ind,W,ageY,isDewasa);
+  return `<div class="rtabs">${routeTabs}</div><div class="itabs">${indTabs}</div>${doseBlock}<div class="note ng">📚 ${drug.ref||''}</div>`;
+}
+
+function buildDoseBlock(drug,v,ind,W,ageY,isDewasa){
+  let html='';
+
+  // DEWASA DOSE BLOCK
+  if(isDewasa&&ind.adult){
+    html+=`<div class="dbox" style="text-align:left;padding:8px 10px;margin-bottom:6px">
+      <div class="dl">💊 Dosis Dewasa Standar</div>
+      <div class="dv" style="font-size:.84rem;color:var(--iclr)">${ind.adult.fixed}</div>
+    </div>`;
+    // If adult has weight and BB input provided, also calc per kg
+    if(ind.adult.fixed.includes('mg/kg')||ind.doseMin>0){
+      // show per kg calc too
+    }
+  }
+
+  // ANAK / WEIGHT-BASED
+  if(!isDewasa||W>0){
+    if(ind.fixedByWeight&&ind.fixedWeightTable){
+      const row=ind.fixedWeightTable.find(r=>W<r.maxKg)||ind.fixedWeightTable[ind.fixedWeightTable.length-1];
+      if(!isDewasa) html+=`<div class="dbox" style="text-align:left;padding:8px 10px;margin-bottom:6px">
+        <div class="dl">Dosis (berdasarkan BB, bukan mg/kg)</div>
+        <div class="dv">${row.doseLabel}</div>
+        <div class="du">BB ${W}kg → ${W<10?'<10kg':'≥10kg'}</div>
+      </div>`;
+    } else if(ind.doseMin>0&&!isDewasa){
+      const unit=ind.unit||'mg/kg';
+      if(unit==='mg/kg'){
+        const rawMin=ind.doseMin*W, rawMax=ind.doseMax*W;
+        const cMin=r1(ind.maxSingleDose?Math.min(rawMin,ind.maxSingleDose):rawMin);
+        const cMax=r1(ind.maxSingleDose?Math.min(rawMax,ind.maxSingleDose):rawMax);
+        const dTotMin=r1(cMin*ind.freq), dTotMaxR=r1(cMax*ind.freq);
+        const dTotMax=ind.maxDailyDose?r1(Math.min(dTotMaxR,ind.maxDailyDose*W)):dTotMaxR;
+        const isCapped=ind.maxSingleDose&&rawMax>ind.maxSingleDose;
+        html+=`<div class="dgrid">
+          <div class="dbox"><div class="dl">Min/dosis</div><div class="dv">${cMin}</div><div class="du">mg (${ind.doseMin}×${W})</div></div>
+          <div class="dbox"><div class="dl">Maks/dosis</div><div class="dv mx">${cMax}</div><div class="du">mg${ind.maxSingleDose?` (cap ${ind.maxSingleDose}mg)`:''}</div></div>
+        </div>
+        <div class="dgrid">
+          <div class="dbox"><div class="dl">Frekuensi</div><div class="dv">${ind.freq}×</div><div class="du">/hari</div></div>
+          <div class="dbox"><div class="dl">Total/hari</div><div class="dv">${dTotMin}–${dTotMax}</div><div class="du">mg/hari</div></div>
+        </div>
+        ${isCapped?`<div class="note nw">⚠️ Dosis calc (${r1(rawMax)}mg) > maks ${ind.maxSingleDose}mg.</div>`:''}`;
+        // Syrup/drop conversion
+        if(v.route==='PO'||v.route.includes('oral')){
+          html+=buildSyrupHtml(drug,cMin,cMax);
+        }
+      } else if(unit==='ml'){
+        const vol=r1(ind.doseMin*W);
+        html+=`<div class="dbox" style="text-align:left;padding:8px 10px;margin-bottom:6px">
+          <div class="dl">Volume per dosis</div>
+          <div class="dv">${Math.min(vol,5)} ml</div>
+          <div class="du">${ind.doseMin}ml/kg × ${W}kg, maks 5ml</div>
+        </div>`;
+      }
+    } else if(isDewasa&&W>0&&ind.doseMin>0){
+      // Dewasa dengan BB — hitung juga per kgBB
+      const unit=ind.unit||'mg/kg';
+      if(unit==='mg/kg'){
+        const rawMin=ind.doseMin*W, rawMax=ind.doseMax*W;
+        const cMin=r1(ind.maxSingleDose?Math.min(rawMin,ind.maxSingleDose):rawMin);
+        const cMax=r1(ind.maxSingleDose?Math.min(rawMax,ind.maxSingleDose):rawMax);
+        html+=`<div class="dbox" style="text-align:left;padding:7px 10px;margin-bottom:6px;background:var(--ibg)">
+          <div class="dl" style="color:var(--iclr)">Berdasarkan BB ${W}kg</div>
+          <div class="dv" style="color:var(--iclr)">${cMin}–${cMax} mg/dosis</div>
+          <div class="du">${ind.doseMin}–${ind.doseMax} mg/kg × ${W}kg</div>
+        </div>`;
+      }
+    }
+  }
+
+  // PREPARATION BOX
+  if(ind.prep){
+    html+=`<div class="prep-box"><div class="prep-t">💉 Cara Pemberian & Persiapan</div>
+      <div class="prep-r">${ind.prep}</div></div>`;
+  }
+
+  // IV WARNING
+  if(v.route.includes('IV')||v.route.includes('IM')||v.route==='Rektal'){
+    html+=`<div class="note nd">⚠️ Rute ${v.route} — hanya tenaga medis terlatih dengan monitoring.</div>`;
+  }
+  if(ind.note) html+=`<div class="note ni">ℹ️ ${ind.note}</div>`;
+  return html;
+}
+
+function buildSyrupHtml(drug,cMin,cMax){
+  const hasSyr=drug.syrups&&drug.syrups.length;
+  const hasDrp=drug.drops&&drug.drops.length;
+  if(!hasSyr&&!hasDrp)return'';
+  let html='<div class="syr-box"><div class="syr-t">🥄 Konversi Sediaan Cair</div>';
+  if(hasSyr)drug.syrups.forEach(s=>{
+    const mlMin=r1((cMin/s.conc)*s.per),mlMax=r1((cMax/s.conc)*s.per);
+    html+=`<div class="syr-r"><span class="sl">${s.label}</span><span class="sv">${mlMin}–${mlMax} ml ≈ ${rH(mlMin/5)}–${rH(mlMax/5)} sdt</span></div>`;
+  });
+  if(hasDrp)drug.drops.forEach(s=>{
+    const mlMin=r1((cMin/s.conc)*s.per),mlMax=r1((cMax/s.conc)*s.per);
+    html+=`<div class="syr-r"><span class="sl">${s.label}</span><span class="sv">${mlMin}–${mlMax} ml</span></div>`;
+  });
+  html+='</div>';return html;
+}
+
+function swR(drugId,cid,ri,W,ageY,isDewasa){document.getElementById(cid+'b').innerHTML=innerBody(findDrug(drugId),ri,0,W,ageY,cid,isDewasa);}
+function swI(drugId,cid,ri,ii,W,ageY,isDewasa){document.getElementById(cid+'b').innerHTML=innerBody(findDrug(drugId),ri,ii,W,ageY,cid,isDewasa);}
+
+// ================================================================
+// VASOACTIVE / SYRINGE PUMP
+// ================================================================
+function updateVasoDose(){
+  const key=document.getElementById('vDrug').value;
+  const info=document.getElementById('vasoInfo');
+  if(!key){info.style.display='none';document.getElementById('vasoResult').innerHTML='';return;}
+  info.style.display='block';
+  const drug=vasoDrugs[key];
+  const isAnak=document.getElementById('vMode').value==='anak';
+  const d=isAnak?drug.anak:drug.dewasa;
+  const lbl=d.unitFlat?`Dosis Target (${d.unitFlat})`:`Dosis Target (${drug.unit})`;
+  document.getElementById('vasoRateLabel').textContent=lbl;
+  document.getElementById('vasoRate').placeholder=`cth: ${d.start||d.min}`;
+  document.getElementById('vasoResult').innerHTML='';
+}
+
+function calcSyringe(){
+  const key=document.getElementById('vDrug').value;
+  if(!key)return;
+  const drug=vasoDrugs[key];
+  const W=parseFloat(document.getElementById('vWeight').value);
+  const rate=parseFloat(document.getElementById('vasoRate').value);
+  const vol=parseFloat(document.getElementById('vasoVol').value)||50;
+  const isAnak=document.getElementById('vMode').value==='anak';
+  const d=isAnak?drug.anak:drug.dewasa;
+  if(isNaN(W)||W<=0){alert('Masukkan berat badan.');return;}
+  if(isNaN(rate)||rate<=0){alert('Masukkan dosis target.');return;}
+
+  const modeNote=isAnak?d.note:d.note;
+  const unit=drug.unit;
+
+  // Calculate infusion rate (ml/jam)
+  let mlJam, totalMg, concMgMl, pumpLabel;
+  let stdConcStr=isAnak?drug.stdConc.anak:drug.stdConc.dewasa;
+
+  // Std conc dari string: parse angka pertama
+  const concMatch=stdConcStr.match(/([\d.]+)\s*mg\/ml/);
+  const concMgMlStd=concMatch?parseFloat(concMatch[1]):null;
+
+  if(unit==='mcg/kg/mnt'){
+    // rate = mcg/kg/mnt, convert to ml/jam
+    const mgJam=(rate*W*60)/1000;
+    if(concMgMlStd){
+      mlJam=r2(mgJam/concMgMlStd);
+      totalMg=r1(concMgMlStd*vol);
+      concMgMl=concMgMlStd;
+    } else {
+      mlJam='-';totalMg='-';concMgMl='-';
+    }
+    pumpLabel=`${rate} mcg/kg/mnt`;
+  } else if(unit==='mg/kg/jam'||d.unitFlat==='mg/jam'){
+    const mgJam=d.unitFlat==='mg/jam'?rate:rate*W;
+    if(concMgMlStd){mlJam=r2(mgJam/concMgMlStd);totalMg=r1(concMgMlStd*vol);concMgMl=concMgMlStd;}
+    else{mlJam='-';totalMg='-';concMgMl='-';}
+    pumpLabel=`${rate} ${d.unitFlat||'mg/jam'}`;
+  } else if(d.unitFlat==='mcg/mnt'){
+    const mgJam=(rate*60)/1000;
+    if(concMgMlStd){mlJam=r2(mgJam/concMgMlStd);totalMg=r1(concMgMlStd*vol);concMgMl=concMgMlStd;}
+    else{mlJam='-';totalMg='-';concMgMl='-';}
+    pumpLabel=`${rate} mcg/mnt`;
+  } else if(d.unitFlat==='unit/kg/jam'){
+    // insulin
+    const uJam=rate*W;
+    const concUml=1; // 1 unit/ml standar
+    mlJam=r2(uJam/concUml);
+    totalMg=`${r1(concUml*vol)} unit`;
+    concMgMl=concUml;
+    pumpLabel=`${rate} unit/kg/jam = ${r1(uJam)} unit/jam`;
+    stdConcStr=drug.stdConc.anak;concMgMl='1 unit/ml';
+  } else if(unit==='mcg/kg/jam'){
+    const mgJam=(rate*W)/1000;
+    if(concMgMlStd){mlJam=r2(mgJam/concMgMlStd);totalMg=r1(concMgMlStd*vol);concMgMl=concMgMlStd;}
+    else{mlJam='-';totalMg='-';concMgMl='-';}
+    pumpLabel=`${rate} mcg/kg/jam`;
+  } else {
+    mlJam='-';totalMg='-';concMgMl='-';pumpLabel=`${rate} ${unit}`;
+  }
+
+  const durasi=mlJam>0?r1(vol/mlJam):'-';
+
+  document.getElementById('vasoResult').innerHTML=`
+  <div class="pump-box" style="margin-top:10px;animation:sIn .18s ease">
+    <div class="pump-t">💉 ${drug.name} — ${pumpLabel}</div>
+    <div class="dgrid">
+      <div class="dbox"><div class="dl">Kecepatan Pompa</div><div class="dv">${mlJam}</div><div class="du">ml/jam</div></div>
+      <div class="dbox"><div class="dl">Durasi Syringe (${vol}ml)</div><div class="dv">${durasi}</div><div class="du">jam</div></div>
+    </div>
+    <div class="pump-row"><span class="pl">Konsentrasi standar</span><span class="pv">${stdConcStr}</span></div>
+    <div class="pump-row"><span class="pl">Ampul</span><span class="pv">${drug.amp}</span></div>
+    <div class="pump-row"><span class="pl">Pelarut</span><span class="pv">${drug.dilution}</span></div>
+    <div class="pump-row"><span class="pl">Rute</span><span class="pv">${drug.route}</span></div>
+    <div class="pump-row"><span class="pl">Indikasi</span><span class="pv">${drug.indication}</span></div>
+    ${drug.bolus?`<div class="pump-row"><span class="pl">Bolus</span><span class="pv" style="color:var(--dclr)">Ya — ${drug.bolusNote}</span></div>`:''}
+    <div style="margin-top:5px;font-size:.62rem;color:var(--pclr);background:rgba(106,45,159,.08);border-radius:5px;padding:5px 7px">
+      📏 Kisaran dosis: ${d.min}–${d.max} ${d.unitFlat||unit}<br>
+      ${modeNote}
+    </div>
+    ${drug.warning?`<div class="note nd" style="margin-top:6px">⚠️ ${drug.warning}</div>`:''}
+    <div class="note ng">📚 ${drug.ref}</div>
   </div>`;
 }
 
-function innerBody(drug,ri,ii,W,ageY,cid){
-  const routeTabs=drug.variants.map((v,i)=>
-    `<div class="route-tab ${i===ri?'active':''}" onclick="swR('${drug.id}','${cid}',${i},${W},${ageY})">${v.route}</div>`).join('');
-  const v=drug.variants[ri];
-  const indTabs=v.indications.map((ind,i)=>
-    `<div class="ind-tab ${i===ii?'active':''}" onclick="swI('${drug.id}','${cid}',${ri},${i},${W},${ageY})">${ind.label}</div>`).join('');
-  const ind=v.indications[ii];
-  const doseBlock=buildDoseBlock(drug,v,ind,W,ageY);
-  return `<div class="route-tabs">${routeTabs}</div><div class="ind-tabs">${indTabs}</div>${doseBlock}<div class="note note-gray">📚 ${drug.ref||''}</div>`;
+// ================================================================
+// ELECTROLYTE CORRECTION
+// ================================================================
+function renderElecInputs(){
+  const type=document.getElementById('elecType').value;
+  const inp=document.getElementById('elecInputs');
+  const btn=document.getElementById('elecBtn');
+  document.getElementById('elecResult').innerHTML='';
+  if(!type){inp.innerHTML='';btn.style.display='none';return;}
+  btn.style.display='block';
+  const fields={
+    bicarb:`
+      <div class="g3">
+        <div class="ig"><label>BB (kg)</label><input type="number" id="eBB" placeholder="cth: 50" step="0.1"></div>
+        <div class="ig"><label>HCO3 serum (mEq/L)</label><input type="number" id="eHco3" placeholder="cth: 12" step="0.1"></div>
+        <div class="ig"><label>Target HCO3 (mEq/L)</label><input type="number" id="eHco3Target" placeholder="24" value="24" step="0.1"></div>
+      </div>
+      <div class="note ni" style="margin-top:4px">Rumus: Kebutuhan NaHCO3 (mEq) = 0.3 × BB × (Target – Aktual). Berikan ½ dalam 1–2 jam, sisanya evaluasi ulang.</div>`,
+    kalium:`
+      <div class="g3">
+        <div class="ig"><label>BB (kg)</label><input type="number" id="eBB" placeholder="cth: 50" step="0.1"></div>
+        <div class="ig"><label>K+ serum (mEq/L)</label><input type="number" id="eK" placeholder="cth: 2.8" step="0.1"></div>
+        <div class="ig"><label>Target K+ (mEq/L)</label><input type="number" id="eKTarget" placeholder="4.0" value="4.0" step="0.1"></div>
+      </div>
+      <div class="note ni" style="margin-top:4px">Rumus: Defisit K+ (mEq) ≈ (Target – Aktual) × BB × 0.3. Koreksi maks IV: 0.3–0.5 mEq/kg/jam (anak); 10–20 mEq/jam (dewasa). Encerkan dalam NaCl 0.9% (JANGAN D5W), konsentrasi maks 40mEq/100ml perifer.</div>`,
+    natrium_hipo:`
+      <div class="g3">
+        <div class="ig"><label>BB (kg)</label><input type="number" id="eBB" placeholder="cth: 50" step="0.1"></div>
+        <div class="ig"><label>Na+ serum (mEq/L)</label><input type="number" id="eNa" placeholder="cth: 120" step="0.1"></div>
+        <div class="ig"><label>Target Na+ (mEq/L)</label><input type="number" id="eNaTarget" placeholder="130" value="130" step="0.1"></div>
+      </div>
+      <div class="note nw" style="margin-top:4px">⚠️ Koreksi JANGAN >10–12 mEq/L/24 jam (risiko osmotic demyelination). Target awal 130 mEq/L.</div>`,
+    natrium_hiper:`
+      <div class="g3">
+        <div class="ig"><label>BB (kg)</label><input type="number" id="eBB" placeholder="cth: 50" step="0.1"></div>
+        <div class="ig"><label>Na+ serum (mEq/L)</label><input type="number" id="eNa" placeholder="cth: 160" step="0.1"></div>
+        <div class="ig"><label>Target Na+ (mEq/L)</label><input type="number" id="eNaTarget" placeholder="145" value="145" step="0.1"></div>
+      </div>
+      <div class="note nw" style="margin-top:4px">⚠️ Koreksi JANGAN >10 mEq/L/24 jam (risiko edema serebral). Gunakan cairan hipotonik secara bertahap.</div>`,
+    kalsium:`
+      <div class="g3">
+        <div class="ig"><label>BB (kg)</label><input type="number" id="eBB" placeholder="cth: 50" step="0.1"></div>
+        <div class="ig"><label>Ca2+ total serum (mg/dL)</label><input type="number" id="eCa" placeholder="cth: 6.0" step="0.1"></div>
+        <div class="ig"><label>Albumin serum (g/dL)</label><input type="number" id="eAlb" placeholder="cth: 3.5" step="0.1"></div>
+      </div>
+      <div class="note ni" style="margin-top:4px">Ca terkoreksi = Ca terukur + 0.8 × (4 – Albumin). Gejala berat (tetani/kejang): Ca glukonat 10% 1–2 ml/kg IV (maks 20ml) pelan 10–20 mnt dengan monitoring EKG.</div>`,
+    magnesium:`
+      <div class="g2">
+        <div class="ig"><label>BB (kg)</label><input type="number" id="eBB" placeholder="cth: 50" step="0.1"></div>
+        <div class="ig"><label>Mg2+ serum (mg/dL)</label><input type="number" id="eMg" placeholder="cth: 1.0" step="0.1"></div>
+      </div>
+      <div class="note ni" style="margin-top:4px">MgSO4 20%: 25–50 mg/kg (maks 2g) diencerkan dalam 100ml NaCl 0.9%, infus 15–60 mnt. Monitor refleks patela.</div>`,
+    fosfat:`
+      <div class="g2">
+        <div class="ig"><label>BB (kg)</label><input type="number" id="eBB" placeholder="cth: 50" step="0.1"></div>
+        <div class="ig"><label>Fosfat serum (mg/dL)</label><input type="number" id="ePhos" placeholder="cth: 1.5" step="0.1"></div>
+      </div>
+      <div class="note ni" style="margin-top:4px">Hipofosfat ringan (1.5–2.5): koreksi oral. Sedang/berat (<1.5): 0.08–0.24 mmol/kg IV infus 6 jam. Monitor Ca selama koreksi.</div>`,
+  };
+  inp.innerHTML=fields[type]||'';
 }
 
-function buildDoseBlock(drug,v,ind,W,ageY){
-  // Special: fixedByWeight (diazepam rektal)
-  if(ind.fixedByWeight&&ind.fixedWeightTable){
-    const row=ind.fixedWeightTable.find(r=>W<r.maxKg)||ind.fixedWeightTable[ind.fixedWeightTable.length-1];
-    return `
-      <div class="dbox" style="text-align:left;padding:10px 12px;margin-bottom:7px">
-        <div class="dl">Dosis (berdasarkan BB, bukan mg/kg)</div>
-        <div class="dv" style="font-size:1.1rem">${row.doseLabel}</div>
-        <div class="du">BB pasien: ${W} kg → ${W<10?'<10kg → 5mg':'≥10kg → 10mg'}</div>
-      </div>
-      <div class="note note-warn">⚠️ ${ind.note||''}</div>
-      <div class="note note-danger">⚠️ Pemberian rektal — siapkan resusitasi.</div>`;
-  }
-
-  const unit=ind.unit||'mg/kg';
-
-  if(unit==='mg/kg'){
-    const rawMin=ind.doseMin*W, rawMax=ind.doseMax*W;
-    const cMin=r1(ind.maxSingleDose?Math.min(rawMin,ind.maxSingleDose):rawMin);
-    const cMax=r1(ind.maxSingleDose?Math.min(rawMax,ind.maxSingleDose):rawMax);
-    const dMin2=r1(cMin), dMax2=r1(cMax);
-    const dTotMin=r1(dMin2*ind.freq), dTotMaxRaw=r1(dMax2*ind.freq);
-    const dTotMax=ind.maxDailyDose?r1(Math.min(dTotMaxRaw,ind.maxDailyDose*W)):dTotMaxRaw;
-    const isCapped=ind.maxSingleDose&&rawMax>ind.maxSingleDose;
-    const isIV=v.route.includes('IV')||v.route.includes('IM')||v.route.includes('Rektal');
-    const syrupDropHtml=(v.route==='PO'||v.route.includes('oral'))?buildSyrupDropHtml(drug,dMin2,dMax2):'';
-    return `
-      <div class="dose-grid">
-        <div class="dbox"><div class="dl">Dosis Min/dosis</div><div class="dv">${dMin2}</div><div class="du">mg (${ind.doseMin} mg/kg × ${W})</div></div>
-        <div class="dbox"><div class="dl">Dosis Maks/dosis</div><div class="dv mx">${dMax2}</div><div class="du">mg${ind.maxSingleDose?` (cap ${ind.maxSingleDose}mg)`:''}</div></div>
-      </div>
-      <div class="dose-grid">
-        <div class="dbox"><div class="dl">Frekuensi</div><div class="dv">${ind.freq}×</div><div class="du">per hari</div></div>
-        <div class="dbox"><div class="dl">Total/hari</div><div class="dv">${dTotMin}–${dTotMax}</div><div class="du">mg/hari</div></div>
-      </div>
-      ${isCapped?`<div class="note note-warn">⚠️ Dosis calc (${r1(rawMax)}mg) > batas maks ${ind.maxSingleDose}mg → pakai dosis maks.</div>`:''}
-      ${syrupDropHtml}
-      ${isIV?`<div class="note note-danger">⚠️ Rute ${v.route} — hanya tenaga medis terlatih dengan monitoring.</div>`:''}
-      ${ind.note?`<div class="note note-info">ℹ️ ${ind.note}</div>`:''}`;
-  }
-
-  if(unit==='mcg/kg/mnt'){
-    return `<div class="dbox" style="text-align:left;padding:10px 12px;margin-bottom:7px">
-        <div class="dl">Dosis infus kontinu</div>
-        <div class="dv" style="font-size:.88rem">${ind.doseMin}–${ind.doseMax} ${unit}</div>
-      </div>
-      <div class="note note-danger">⚠️ ICU — hanya tenaga medis terlatih.</div>
-      ${ind.note?`<div class="note note-info">ℹ️ ${ind.note}</div>`:''}`;
-  }
-
-  if(unit==='mg/m²'){
-    return `<div class="dbox" style="text-align:left;padding:10px 12px;margin-bottom:7px">
-        <div class="dl">Dosis berdasarkan LPT (mg/m²)</div>
-        <div class="dv" style="font-size:.88rem">${ind.doseMin}–${ind.doseMax} mg/m²</div>
-        <div class="du">Hitung LPT: √(BB×TB/3600) atau nomogram</div>
-      </div>
-      <div class="note note-danger">⚠️ Rute ${v.route} — hanya tenaga medis terlatih.</div>
-      ${ind.note?`<div class="note note-info">ℹ️ ${ind.note}</div>`:''}`;
-  }
-
-  if(unit==='ml/kg'){
-    const vMin=r1(ind.doseMin*W), vMax=r1(ind.doseMax*W);
-    const syrupHtml=buildSyrupDropHtmlRaw(drug,vMin,vMax);
-    return `<div class="dose-grid">
-        <div class="dbox"><div class="dl">Volume Min/dosis</div><div class="dv">${vMin}</div><div class="du">ml</div></div>
-        <div class="dbox"><div class="dl">Volume Maks/dosis</div><div class="dv mx">${vMax}</div><div class="du">ml</div></div>
-      </div>
-      <div class="dose-grid">
-        <div class="dbox"><div class="dl">Frekuensi</div><div class="dv">${ind.freq}×</div><div class="du">per hari</div></div>
-        <div class="dbox"><div class="dl">Sendok takar (5ml)</div><div class="dv">${rH(vMin/5)}–${rH(vMax/5)}</div><div class="du">sdt</div></div>
-      </div>
-      ${syrupHtml}
-      ${ind.note?`<div class="note note-info">ℹ️ ${ind.note}</div>`:''}`;
-  }
-
-  if(unit==='mg/kg/jam'){
-    return `<div class="dbox" style="text-align:left;padding:10px 12px;margin-bottom:7px">
-        <div class="dl">Dosis infus kontinu</div>
-        <div class="dv" style="font-size:.88rem">${ind.doseMin}–${ind.doseMax} mg/kg/jam</div>
-      </div>
-      <div class="note note-danger">⚠️ ICU — monitoring ketat.</div>
-      ${ind.note?`<div class="note note-info">ℹ️ ${ind.note}</div>`:''}`;
-  }
-
-  if(unit==='ml'){
-    const fixedVol=r1(ind.doseMin*W); // doseMin sebagai ml/kg capped
-    return `<div class="dbox" style="text-align:left;padding:10px 12px;margin-bottom:7px">
-        <div class="dl">Volume per dosis</div>
-        <div class="dv" style="font-size:.9rem">${fixedVol} ml (${ind.doseMin} ml/kg × ${W}kg, maks 5ml)</div>
-      </div>
-      <div class="note note-danger">⚠️ Rute ${v.route} — hanya tenaga medis terlatih.</div>
-      ${ind.note?`<div class="note note-info">ℹ️ ${ind.note}</div>`:''}`;
-  }
-
-  return `<div class="note note-info">ℹ️ ${ind.note||''}</div>`;
-}
-
-function buildSyrupDropHtml(drug, dMin, dMax){
-  if(!drug) return '';
+function calcElec(){
+  const type=document.getElementById('elecType').value;
+  const BB=parseFloat(document.getElementById('eBB').value)||0;
   let html='';
-  const hasSyrup=drug.syrups&&drug.syrups.length>0;
-  const hasDrop=drug.drops&&drug.drops.length>0;
-  if(!hasSyrup&&!hasDrop) return '';
-  html+='<div class="syrup-sec"><div class="syrup-t">🥄 Konversi Sediaan Cair</div>';
-  if(hasSyrup){
-    drug.syrups.forEach(s=>{
-      const mlMin=r1((dMin/s.conc)*s.per);
-      const mlMax=r1((dMax/s.conc)*s.per);
-      const sdkMin=rH(mlMin/5), sdkMax=rH(mlMax/5);
-      html+=`<div class="syrup-r"><span class="sd">${s.label}</span><span class="sv">${mlMin}–${mlMax} ml &nbsp;≈&nbsp; ${sdkMin}–${sdkMax} sdt</span></div>`;
-    });
-  }
-  if(hasDrop){
-    drug.drops.forEach(s=>{
-      const mlMin=r1((dMin/s.conc)*s.per);
-      const mlMax=r1((dMax/s.conc)*s.per);
-      html+=`<div class="syrup-r"><span class="sd">${s.label}</span><span class="sv">${mlMin}–${mlMax} ml</span></div>`;
-    });
-  }
-  html+='</div>';
-  return html;
-}
 
-function buildSyrupDropHtmlRaw(drug, mlMin, mlMax){
-  // for ml/kg drugs where ml are already computed
-  if(!drug||(!drug.syrups||!drug.syrups.length)) return '';
-  let html='<div class="syrup-sec"><div class="syrup-t">🥄 Volume Langsung</div>';
-  html+=`<div class="syrup-r"><span class="sd">Volume/dosis</span><span class="sv">${mlMin}–${mlMax} ml &nbsp;≈&nbsp; ${rH(mlMin/5)}–${rH(mlMax/5)} sdt</span></div>`;
-  html+='</div>';
-  return html;
+  if(type==='bicarb'){
+    const hco3=parseFloat(document.getElementById('eHco3').value);
+    const target=parseFloat(document.getElementById('eHco3Target').value)||24;
+    if(!BB||isNaN(hco3)){alert('Isi semua field.');return;}
+    const total=r1(0.3*BB*(target-hco3));
+    const half=r1(total/2);
+    const vol50=r1(total/0.5); // NaHCO3 8.4% = 1mEq/ml → total mEq = total ml; NaHCO3 3% = 0.357mEq/ml
+    html=`<div class="elec-card"><div class="elec-head"><h3>🧪 Koreksi Bikarbonat</h3></div><div class="elec-body">
+      <div class="dgrid3">
+        <div class="dbox"><div class="dl">Defisit HCO3</div><div class="dv">${target-hco3>0?r1(target-hco3):0}</div><div class="du">mEq/L</div></div>
+        <div class="dbox"><div class="dl">Total Kebutuhan</div><div class="dv">${total>0?total:0}</div><div class="du">mEq</div></div>
+        <div class="dbox"><div class="dl">Dosis Awal (½)</div><div class="dv">${half>0?half:0}</div><div class="du">mEq</div></div>
+      </div>
+      <div class="prep-box"><div class="prep-t">💉 Cara Pemberian</div>
+        <div class="prep-r">
+          <b>NaHCO3 8.4% (1 mEq/ml):</b> ${total>0?total:0} ml total → berikan ${half>0?half:0} ml dalam 1–2 jam pertama<br>
+          <b>NaHCO3 3% (0.357 mEq/ml):</b> ${total>0?r1(total/0.357):0} ml total → berikan ½ dalam 1–2 jam<br>
+          Encerkan 1:1 dengan D5W untuk neonatus/bayi. Infus pelan IV.
+        </div>
+      </div>
+      <div class="note nd">⚠️ Evaluasi ulang AGD setelah ½ dosis. Target: pH ≥7.2, bukan normalisasi penuh. Atasi penyebab dasar.</div>
+      <div class="note ng">📚 Nelson Textbook, BNFC 2023</div>
+    </div></div>`;
+  }
+  else if(type==='kalium'){
+    const K=parseFloat(document.getElementById('eK').value);
+    const target=parseFloat(document.getElementById('eKTarget').value)||4.0;
+    if(!BB||isNaN(K)){alert('Isi semua field.');return;}
+    const defisit=r1((target-K)*BB*0.3);
+    const maxJamAnak=r1(0.3*BB);
+    const maxJamDewasa=20;
+    // Konsentrasi: 1mEq/ml dalam larutan pekat, encerkan: maks 40mEq/100ml untuk perifer
+    const vol100=defisit>0?r1(defisit/0.4):0; // 40mEq/100ml → 0.4mEq/ml
+    html=`<div class="elec-card"><div class="elec-head"><h3>🧪 Koreksi Kalium (Hipokalemia)</h3></div><div class="elec-body">
+      <div class="dgrid">
+        <div class="dbox"><div class="dl">Defisit K+</div><div class="dv">${defisit>0?defisit:'—'}</div><div class="du">mEq</div></div>
+        <div class="dbox"><div class="dl">Maks Kecepatan IV</div><div class="dv">${maxJamAnak}</div><div class="du">mEq/jam (anak)</div></div>
+      </div>
+      <div class="prep-box"><div class="prep-t">💉 Cara Pemberian</div>
+        <div class="prep-r">
+          <b>Perifer (max konsentrasi 40 mEq/100ml):</b> KCl ampul (2 mEq/ml) + NaCl 0.9%<br>
+          Contoh: ${defisit>0?Math.min(defisit,40):40} mEq KCl dalam ${defisit>0?Math.min(defisit,40)*2.5:100} ml NaCl 0.9%<br>
+          <b>Volume infus (perifer 40mEq/100ml):</b> ~${vol100} ml<br>
+          <b>Durasi</b>: ${defisit>0?r1(defisit/maxJamAnak):'-'} jam (anak) / ${defisit>0?r1(defisit/maxJamDewasa):'-'} jam (dewasa)<br>
+          JANGAN campur dalam D5W. JANGAN bolus langsung.
+        </div>
+      </div>
+      <div class="note nd">⚠️ Monitor EKG selama koreksi IV. Koreksi oral lebih aman jika memungkinkan. KCl oral: 1–2 mEq/kg/hari terbagi.</div>
+      <div class="note ng">📚 Nelson, Formularium Nasional, BNFC 2023</div>
+    </div></div>`;
+  }
+  else if(type==='natrium_hipo'||type==='natrium_hiper'){
+    const Na=parseFloat(document.getElementById('eNa').value);
+    const target=parseFloat(document.getElementById('eNaTarget').value);
+    if(!BB||isNaN(Na)||isNaN(target)){alert('Isi semua field.');return;}
+    const isHipo=type==='natrium_hipo';
+    const deficit=r1((target-Na)*BB*0.6);
+    const maxPerHari=isHipo?12:10;
+    const targetSafe=isHipo?Math.min(target,Na+12):Math.max(target,Na-10);
+    const deficitSafe=r1((targetSafe-Na)*BB*0.6);
+    // NaCl 3% = 0.51 mEq/ml; NaCl 0.9% = 0.154 mEq/ml
+    const vol3pct=isHipo?r1(deficitSafe/0.51):'-';
+    html=`<div class="elec-card"><div class="elec-head"><h3>🧪 Koreksi Natrium (${isHipo?'Hipo':'Hiper'}natremia)</h3></div><div class="elec-body">
+      <div class="dgrid3">
+        <div class="dbox"><div class="dl">Na Aktual</div><div class="dv">${Na}</div><div class="du">mEq/L</div></div>
+        <div class="dbox"><div class="dl">Target Aman (24 jam)</div><div class="dv">${targetSafe}</div><div class="du">mEq/L</div></div>
+        <div class="dbox"><div class="dl">Defisit/Kelebihan</div><div class="dv">${deficitSafe>0?deficitSafe:r1(Math.abs(deficitSafe))}</div><div class="du">mEq</div></div>
+      </div>
+      <div class="prep-box"><div class="prep-t">💉 Cara Pemberian</div>
+        <div class="prep-r">
+          ${isHipo?`<b>NaCl 3% (0.51 mEq/ml):</b> ${vol3pct} ml selama 24 jam pertama → ${r1(vol3pct/24)} ml/jam<br>
+          <b>Gejala berat (kejang/somnolen):</b> 2–4 ml/kg NaCl 3% bolus dalam 15–20 mnt, lalu lanjut lambat.<br>
+          Jangan naikkan Na+ >10–12 mEq/L/24 jam (risiko osmotic demyelination).`
+          :`<b>Cairan hipotonik (D5W atau NaCl 0.45%):</b> turunkan Na+ ${r1(Math.abs(Na-targetSafe))} mEq/L dalam 24 jam<br>
+          Kecepatan: 1 mEq/L/jam maksimum. Turunkan Na+ TIDAK >10 mEq/L/24 jam.<br>
+          Monitor Na tiap 2–4 jam. Risiko edema serebral bila koreksi terlalu cepat.`}
+        </div>
+      </div>
+      <div class="note nd">⚠️ ${isHipo?'Koreksi terlalu cepat → osmotic demyelination syndrome.':'Koreksi terlalu cepat → edema serebral.'} Monitor Na tiap 2–4 jam.</div>
+      <div class="note ng">📚 Nelson, Fluid & Electrolytes in Pediatrics, BNFC 2023</div>
+    </div></div>`;
+  }
+  else if(type==='kalsium'){
+    const Ca=parseFloat(document.getElementById('eCa').value);
+    const Alb=parseFloat(document.getElementById('eAlb').value)||4;
+    if(!BB||isNaN(Ca)){alert('Isi semua field.');return;}
+    const caCorrected=r1(Ca+0.8*(4-Alb));
+    const glukonat10pct=r1(1*BB); // 1ml/kg Ca glukonat 10% (max 20ml)
+    const glukonatMax=Math.min(glukonat10pct,20);
+    html=`<div class="elec-card"><div class="elec-head"><h3>🧪 Koreksi Kalsium (Hipokalsemia)</h3></div><div class="elec-body">
+      <div class="dgrid">
+        <div class="dbox"><div class="dl">Ca Terukur</div><div class="dv">${Ca}</div><div class="du">mg/dL</div></div>
+        <div class="dbox"><div class="dl">Ca Terkoreksi (albumin)</div><div class="dv">${caCorrected}</div><div class="du">mg/dL</div></div>
+      </div>
+      <div class="prep-box"><div class="prep-t">💉 Cara Pemberian</div>
+        <div class="prep-r">
+          <b>Simtomatik (tetani/kejang) — IV:</b><br>
+          Ca glukonat 10% (9mg/ml = 0.45mEq/ml): ${glukonatMax} ml (1–2ml/kg, maks 20ml) + D5W sama banyak → infus pelan 10–20 mnt. Monitor EKG.<br><br>
+          <b>Asimtomatik — Oral:</b><br>
+          Kalsium karbonat/sitrat 25–50 mg/kg/hari elemental calcium terbagi 3–4x.<br>
+          Tambahkan Vit D3 bila ada defisiensi.
+        </div>
+      </div>
+      <div class="note nd">⚠️ Infus Ca terlalu cepat → bradikardia, henti jantung. Jangan campur dengan NaHCO3 (presipitasi). Monitor EKG selama koreksi IV.</div>
+      <div class="note ng">📚 Nelson, BNFC 2023</div>
+    </div></div>`;
+  }
+  else if(type==='magnesium'){
+    const Mg=parseFloat(document.getElementById('eMg').value);
+    if(!BB||isNaN(Mg)){alert('Isi semua field.');return;}
+    const dose=r1(50*BB); // 25–50mg/kg
+    const doseMax=Math.min(dose,2000);
+    const vol20pct=r1(doseMax/200); // MgSO4 20% = 200mg/ml
+    html=`<div class="elec-card"><div class="elec-head"><h3>🧪 Koreksi Magnesium (Hipomagnesemia)</h3></div><div class="elec-body">
+      <div class="dgrid">
+        <div class="dbox"><div class="dl">Mg Serum</div><div class="dv">${Mg}</div><div class="du">mg/dL</div></div>
+        <div class="dbox"><div class="dl">Dosis MgSO4</div><div class="dv">${doseMax}</div><div class="du">mg (25–50mg/kg, maks 2g)</div></div>
+      </div>
+      <div class="prep-box"><div class="prep-t">💉 Cara Pemberian</div>
+        <div class="prep-r">
+          <b>MgSO4 20% (200mg/ml = 0.8mEq/ml):</b><br>
+          ${vol20pct} ml MgSO4 20% + NaCl 0.9% hingga 100ml → infus 15–60 mnt.<br>
+          Dewasa: 1–2g MgSO4 IV dalam 15–60 mnt. Dapat diulang setelah 6 jam.<br>
+          Monitor refleks patela sebelum tiap dosis.
+        </div>
+      </div>
+      <div class="note nd">⚠️ Hilangnya refleks patela = tanda toksisitas. Antidot: Ca glukonat 10%, 1ml/kg IV pelan.</div>
+      <div class="note ng">📚 Nelson, BNFC 2023, Medscape</div>
+    </div></div>`;
+  }
+  else if(type==='fosfat'){
+    const Phos=parseFloat(document.getElementById('ePhos').value);
+    if(!BB||isNaN(Phos)){alert('Isi semua field.');return;}
+    const doseKg=Phos<1.5?0.16:0.08; // mmol/kg: berat 0.08–0.16 mmol/kg; sedang–berat 0.16–0.24
+    const totalMmol=r1(doseKg*BB);
+    html=`<div class="elec-card"><div class="elec-head"><h3>🧪 Koreksi Fosfat (Hipofosfatemia)</h3></div><div class="elec-body">
+      <div class="dgrid">
+        <div class="dbox"><div class="dl">Fosfat Serum</div><div class="dv">${Phos}</div><div class="du">mg/dL</div></div>
+        <div class="dbox"><div class="dl">Derajat</div><div class="dv" style="font-size:.78rem">${Phos>=2.5?'Normal':Phos>=1.5?'Ringan':'Sedang–Berat'}</div><div class="du"></div></div>
+      </div>
+      <div class="prep-box"><div class="prep-t">💉 Cara Pemberian</div>
+        <div class="prep-r">
+          ${Phos>=1.5?`<b>Koreksi oral (ringan):</b> Susu, keju, atau suplemen fosfat oral.<br>Natrium/Kalium fosfat oral 30–90 mmol/hari terbagi.`
+          :`<b>IV (sedang–berat, <1.5 mg/dL):</b><br>
+          Dosis: 0.08–0.24 mmol/kg IV selama 6 jam.<br>
+          Estimasi kebutuhan BB ini: ${totalMmol}–${r1(totalMmol*1.5)} mmol dalam 6 jam.<br>
+          Kalium fosfat (KPO4): 1ml = 3 mmol fosfat. Encerkan dalam NaCl 0.9%.<br>
+          JANGAN berikan bersama Ca (presipitasi CaPO4).`}
+        </div>
+      </div>
+      <div class="note nd">⚠️ Monitor Ca selama koreksi IV (hipokalemia dapat memburuk). Cari dan atasi penyebab dasar (malnutrisi, refeeding syndrome).</div>
+      <div class="note ng">📚 Nelson, BNFC 2023, Medscape</div>
+    </div></div>`;
+  }
+  document.getElementById('elecResult').innerHTML=html;
 }
-
-function swR(drugId,cid,ri,W,ageY){document.getElementById(cid+'b').innerHTML=innerBody(findDrug(drugId),ri,0,W,ageY,cid);}
-function swI(drugId,cid,ri,ii,W,ageY){document.getElementById(cid+'b').innerHTML=innerBody(findDrug(drugId),ri,ii,W,ageY,cid);}
 
 // ================================================================
 // FLUID MAINTENANCE
 // ================================================================
 function calcFluid(){
   const w=parseFloat(document.getElementById('fw').value);
-  if(isNaN(w)||w<=0){alert('Masukkan berat badan yang valid.');return;}
+  if(isNaN(w)||w<=0){alert('Masukkan berat badan.');return;}
   let mlDay=w<=10?w*100:w<=20?1000+(w-10)*50:1500+(w-20)*20;
   let mlHour=w<=10?w*4:w<=20?40+(w-10)*2:60+(w-20)*1;
-  const tpmM=Math.round(mlHour*20/60), tpmMik=Math.round(mlHour*60/60);
+  const tpmM=Math.round(mlHour*20/60),tpmMik=Math.round(mlHour*60/60);
   const bd=w<=10?`${w}×100`:w<=20?`1000+(${r1(w-10)}×50)`:`1500+(${r1(w-20)}×20)`;
   const ft=document.getElementById('fluidType').value;
   const allFl=[
-    {key:'D5NaCl',label:'D5 ¼ NaCl',note:'Neonatus & bayi'},
+    {key:'D5NaCl',label:'D5 ¼ NaCl',note:'Neonatus & bayi kecil'},
     {key:'D5half',label:'D5 ½ NaCl',note:'Anak ≥1 bulan'},
-    {key:'RL',label:'Ringer Laktat',note:'Umum'},
+    {key:'RL',label:'Ringer Laktat',note:'Umum/resusitasi'},
     {key:'NaCl',label:'NaCl 0.9%',note:'Resusitasi'},
   ];
   const fluids=ft==='all'?allFl:allFl.filter(f=>f.key===ft);
-  const rows=fluids.map(f=>`<tr><td>${f.label}<br><span style="font-size:.57rem;color:var(--text3)">${f.note}</span></td><td><b>${Math.round(mlDay)}ml</b></td><td><b>${r1(mlHour)}ml/jam</b></td><td>${tpmM} gtt</td></tr>`).join('');
+  const rows=fluids.map(f=>`<tr><td>${f.label}<br><span style="font-size:.56rem;color:var(--text3)">${f.note}</span></td><td><b>${Math.round(mlDay)}ml</b></td><td><b>${r1(mlHour)}ml/jam</b></td><td>${tpmM} gtt</td></tr>`).join('');
   document.getElementById('fluidResult').innerHTML=`<div class="fluid-res">
-    <div class="fluid-head"><h3>💧 Maintenance — BB: ${w} kg</h3></div>
+    <div class="fluid-head"><h3>💧 Maintenance — BB: ${w}kg</h3></div>
     <div class="fluid-body">
-      <div class="fluid-grid">
+      <div class="fgrid">
         <div class="fbox"><div class="fl">Volume/Hari</div><div class="fv">${Math.round(mlDay)}</div><div class="fu">ml/hari</div></div>
         <div class="fbox"><div class="fl">Kecepatan</div><div class="fv">${r1(mlHour)}</div><div class="fu">ml/jam</div></div>
       </div>
-      <div class="fluid-grid">
+      <div class="fgrid">
         <div class="fbox"><div class="fl">Makro (20gtt/ml)</div><div class="fv">${tpmM}</div><div class="fu">tetes/mnt</div></div>
         <div class="fbox"><div class="fl">Mikro (60gtt/ml)</div><div class="fv">${tpmMik}</div><div class="fu">tetes/mnt</div></div>
       </div>
-      <div style="font-size:.6rem;color:var(--text3);margin-bottom:5px">${bd} = <b>${Math.round(mlDay)} ml/hari</b></div>
-      <table class="ftable"><thead><tr><th>Cairan</th><th>Total/hari</th><th>Kecepatan</th><th>Tetes/mnt</th></tr></thead><tbody>${rows}</tbody></table>
-      <div class="fnote">⚠️ Ini kebutuhan maintenance. Sesuaikan status hidrasi & ongoing loss.<br>📚 Holiday & Segar, Pediatrics 1957 · Formularium Nasional RI</div>
+      <div style="font-size:.59rem;color:var(--text3);margin-bottom:4px">${bd} = <b>${Math.round(mlDay)}ml/hari</b></div>
+      <table class="ftbl"><thead><tr><th>Cairan</th><th>Total/hari</th><th>Kecepatan</th><th>Tetes/mnt</th></tr></thead><tbody>${rows}</tbody></table>
+      <div class="fnote">⚠️ Sesuaikan status hidrasi & ongoing loss.<br>📚 Holiday & Segar, Pediatrics 1957 · Formularium Nasional</div>
     </div></div>`;
 }
 
@@ -1397,10 +1662,12 @@ function calcFluid(){
 // TABS & HELPERS
 // ================================================================
 function switchTab(t){
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',['dosis','cairan'][i]===t));
+  const tabs=['dosis','vasoaktif','elektrolit','cairan'];
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',tabs[i]===t));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id==='tab-'+t));
 }
 function r1(n){return Math.round(n*10)/10;}
+function r2(n){return Math.round(n*100)/100;}
 function rH(n){return Math.round(n*4)/4;}
 
 // INIT
